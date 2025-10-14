@@ -1,0 +1,366 @@
+---
+// Services Section
+const services = [
+  {
+    icon: '🔧',
+    title: 'Mantenimiento y Reparación',
+    description: 'Optimiza tu equipo con nuestro mantenimiento y servicio de reparación experto. Técnicos certificados KÄRCHER con experiencia en todo tipo de equipos de limpieza.',
+    features: ['Diagnóstico profesional', 'Repuestos originales', 'Garantía de servicio']
+  },
+  {
+    icon: '🚚',
+    title: 'Distribución de Equipos',
+    description: 'Accede a equipos de alta calidad a través de nuestra distribución confiable. Somos distribuidores autorizados KÄRCHER en la región Caribe.',
+    features: ['Productos originales', 'Entrega inmediata', 'Stock disponible']
+  },
+  {
+    icon: '💡',
+    title: 'Asesoría Técnica',
+    description: 'Recibe asesoramiento profesional para elegir y utilizar tus equipos de manera óptima. Te ayudamos a encontrar la solución perfecta para tus necesidades.',
+    features: ['Asesoría personalizada', 'Recomendaciones expertas', 'Soporte continuo']
+  }
+];
+---
+
+<section id="servicios" class="services-section section bg-gray">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">
+        <span class="badge-icon">✓</span>
+        Centro Autorizado KÄRCHER
+      </div>
+      <h2 class="section-title">Nuestros Servicios</h2>
+      <p class="section-description">
+        Como Centro de Servicio Técnico Autorizado KÄRCHER, ofrecemos soluciones
+        integrales para todas tus necesidades de limpieza profesional.
+      </p>
+    </div>
+
+    <div class="services-grid">
+      {services.map(service => (
+        <div class="service-card">
+          <div class="service-icon">
+            <span class="icon-emoji">{service.icon}</span>
+          </div>
+          <h3 class="service-title">{service.title}</h3>
+          <p class="service-description">{service.description}</p>
+          <ul class="service-features">
+            {service.features.map(feature => (
+              <li class="feature-item">
+                <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                {feature}
+              </li>
+            ))}
+          </ul>
+          <button class="service-btn">
+            Más Información
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"></path>
+              <path d="m12 5 7 7-7 7"></path>
+            </svg>
+          </button>
+        </div>
+      ))}
+    </div>
+
+    <div class="cta-banner">
+      <div class="cta-content">
+        <div class="cta-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+          </svg>
+        </div>
+        <div class="cta-text">
+          <h3 class="cta-title">¿Necesitas reparar tu equipo?</h3>
+          <p class="cta-description">
+            Agenda una cita o consulta el estado de tu reparación en tiempo real
+          </p>
+        </div>
+        <div class="cta-actions">
+          <a href="#contacto" class="btn-cta-primary">Agendar Servicio</a>
+          <a href="/mis-reparaciones" class="btn-cta-secondary">Ver Mi Reparación</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .services-section {
+    background: var(--color-gray-50);
+  }
+
+  .section-header {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto var(--spacing-12);
+  }
+
+  .section-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    background: var(--color-white);
+    border: 1px solid var(--color-primary);
+    color: var(--color-primary-dark);
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .badge-icon {
+    font-size: var(--text-base);
+  }
+
+  .section-title {
+    font-size: var(--text-4xl);
+    color: var(--color-secondary);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .section-description {
+    font-size: var(--text-lg);
+    color: var(--color-gray-600);
+    line-height: 1.7;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-8);
+    margin-bottom: var(--spacing-12);
+  }
+
+  .service-card {
+    background: var(--color-white);
+    padding: var(--spacing-8);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--transition-base);
+  }
+
+  .service-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .service-card:hover {
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-4px);
+  }
+
+  .service-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.2) 100%);
+    border-radius: var(--radius-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-6);
+  }
+
+  .icon-emoji {
+    font-size: 2.5rem;
+  }
+
+  .service-title {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--color-secondary);
+    margin-bottom: var(--spacing-3);
+  }
+
+  .service-description {
+    color: var(--color-gray-600);
+    line-height: 1.7;
+    margin-bottom: var(--spacing-6);
+  }
+
+  .service-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--spacing-6) 0;
+    flex: 1;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    color: var(--color-gray-700);
+    font-size: var(--text-sm);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .check-icon {
+    color: var(--color-primary-dark);
+    flex-shrink: 0;
+  }
+
+  .service-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-6);
+    background: transparent;
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    color: var(--color-secondary);
+    font-weight: var(--font-semibold);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .service-btn:hover {
+    background: var(--color-secondary);
+    border-color: var(--color-secondary);
+    color: var(--color-white);
+  }
+
+  /* CTA Banner */
+  .cta-banner {
+    background: linear-gradient(135deg, var(--color-secondary) 0%, #2d2d2d 100%);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-10);
+    box-shadow: var(--shadow-xl);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 80% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .cta-content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: var(--spacing-8);
+    align-items: center;
+  }
+
+  .cta-icon {
+    color: var(--color-primary);
+  }
+
+  .cta-text {
+    flex: 1;
+  }
+
+  .cta-title {
+    color: var(--color-white);
+    font-size: var(--text-2xl);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .cta-description {
+    color: var(--color-gray-300);
+    margin: 0;
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: var(--spacing-4);
+  }
+
+  .btn-cta-primary,
+  .btn-cta-secondary {
+    padding: var(--spacing-4) var(--spacing-6);
+    border-radius: var(--radius-lg);
+    font-weight: var(--font-semibold);
+    font-size: var(--text-base);
+    text-decoration: none;
+    transition: all var(--transition-base);
+    white-space: nowrap;
+  }
+
+  .btn-cta-primary {
+    background: var(--color-primary);
+    color: var(--color-secondary);
+  }
+
+  .btn-cta-primary:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(255, 215, 0, 0.3);
+  }
+
+  .btn-cta-secondary {
+    background: transparent;
+    color: var(--color-white);
+    border: 2px solid var(--color-white);
+  }
+
+  .btn-cta-secondary:hover {
+    background: var(--color-white);
+    color: var(--color-secondary);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 968px) {
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .section-title {
+      font-size: var(--text-3xl);
+    }
+
+    .cta-content {
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: var(--spacing-6);
+    }
+
+    .cta-icon {
+      margin: 0 auto;
+    }
+
+    .cta-actions {
+      flex-direction: column;
+    }
+
+    .btn-cta-primary,
+    .btn-cta-secondary {
+      width: 100%;
+      text-align: center;
+    }
+  }
+
+  @media (min-width: 640px) and (max-width: 968px) {
+    .services-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

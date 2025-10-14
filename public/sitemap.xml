@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- Página principal -->
+  <url>
+    <loc>https://teamservicecosta.com/</loc>
+    <lastmod>2025-01-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://teamservicecosta.com/images/og-image.jpg</image:loc>
+      <image:title>Team Service Costa - Centro Autorizado KÄRCHER</image:title>
+      <image:caption>Centro de Servicio Técnico Autorizado KÄRCHER en la región Caribe</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Página de productos -->
+  <url>
+    <loc>https://teamservicecosta.com/#productos</loc>
+    <lastmod>2025-01-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80</image:loc>
+      <image:title>Hidrolavadora KÄRCHER K4</image:title>
+      <image:caption>Hidrolavadora profesional KÄRCHER K4 Full Control</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1603732551681-2e91159b9dc2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80</image:loc>
+      <image:title>Hidrolavadora KÄRCHER K5</image:title>
+      <image:caption>Hidrolavadora semi-profesional KÄRCHER K5 Premium</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Página de servicios -->
+  <url>
+    <loc>https://teamservicecosta.com/#servicios</loc>
+    <lastmod>2025-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Página de contacto -->
+  <url>
+    <loc>https://teamservicecosta.com/#contacto</loc>
+    <lastmod>2025-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Página del carrito -->
+  <url>
+    <loc>https://teamservicecosta.com/carrito</loc>
+    <lastmod>2025-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Página de tienda (futura) -->
+  <url>
+    <loc>https://teamservicecosta.com/tienda</loc>
+    <lastmod>2025-01-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Páginas de categorías de productos -->
+  <url>
+    <loc>https://teamservicecosta.com/categoria/hogar</loc>
+    <lastmod>2025-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://teamservicecosta.com/categoria/semiprofesional</loc>
+    <lastmod>2025-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://teamservicecosta.com/categoria/profesional</loc>
+    <lastmod>2025-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Páginas de productos individuales -->
+  <url>
+    <loc>https://teamservicecosta.com/producto/hidrolavadora-k2</loc>
+    <lastmod>2025-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80</image:loc>
+      <image:title>Hidrolavadora KÄRCHER K2 Basic</image:title>
+      <image:caption>Hidrolavadora doméstica KÄRCHER K2 Basic</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://teamservicecosta.com/producto/hidrolavadora-k3</loc>
+    <lastmod>2025-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1603732551681-2e91159b9dc2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80</image:loc>
+      <image:title>Hidrolavadora KÄRCHER K3 Premium</image:title>
+      <image:caption>Hidrolavadora doméstica KÄRCHER K3 Premium</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://teamservicecosta.com/producto/hidrolavadora-k4</loc>
+    <lastmod>2025-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80</image:loc>
+      <image:title>Hidrolavadora KÄRCHER K4 Premium</image:title>
+      <image:caption>Hidrolavadora semi-profesional KÄRCHER K4 Premium Full Control</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://teamservicecosta.com/producto/hidrolavadora-k5</loc>
+    <lastmod>2025-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1603732551681-2e91159b9dc2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80</image:loc>
+      <image:title>Hidrolavadora KÄRCHER K5 Premium</image:title>
+      <image:caption>Hidrolavadora semi-profesional KÄRCHER K5 Premium Full Control Plus</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://teamservicecosta.com/producto/hidrolavadora-k7</loc>
+    <lastmod>2025-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80</image:loc>
+      <image:title>Hidrolavadora KÄRCHER K7 Premium</image:title>
+      <image:caption>Hidrolavadora profesional KÄRCHER K7 Premium Full Control Plus</image:caption>
+    </image:image>
+  </url>
+</urlset>

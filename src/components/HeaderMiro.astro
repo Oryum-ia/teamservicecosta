@@ -1,0 +1,408 @@
+---
+// Header Component - Miro Style
+---
+
+<header class="header">
+  <div class="container">
+    <nav class="nav">
+      <a href="/" class="nav-brand">
+        <div class="brand-logo">
+          <span class="logo-team">TEAM</span>
+          <span class="logo-service">SERVICE</span>
+          <span class="logo-costa">COSTA</span>
+        </div>
+      </a>
+
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+        <span class="hamburger"></span>
+      </button>
+
+      <ul class="nav-menu" role="list">
+        <li><a href="/" class="nav-link">Inicio</a></li>
+        <li><a href="/#productos" class="nav-link">Productos</a></li>
+        <li><a href="/#servicios" class="nav-link">Servicios</a></li>
+        <li><a href="/#contacto" class="nav-link">Contacto</a></li>
+        <li><a href="/tienda" class="nav-link">Tienda</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn-cart" data-cart-toggle aria-label="Abrir carrito">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+          <span class="cart-badge">0</span>
+        </button>
+        <a href="/estado-producto" class="btn-login">Estado de producto</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    background: var(--color-white);
+    border-bottom: 1px solid var(--color-gray-200);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .header.header-hidden {
+    transform: translateY(-100%);
+  }
+
+  .header.header-scrolled {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.98);
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .header:hover::after {
+    transform: scaleX(1);
+  }
+
+  .container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    gap: var(--spacing-6);
+  }
+
+  /* Brand Logo */
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .brand-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    font-size: var(--text-lg);
+    font-weight: var(--font-extrabold);
+    letter-spacing: -0.02em;
+  }
+
+  .logo-team {
+    color: var(--color-black);
+  }
+
+  .logo-service {
+    color: var(--color-primary);
+  }
+
+  .logo-costa {
+    color: var(--color-black);
+  }
+
+  /* Navigation Menu */
+  .nav-menu {
+    display: flex;
+    list-style: none;
+    gap: var(--spacing-2);
+    margin: 0;
+    padding: 0;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .nav-link {
+    color: var(--color-gray-700);
+    font-weight: var(--font-medium);
+    font-size: var(--text-sm);
+    text-decoration: none;
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+  }
+
+  .nav-link:hover {
+    color: var(--color-black);
+    background: var(--color-gray-100);
+  }
+
+  /* Actions */
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    flex-shrink: 0;
+  }
+
+  .btn-login {
+    color: var(--color-gray-700);
+    font-weight: var(--font-semibold);
+    font-size: var(--text-sm);
+    text-decoration: none;
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+  }
+
+  .btn-login:hover {
+    color: var(--color-black);
+    background: var(--color-gray-100);
+  }
+
+  .btn-cart {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: var(--color-gray-100);
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    color: var(--color-gray-700);
+  }
+
+  .btn-cart:hover {
+    background: var(--color-gray-200);
+    color: var(--color-black);
+  }
+
+  .cart-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-primary);
+    color: var(--color-black);
+    font-size: 10px;
+    font-weight: var(--font-bold);
+    border-radius: var(--radius-full);
+    padding: 0 4px;
+    opacity: 0;
+    transform: scale(0);
+    transition: all var(--transition-fast);
+  }
+
+  .cart-badge.has-items {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Mobile Toggle Button */
+  .nav-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 44px;
+    height: 44px;
+    background: var(--color-gray-100);
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+    padding: 0;
+  }
+
+  .nav-toggle:hover {
+    background: var(--color-gray-200);
+  }
+
+  .hamburger {
+    width: 20px;
+    height: 2px;
+    background: var(--color-black);
+    position: relative;
+    transition: all var(--transition-base);
+  }
+
+  .hamburger::before,
+  .hamburger::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: var(--color-black);
+    transition: all var(--transition-base);
+  }
+
+  .hamburger::before {
+    top: -6px;
+  }
+
+  .hamburger::after {
+    bottom: -6px;
+  }
+
+  .nav-toggle[aria-expanded="true"] .hamburger {
+    background: transparent;
+  }
+
+  .nav-toggle[aria-expanded="true"] .hamburger::before {
+    top: 0;
+    transform: rotate(45deg);
+  }
+
+  .nav-toggle[aria-expanded="true"] .hamburger::after {
+    bottom: 0;
+    transform: rotate(-45deg);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 968px) {
+    .nav {
+      height: 56px;
+    }
+
+    .nav-toggle {
+      display: flex;
+    }
+
+    .nav-menu {
+      display: none;
+      position: absolute;
+      top: 56px;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      background: var(--color-white);
+      border-bottom: 1px solid var(--color-gray-200);
+      padding: var(--spacing-4);
+      gap: var(--spacing-1);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-menu.active {
+      display: flex;
+    }
+
+    .nav-link {
+      padding: var(--spacing-3);
+      width: 100%;
+      text-align: left;
+    }
+
+    .btn-login {
+      display: none;
+    }
+
+    .btn-cart {
+      width: 40px;
+      height: 40px;
+    }
+
+    .brand-logo {
+      font-size: var(--text-base);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .nav {
+      height: 52px;
+    }
+
+    .nav-toggle {
+      width: 36px;
+      height: 36px;
+    }
+
+    .brand-logo {
+      gap: var(--spacing-1);
+      font-size: var(--text-sm);
+    }
+
+    .logo-service,
+    .logo-costa {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Mobile menu toggle
+  const navToggle = document.querySelector('.nav-toggle');
+  const navMenu = document.querySelector('.nav-menu');
+
+  if (navToggle && navMenu) {
+    navToggle.addEventListener('click', () => {
+      const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+      navToggle.setAttribute('aria-expanded', (!isExpanded).toString());
+      navMenu.classList.toggle('active');
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (!navToggle.contains(target) && !navMenu.contains(target)) {
+        navToggle.setAttribute('aria-expanded', 'false');
+        navMenu.classList.remove('active');
+      }
+    });
+
+    // Close menu when clicking on a link
+    const navLinks = navMenu.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        navToggle.setAttribute('aria-expanded', 'false');
+        navMenu.classList.remove('active');
+      });
+    });
+  }
+
+  // Header scroll effect (always visible)
+  const header = document.querySelector('.header');
+  let ticking = false;
+
+  function updateHeader() {
+    const currentScrollY = window.scrollY;
+
+    if (currentScrollY > 10) {
+      header?.classList.add('header-scrolled');
+    } else {
+      header?.classList.remove('header-scrolled');
+    }
+
+    ticking = false;
+  }
+
+  function onScroll() {
+    if (!ticking) {
+      window.requestAnimationFrame(updateHeader);
+      ticking = true;
+    }
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>

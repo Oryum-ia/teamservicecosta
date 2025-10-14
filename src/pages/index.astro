@@ -1,11 +1,36 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import HeaderMiro from '../components/HeaderMiro.astro';
+import HeroMiro from '../components/HeroMiro.astro';
+import ProductsSectionMiro from '../components/ProductsSectionMiro.astro';
+import StatsSection from '../components/StatsSection.astro';
+import ServicesSection from '../components/ServicesSection.astro';
+import ContactForm from '../components/ContactForm.astro';
+import MapSection from '../components/MapSection.astro';
+import FooterMiro from '../components/FooterMiro.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import ProductDetailModal from '../components/ProductDetailModal.astro';
+import CartModal from '../components/CartModal.astro';
 ---
 
-<Layout>
-	<Welcome />
+<Layout
+  title="Team Service Costa S.A.S. | Centro Autorizado KÄRCHER | Hidrolavadoras y Servicio Técnico"
+  description="✅ Centro Autorizado KÄRCHER en Montería, Cartagena y Apartadó. Venta de hidrolavadoras profesionales y domésticas. Servicio técnico especializado con garantía oficial. Envíos a todo Colombia. 🚚"
+>
+  <HeaderMiro />
+  <main>
+    <HeroMiro />
+    <ProductsSectionMiro />
+    <StatsSection />
+    <ServicesSection />
+    <ContactForm />
+    <MapSection />
+  </main>
+  <FooterMiro />
+  <WhatsAppButton
+    phone="+573205085531"
+    message="Hola, necesito información sobre los servicios de Team Service Costa"
+  />
+  <ProductDetailModal />
+  <CartModal />
 </Layout>

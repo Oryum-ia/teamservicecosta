@@ -1,0 +1,392 @@
+---
+// Map Section - Ubicación de Team Service Costa
+const locations = [
+  {
+    city: 'Montería',
+    address: 'Calle 40 # 2-55 Centro, Barrio Nariño',
+    phone: '+57 320 508 5531',
+    mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3930.9!2d-75.8877!3d8.7479!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zOMKwNDQnNTIuNCJOIDc1wrA1MycxNS43Ilc!5e0!3m2!1ses!2sco!4v1234567890123!5m2!1ses!2sco'
+  },
+  {
+    city: 'Cartagena',
+    address: 'Calle 30 #21-137 local 4, Pie de La Popa',
+    phone: '+57 320 508 5531',
+    mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3924.4!2d-75.5336!3d10.3910!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDIzJzI3LjYiTiA3NcKwMzInMDEuMCJX!5e0!3m2!1ses!2sco!4v1234567890123!5m2!1ses!2sco'
+  },
+  {
+    city: 'Apartadó',
+    address: 'Calle 91 #98-23, Barrio Manzanares',
+    phone: '+57 320 508 5531',
+    mapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3959.4!2d-76.6258!3d7.8836!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwNTMnMDEuMyJOIDc2wrAzNyczMi45Ilc!5e0!3m2!1ses!2sco!4v1234567890123!5m2!1ses!2sco'
+  }
+];
+
+const contactInfo = {
+  email: '[email protected]',
+  schedule: 'Lun - Vie: 8:00 AM - 5:30 PM | Sáb: 8:00 AM - 12:30 PM'
+};
+---
+
+<section id="ubicacion" class="map-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-eyebrow">Encuéntranos</span>
+      <h2 class="section-title">Nuestras Ubicaciones</h2>
+      <p class="section-description">
+        Visítanos en cualquiera de nuestras sedes en Montería, Cartagena o Apartadó.
+        Te esperamos con la mejor atención y asesoría especializada.
+      </p>
+    </div>
+
+    <div class="locations-container">
+      {locations.map((location, index) => (
+        <div class="location-card">
+          <div class="location-info">
+            <h3 class="location-title">{location.city}</h3>
+            <div class="info-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+              <span>{location.address}</span>
+            </div>
+            <div class="info-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+              </svg>
+              <a href={`tel:${location.phone}`} class="phone-link">{location.phone}</a>
+            </div>
+            <div class="info-item">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <span>{contactInfo.schedule}</span>
+            </div>
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address + ', ' + location.city)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-directions"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 11l19-9-9 19-2-8-8-2z"></path>
+              </svg>
+              Cómo llegar
+            </a>
+          </div>
+          <div class="location-map">
+            <iframe
+              src={location.mapUrl}
+              width="100%"
+              height="100%"
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title={`Mapa de ${location.city}`}
+            ></iframe>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="contact-cta">
+      <div class="cta-content">
+        <h3>¿Necesitas más información?</h3>
+        <p>Contáctanos y con gusto te atenderemos</p>
+      </div>
+      <div class="cta-actions">
+        <a href={`mailto:${contactInfo.email}`} class="btn-cta">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+          </svg>
+          Enviar correo
+        </a>
+        <a href={`tel:${locations[0].phone}`} class="btn-cta btn-cta-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+          </svg>
+          Llamar ahora
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .map-section {
+    background: var(--color-gray-50);
+    padding: var(--spacing-24) 0;
+  }
+
+  .section-header {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto var(--spacing-16);
+  }
+
+  .section-eyebrow {
+    display: inline-block;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: var(--color-accent-light);
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-full);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .section-title {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-extrabold);
+    color: var(--color-black);
+    margin-bottom: var(--spacing-4);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .section-description {
+    font-size: var(--text-base);
+    color: var(--color-gray-600);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .locations-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+    margin-bottom: var(--spacing-16);
+  }
+
+  .location-card {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 0;
+    background: var(--color-white);
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08),
+                0 8px 24px rgba(0, 0, 0, 0.06);
+    transition: all var(--transition-base);
+    border: 1px solid var(--color-gray-200);
+  }
+
+  .location-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1),
+                0 12px 32px rgba(0, 0, 0, 0.08);
+    transform: translateY(-6px);
+    border-color: var(--color-accent-light);
+  }
+
+  .location-info {
+    padding: var(--spacing-10);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-6);
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-white) 0%, var(--color-gray-50) 100%);
+  }
+
+  .location-title {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-extrabold);
+    color: var(--color-black);
+    margin: 0;
+    padding-bottom: var(--spacing-4);
+    border-bottom: 3px solid var(--color-primary);
+    display: inline-block;
+    align-self: flex-start;
+  }
+
+  .info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-3);
+    color: var(--color-gray-600);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+  }
+
+  .info-item svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--color-accent);
+  }
+
+  .phone-link {
+    color: var(--color-gray-600);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .phone-link:hover {
+    color: var(--color-accent);
+  }
+
+  .btn-directions {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-5);
+    background: var(--color-accent);
+    color: var(--color-white);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    text-decoration: none;
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-base);
+    align-self: flex-start;
+  }
+
+  .btn-directions:hover {
+    background: var(--color-accent-dark);
+    transform: translateX(4px);
+  }
+
+  .location-map {
+    position: relative;
+    min-height: 400px;
+    background: var(--color-gray-200);
+    filter: grayscale(0.2) contrast(1.1);
+    transition: filter var(--transition-base);
+  }
+
+  .location-card:hover .location-map {
+    filter: grayscale(0) contrast(1.2);
+  }
+
+  .location-map iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .contact-cta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-8);
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+    padding: var(--spacing-10);
+    border-radius: var(--radius-2xl);
+    color: var(--color-white);
+  }
+
+  .cta-content h3 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    margin: 0 0 var(--spacing-2);
+    color: var(--color-white);
+  }
+
+  .cta-content p {
+    font-size: var(--text-base);
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: var(--spacing-3);
+    flex-shrink: 0;
+  }
+
+  .btn-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-5);
+    background: var(--color-white);
+    color: var(--color-accent);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    text-decoration: none;
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-base);
+    white-space: nowrap;
+  }
+
+  .btn-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+
+  .btn-cta-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--color-white);
+    border: 2px solid var(--color-white);
+  }
+
+  .btn-cta-secondary:hover {
+    background: var(--color-white);
+    color: var(--color-accent);
+  }
+
+  /* Responsive */
+  @media (max-width: 968px) {
+    .map-section {
+      padding: var(--spacing-20) 0;
+    }
+
+    .section-header {
+      margin-bottom: var(--spacing-12);
+    }
+
+    .location-card {
+      grid-template-columns: 1fr;
+    }
+
+    .location-map {
+      min-height: 300px;
+      order: -1;
+    }
+
+    .contact-cta {
+      flex-direction: column;
+      text-align: center;
+      padding: var(--spacing-8);
+    }
+
+    .cta-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .btn-cta {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .locations-container {
+      gap: var(--spacing-8);
+    }
+
+    .location-info {
+      padding: var(--spacing-6);
+      gap: var(--spacing-4);
+    }
+
+    .location-title {
+      font-size: var(--text-xl);
+    }
+
+    .location-map {
+      min-height: 250px;
+    }
+
+    .section-title {
+      font-size: var(--text-2xl);
+    }
+
+    .cta-content h3 {
+      font-size: var(--text-xl);
+    }
+  }
+</style>

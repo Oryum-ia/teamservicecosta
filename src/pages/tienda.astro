@@ -1,0 +1,708 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeaderMiro from '../components/HeaderMiro.astro';
+import ProductCardMiro from '../components/ProductCardMiro.astro';
+import FooterMiro from '../components/FooterMiro.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+import ProductDetailModal from '../components/ProductDetailModal.astro';
+import { products } from '../data/products.ts';
+---
+
+<Layout
+  title="Tienda Online | Team Service Costa S.A.S. - Equipos KÄRCHER"
+  description="Compra equipos KÄRCHER originales con garantía oficial. Hidrolavadoras profesionales y domésticas, aspiradoras, accesorios y repuestos. Envíos a todo Colombia."
+>
+  <HeaderMiro />
+  <main>
+    <!-- Hero Section -->
+    <section class="shop-hero">
+      <div class="hero-background"></div>
+      <div class="container">
+        <div class="hero-content">
+          <span class="hero-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            Distribuidor Oficial KÄRCHER
+          </span>
+          <h1 class="hero-title">Tienda Online</h1>
+          <p class="hero-description">
+            Encuentra equipos de limpieza profesional con garantía oficial.
+            Entrega inmediata y envíos seguros a todo Colombia.
+          </p>
+          <div class="hero-stats">
+            <div class="stat">
+              <span class="stat-number">{products.length}+</span>
+              <span class="stat-label">Productos</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">3</span>
+              <span class="stat-label">Ubicaciones</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">100%</span>
+              <span class="stat-label">Originales</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filters Section -->
+    <section class="shop-filters">
+      <div class="container">
+        <div class="filters-wrapper">
+          <div class="filters-left">
+            <button class="filter-toggle" id="mobile-filter-toggle">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+              </svg>
+              Filtros
+            </button>
+
+            <div class="filter-group">
+              <label for="category-filter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                  <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+                Categoría
+              </label>
+              <select id="category-filter" class="filter-select">
+                <option value="all">Todos</option>
+                <option value="hidrolavadoras">Hidrolavadoras</option>
+                <option value="aspiradoras">Aspiradoras</option>
+                <option value="accesorios">Accesorios</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label for="sort-filter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="4" y1="21" x2="4" y2="14"></line>
+                  <line x1="4" y1="10" x2="4" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12" y2="3"></line>
+                  <line x1="20" y1="21" x2="20" y2="16"></line>
+                  <line x1="20" y1="12" x2="20" y2="3"></line>
+                  <line x1="1" y1="14" x2="7" y2="14"></line>
+                  <line x1="9" y1="8" x2="15" y2="8"></line>
+                  <line x1="17" y1="16" x2="23" y2="16"></line>
+                </svg>
+                Ordenar
+              </label>
+              <select id="sort-filter" class="filter-select">
+                <option value="featured">Destacados</option>
+                <option value="price-asc">Menor precio</option>
+                <option value="price-desc">Mayor precio</option>
+                <option value="name">A - Z</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="filters-right">
+            <div class="results-info">
+              <span class="results-count" id="product-count">{products.length}</span>
+              <span class="results-text">productos encontrados</span>
+            </div>
+            <div class="view-toggle">
+              <button class="view-btn active" data-view="grid" aria-label="Vista en cuadrícula">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+              </button>
+              <button class="view-btn" data-view="list" aria-label="Vista en lista">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="8" y1="6" x2="21" y2="6"></line>
+                  <line x1="8" y1="12" x2="21" y2="12"></line>
+                  <line x1="8" y1="18" x2="21" y2="18"></line>
+                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="shop-products">
+      <div class="container">
+        <div class="products-grid" id="products-grid">
+          {products.map(product => (
+            <ProductCardMiro
+              name={product.name}
+              model={product.model}
+              price={product.price}
+              image={product.image}
+              available={product.available}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="shop-benefits">
+      <div class="container">
+        <div class="benefits-header">
+          <h2 class="benefits-title">¿Por qué comprar con nosotros?</h2>
+          <p class="benefits-subtitle">Experiencia y calidad garantizada en cada compra</p>
+        </div>
+        <div class="benefits-grid">
+          <div class="benefit-card">
+            <div class="benefit-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </div>
+            <h3>Entrega Rápida</h3>
+            <p>Inmediata en Montería, Cartagena y Apartadó. Envíos express a todo el país.</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
+            <h3>Garantía Oficial</h3>
+            <p>Respaldo directo de KÄRCHER y servicio técnico especializado incluido.</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+            <h3>100% Original</h3>
+            <p>Productos auténticos KÄRCHER con certificado de autenticidad.</p>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
+            <h3>Asesoría Experta</h3>
+            <p>Te ayudamos a elegir el equipo perfecto según tus necesidades.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <FooterMiro />
+  <WhatsAppButton
+    phone="+573205085531"
+    message="Hola, quiero información sobre los productos KÄRCHER"
+  />
+  <ProductDetailModal />
+</Layout>
+
+<style>
+  /* Hero Section */
+  .shop-hero {
+    position: relative;
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
+    padding: var(--spacing-32) 0 var(--spacing-24);
+    overflow: hidden;
+  }
+
+  .hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(255, 208, 47, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(66, 98, 255, 0.15) 0%, transparent 50%);
+    z-index: 0;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-2) var(--spacing-4);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    color: var(--color-white);
+    margin-bottom: var(--spacing-6);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .hero-badge svg {
+    color: var(--color-primary);
+  }
+
+  .hero-title {
+    font-size: 3.5rem;
+    font-weight: var(--font-extrabold);
+    color: var(--color-white);
+    margin-bottom: var(--spacing-5);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-description {
+    font-size: var(--text-lg);
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.7;
+    margin: 0 auto var(--spacing-10);
+    max-width: 600px;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-12);
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-1);
+  }
+
+  .stat-number {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-extrabold);
+    color: var(--color-primary);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: var(--text-sm);
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: var(--font-medium);
+  }
+
+  /* Filters Section */
+  .shop-filters {
+    background: var(--color-white);
+    padding: var(--spacing-6) 0;
+    border-bottom: 1px solid var(--color-gray-200);
+    position: sticky;
+    top: 60px;
+    z-index: 999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .filters-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-6);
+    flex-wrap: wrap;
+  }
+
+  .filters-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+    flex: 1;
+  }
+
+  .filter-toggle {
+    display: none;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-2-5) var(--spacing-4);
+    background: var(--color-accent);
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: var(--font-primary);
+  }
+
+  .filter-toggle:hover {
+    background: var(--color-accent-dark);
+  }
+
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    background: var(--color-gray-50);
+    padding: var(--spacing-2);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-gray-200);
+  }
+
+  .filter-group label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-1-5);
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    color: var(--color-gray-700);
+    white-space: nowrap;
+    padding-left: var(--spacing-2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .filter-group label svg {
+    color: var(--color-accent);
+  }
+
+  .filter-select {
+    padding: var(--spacing-2) var(--spacing-3);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-family: var(--font-primary);
+    font-weight: var(--font-medium);
+    color: var(--color-gray-900);
+    background: var(--color-white);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    min-width: 150px;
+  }
+
+  .filter-select:hover {
+    background: var(--color-gray-100);
+  }
+
+  .filter-select:focus {
+    outline: none;
+    background: var(--color-white);
+    box-shadow: 0 0 0 2px var(--color-accent-light);
+  }
+
+  .filters-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+  }
+
+  .results-info {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-2);
+  }
+
+  .results-count {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-extrabold);
+    color: var(--color-accent);
+    line-height: 1;
+  }
+
+  .results-text {
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+    font-weight: var(--font-medium);
+  }
+
+  .view-toggle {
+    display: flex;
+    gap: var(--spacing-1);
+    background: var(--color-gray-100);
+    padding: 4px;
+    border-radius: var(--radius-lg);
+  }
+
+  .view-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    color: var(--color-gray-600);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .view-btn:hover {
+    color: var(--color-gray-900);
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .view-btn.active {
+    background: var(--color-white);
+    color: var(--color-accent);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Products Section */
+  .shop-products {
+    background: linear-gradient(180deg, var(--color-gray-50) 0%, var(--color-white) 100%);
+    padding: var(--spacing-16) 0 var(--spacing-20);
+    min-height: 60vh;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-4);
+  }
+
+  /* Benefits Section */
+  .shop-benefits {
+    background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+    padding: var(--spacing-24) 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shop-benefits::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-accent-light), transparent);
+  }
+
+  .benefits-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto var(--spacing-16);
+  }
+
+  .benefits-title {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-extrabold);
+    color: var(--color-black);
+    margin-bottom: var(--spacing-3);
+    letter-spacing: -0.02em;
+  }
+
+  .benefits-subtitle {
+    font-size: var(--text-lg);
+    color: var(--color-gray-600);
+    margin: 0;
+  }
+
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--spacing-6);
+  }
+
+  .benefit-card {
+    background: var(--color-white);
+    padding: var(--spacing-8);
+    border-radius: var(--radius-2xl);
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--color-gray-200);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .benefit-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .benefit-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .benefit-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+    border-color: var(--color-accent-light);
+  }
+
+  .benefit-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto var(--spacing-5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-accent-light) 0%, rgba(66, 98, 255, 0.1) 100%);
+    color: var(--color-accent);
+    border-radius: var(--radius-2xl);
+    transition: all 0.3s ease;
+  }
+
+  .benefit-card:hover .benefit-icon {
+    transform: scale(1.1) rotate(5deg);
+    background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
+    color: var(--color-white);
+  }
+
+  .benefit-card h3 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--color-black);
+    margin-bottom: var(--spacing-3);
+    letter-spacing: -0.01em;
+  }
+
+  .benefit-card p {
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 968px) {
+    .shop-hero {
+      padding: var(--spacing-24) 0 var(--spacing-16);
+    }
+
+    .hero-title {
+      font-size: 2.5rem;
+    }
+
+    .hero-stats {
+      gap: var(--spacing-8);
+    }
+
+    .filters-left {
+      width: 100%;
+    }
+
+    .filter-toggle {
+      display: flex;
+    }
+
+    .filter-group {
+      display: none;
+    }
+
+    .products-grid {
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .shop-hero {
+      padding: var(--spacing-20) 0 var(--spacing-12);
+    }
+
+    .hero-title {
+      font-size: 2rem;
+    }
+
+    .hero-description {
+      font-size: var(--text-base);
+    }
+
+    .hero-stats {
+      gap: var(--spacing-6);
+    }
+
+    .stat-number {
+      font-size: var(--text-2xl);
+    }
+
+    .shop-filters {
+      top: 52px;
+      padding: var(--spacing-4) 0;
+    }
+
+    .filters-wrapper {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .filters-right {
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .results-count {
+      font-size: var(--text-xl);
+    }
+
+    .products-grid {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-5);
+    }
+
+    .benefits-title {
+      font-size: var(--text-2xl);
+    }
+
+    .benefits-subtitle {
+      font-size: var(--text-base);
+    }
+
+    .benefits-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  // View toggle functionality
+  const viewButtons = document.querySelectorAll('.view-btn');
+  const productsGrid = document.getElementById('products-grid');
+
+  viewButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      viewButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      const view = button.dataset.view;
+      if (view === 'list') {
+        productsGrid?.classList.add('list-view');
+      } else {
+        productsGrid?.classList.remove('list-view');
+      }
+    });
+  });
+
+  // Filter functionality placeholder
+  const categoryFilter = document.getElementById('category-filter') as HTMLSelectElement;
+  const sortFilter = document.getElementById('sort-filter') as HTMLSelectElement;
+
+  categoryFilter?.addEventListener('change', () => {
+    console.log('Category:', categoryFilter.value);
+  });
+
+  sortFilter?.addEventListener('change', () => {
+    console.log('Sort:', sortFilter.value);
+  });
+</script>

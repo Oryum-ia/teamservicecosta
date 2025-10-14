@@ -1,22 +1,141 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Team Service Costa S.A.S. - Centro Autorizado KÄRCHER',
+  description = 'Centro de Servicio Técnico Autorizado KÄRCHER en la región Caribe. Venta de equipos, reparación especializada y repuestos originales con garantía.'
+} = Astro.props;
+---
+
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+
+		<!-- SEO Meta Tags Optimizadas -->
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta name="keywords" content="KÄRCHER, hidrolavadoras, servicio técnico, reparación, centro autorizado, hidrolavadoras profesionales, limpieza a presión, repuestos originales, Montería, Cartagena, Apartadó, Sincelejo, Córdoba, Sucre, Bolívar, Antioquia, Colombia, Caribbean region" />
+		<meta name="author" content="Team Service Costa S.A.S." />
+		<meta name="robots" content="index, follow" />
+		<meta name="language" content="Spanish" />
+		<meta name="geo.region" content="CO-COR,CO-SUC,CO-BOL,CO-ANT" />
+		<meta name="geo.placename" content="Montería, Cartagena, Apartadó" />
+		<meta name="geo.position" content="8.7479;-75.8814" />
+		<meta name="ICBM" content="8.7479, -75.8814" />
+		<link rel="canonical" href={Astro.url} />
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" href={Astro.url} />
+		<meta property="og:site_name" content="Team Service Costa" />
+		<meta property="og:locale" content="es_CO" />
+		<meta property="og:image" content="/images/og-image.jpg" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="Team Service Costa - Centro Autorizado KÄRCHER" />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:title" content={title} />
+		<meta property="twitter:description" content={description} />
+		<meta property="twitter:image" content="/images/twitter-image.jpg" />
+		<meta property="twitter:image:alt" content="Team Service Costa - Centro Autorizado KÄRCHER" />
+		<meta property="twitter:site" content="@TeamServiceCosta" />
+
+		<!-- Schema.org structured data -->
+		<script type="application/ld+json">
+		{
+			"@context": "https://schema.org",
+			"@type": "LocalBusiness",
+			"name": "Team Service Costa S.A.S.",
+			"description": "Centro de Servicio Técnico Autorizado KÄRCHER en la región Caribe. Venta de equipos, reparación especializada y repuestos originales.",
+			"image": "/images/logo-team-service-costa.jpg",
+			"@id": "https://teamservicecosta.com",
+			"url": "https://teamservicecosta.com",
+			"telephone": "+57 300 1234567",
+			"address": [
+				{
+					"@type": "PostalAddress",
+					"streetAddress": "Calle 123 #45-67",
+					"addressLocality": "Montería",
+					"addressRegion": "Córdoba",
+					"postalCode": "230001",
+					"addressCountry": "CO"
+				},
+				{
+					"@type": "PostalAddress",
+					"streetAddress": "Avenida 89 #12-34",
+					"addressLocality": "Cartagena",
+					"addressRegion": "Bolívar",
+					"postalCode": "130001",
+					"addressCountry": "CO"
+				},
+				{
+					"@type": "PostalAddress",
+					"streetAddress": "Carrera 78 #90-12",
+					"addressLocality": "Apartadó",
+					"addressRegion": "Antioquia",
+					"postalCode": "054040",
+					"addressCountry": "CO"
+				}
+			],
+			"geo": {
+				"@type": "GeoCoordinates",
+				"latitude": 8.7479,
+				"longitude": -75.8814
+			},
+			"openingHoursSpecification": [
+				{
+					"@type": "OpeningHoursSpecification",
+					"dayOfWeek": [
+						"Monday",
+						"Tuesday",
+						"Wednesday",
+						"Thursday",
+						"Friday"
+					],
+					"opens": "08:00",
+					"closes": "18:00"
+				},
+				{
+					"@type": "OpeningHoursSpecification",
+					"dayOfWeek": "Saturday",
+					"opens": "09:00",
+					"closes": "13:00"
+				}
+			],
+			"sameAs": [
+				"https://www.facebook.com/TeamServiceCosta",
+				"https://www.instagram.com/teamservicecosta",
+				"https://www.youtube.com/@TeamServiceCosta"
+			]
+		}
+		</script>
+
+		<!-- Preconnect to improve performance -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link rel="dns-prefetch" href="//fonts.googleapis.com" />
+
+		<!-- Favicon and app icons -->
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+		<link rel="manifest" href="/site.webmanifest" />
+		<meta name="theme-color" content="#FFD700" />
 	</head>
 	<body>
 		<slot />
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>

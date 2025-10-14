@@ -1,0 +1,43 @@
+User-agent: *
+Allow: /
+
+# Prioritize important pages
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://teamservicecosta.com/sitemap.xml
+
+# Block unnecessary paths
+Disallow: /api/
+Disallow: /admin/
+Disallow: /.well-known/
+Disallow: /temp/
+Disallow: /*.json$
+Disallow: /*?*utm_source=
+
+# Allow specific bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Social media crawlers
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+# Image search crawlers
+User-agent: Googlebot-Image
+Allow: /images/
+
+User-agent: Bingbot-Image
+Allow: /images/

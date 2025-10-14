@@ -1,0 +1,42 @@
+{
+  "name": "Team Service Costa S.A.S. - Centro Autorizado KÄRCHER",
+  "short_name": "Team Service Costa",
+  "description": "Centro de Servicio Técnico Autorizado KÄRCHER en la región Caribe. Venta de equipos, reparación especializada y repuestos originales.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFD700",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "es",
+  "dir": "ltr",
+  "categories": ["business", "shopping", "utilities"],
+  "icons": [
+    {
+      "src": "/images/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Ver productos",
+      "short_name": "Productos",
+      "description": "Explora nuestro catálogo de productos KÄRCHER",
+      "url": "/tienda"
+    },
+    {
+      "name": "Contacto",
+      "short_name": "Contacto",
+      "description": "Contáctanos para obtener asesoría personalizada",
+      "url": "/#contacto"
+    }
+  ]
+}
