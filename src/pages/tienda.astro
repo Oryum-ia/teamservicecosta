@@ -5,6 +5,7 @@ import ProductCardMiro from '../components/ProductCardMiro.astro';
 import FooterMiro from '../components/FooterMiro.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import ProductDetailModal from '../components/ProductDetailModal.astro';
+import CartModal from '../components/CartModal.astro';
 import { products } from '../data/products.ts';
 ---
 
@@ -71,8 +72,11 @@ import { products } from '../data/products.ts';
               <select id="category-filter" class="filter-select">
                 <option value="all">Todos</option>
                 <option value="hidrolavadoras">Hidrolavadoras</option>
+                <option value="hogar">Hogar</option>
+                <option value="semi-profesional">Semi-profesional</option>
+                <option value="profesional">Profesional</option>
                 <option value="aspiradoras">Aspiradoras</option>
-                <option value="accesorios">Accesorios</option>
+                <option value="limpieza">Limpieza</option>
               </select>
             </div>
 
@@ -141,6 +145,7 @@ import { products } from '../data/products.ts';
               price={product.price}
               image={product.image}
               available={product.available}
+              category={product.category}
             />
           ))}
         </div>
@@ -204,6 +209,7 @@ import { products } from '../data/products.ts';
     message="Hola, quiero información sobre los productos KÄRCHER"
   />
   <ProductDetailModal />
+  <CartModal />
 </Layout>
 
 <style>
@@ -212,6 +218,7 @@ import { products } from '../data/products.ts';
     position: relative;
     background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
     padding: var(--spacing-32) 0 var(--spacing-24);
+    margin-top: 60px;
     overflow: hidden;
   }
 
@@ -247,6 +254,7 @@ import { products } from '../data/products.ts';
     font-size: var(--text-xs);
     font-weight: var(--font-semibold);
     color: var(--color-white);
+    margin-top: var(--spacing-6);
     margin-bottom: var(--spacing-6);
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -470,6 +478,58 @@ import { products } from '../data/products.ts';
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: var(--spacing-4);
+    transition: all var(--transition-base);
+  }
+
+  .products-grid.list-view {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-3);
+  }
+
+  .products-grid.list-view .product-card {
+    display: flex;
+    flex-direction: row;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .products-grid.list-view .product-image {
+    width: 120px;
+    min-width: 120px;
+    height: 120px;
+    flex-shrink: 0;
+  }
+
+  .products-grid.list-view .product-info {
+    padding: var(--spacing-4);
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--spacing-4);
+  }
+
+  .products-grid.list-view .product-header {
+    flex: 1;
+    text-align: left;
+  }
+
+  .products-grid.list-view .product-name {
+    font-size: var(--text-lg);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .products-grid.list-view .product-actions {
+    flex-direction: row;
+    gap: var(--spacing-3);
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .products-grid.list-view .btn {
+    white-space: nowrap;
+    padding: var(--spacing-2) var(--spacing-4);
   }
 
   /* Benefits Section */
@@ -676,6 +736,33 @@ import { products } from '../data/products.ts';
 </style>
 
 <script>
+  // Auto-apply filters from URL parameters
+  function applyUrlFilters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryParam = urlParams.get('category');
+    
+    if (categoryParam) {
+      const categoryFilter = document.getElementById('category-filter') as HTMLSelectElement;
+      if (categoryFilter) {
+        // Map URL categories to filter values
+        const categoryMap: { [key: string]: string } = {
+          'hidrolavadoras': 'hogar',  // Most hidrolavadoras are in hogar category
+          'hogar': 'hogar',
+          'semi-profesional': 'semi-profesional', 
+          'profesional': 'profesional',
+          'aspiradoras': 'aspiradoras',
+          'limpieza': 'limpieza',
+          'accesorios': 'limpieza'  // Map accesorios to limpieza category
+        };
+        
+        const mappedCategory = categoryMap[categoryParam.toLowerCase()] || categoryParam.toLowerCase();
+        categoryFilter.value = mappedCategory;
+        // Trigger change event to apply the filter
+        categoryFilter.dispatchEvent(new Event('change'));
+      }
+    }
+  }
+
   // View toggle functionality
   const viewButtons = document.querySelectorAll('.view-btn');
   const productsGrid = document.getElementById('products-grid');
@@ -694,15 +781,95 @@ import { products } from '../data/products.ts';
     });
   });
 
-  // Filter functionality placeholder
+  // Filter functionality
   const categoryFilter = document.getElementById('category-filter') as HTMLSelectElement;
   const sortFilter = document.getElementById('sort-filter') as HTMLSelectElement;
+  const productCards = document.querySelectorAll('[data-product-card]');
+  const productCount = document.getElementById('product-count');
 
-  categoryFilter?.addEventListener('change', () => {
-    console.log('Category:', categoryFilter.value);
-  });
+  function parsePrice(priceText: string): number {
+    return parseFloat(priceText.replace(/[^\d.]/g, '')) || 0;
+  }
 
-  sortFilter?.addEventListener('change', () => {
-    console.log('Sort:', sortFilter.value);
+  function sortProducts() {
+    const sortValue = sortFilter?.value || 'featured';
+    const grid = document.getElementById('products-grid');
+    if (!grid) return;
+
+    const cards = Array.from(grid.querySelectorAll('[data-product-card]')) as HTMLElement[];
+    const visibleCards = cards.filter(card => card.style.display !== 'none');
+
+    visibleCards.sort((a, b) => {
+      switch (sortValue) {
+        case 'price-asc': {
+          const priceA = parsePrice(a.querySelector('.price-amount')?.textContent || '0');
+          const priceB = parsePrice(b.querySelector('.price-amount')?.textContent || '0');
+          return priceA - priceB;
+        }
+        case 'price-desc': {
+          const priceA = parsePrice(a.querySelector('.price-amount')?.textContent || '0');
+          const priceB = parsePrice(b.querySelector('.price-amount')?.textContent || '0');
+          return priceB - priceA;
+        }
+        case 'name': {
+          const nameA = a.querySelector('.product-name')?.textContent?.toLowerCase() || '';
+          const nameB = b.querySelector('.product-name')?.textContent?.toLowerCase() || '';
+          return nameA.localeCompare(nameB);
+        }
+        default: // featured
+          return 0;
+      }
+    });
+
+    // Reorder DOM elements
+    visibleCards.forEach(card => {
+      grid.appendChild(card);
+    });
+  }
+
+  function filterAndSort() {
+    const selectedCategory = categoryFilter?.value || 'all';
+    let visibleCount = 0;
+
+    productCards.forEach(card => {
+      const cardCategory = card.getAttribute('data-category') || '';
+      const productName = card.querySelector('.product-name')?.textContent?.toLowerCase() || '';
+      
+      let shouldShow = false;
+      
+      if (selectedCategory === 'all') {
+        shouldShow = true;
+      } else if (selectedCategory === 'hidrolavadoras') {
+        // Show products that contain "hidrolavadora" in the name
+        shouldShow = productName.includes('hidrolavadora');
+      } else {
+        // Regular category matching
+        shouldShow = cardCategory.toLowerCase() === selectedCategory;
+      }
+      
+      if (shouldShow) {
+        (card as HTMLElement).style.display = 'block';
+        visibleCount++;
+      } else {
+        (card as HTMLElement).style.display = 'none';
+      }
+    });
+
+    if (productCount) {
+      productCount.textContent = visibleCount.toString();
+    }
+
+    // Apply sorting after filtering
+    sortProducts();
+  }
+
+  categoryFilter?.addEventListener('change', filterAndSort);
+  sortFilter?.addEventListener('change', sortProducts);
+
+  // Apply URL filters on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    applyUrlFilters();
+    // Initial filter and sort
+    filterAndSort();
   });
 </script>

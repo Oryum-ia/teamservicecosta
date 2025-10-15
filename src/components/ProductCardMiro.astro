@@ -6,16 +6,17 @@ interface Props {
   price: string;
   image?: string;
   available?: boolean;
+  category?: string;
 }
 
-const { name, model, price, image, available = true } = Astro.props;
+const { name, model, price, image, available = true, category = '' } = Astro.props;
 
 // Generate unique ID from name
 const productId = name.toLowerCase().replace(/\s+/g, '-');
 ---
 
-<div class="product-card" data-product-id={productId}>
-  <div class="product-image">
+<div class="product-card" data-product-id={productId} data-product-card data-category={category.toLowerCase()}>
+  <div class="product-image product-image-clickable" data-product-id={productId}>
     {image ? (
       <img src={image} alt={name} loading="lazy" />
     ) : (
@@ -51,13 +52,13 @@ const productId = name.toLowerCase().replace(/\s+/g, '-');
     </div>
 
     <div class="product-actions">
-      <button class="btn btn-primary btn-add-cart" data-product-id={productId} data-product-image={image}>
+      <button class="btn btn-primary btn-add-cart" data-product-id={productId} data-product-image={image || ''}>
         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="9" cy="21" r="1"></circle>
           <circle cx="20" cy="21" r="1"></circle>
           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
         </svg>
-        Agregar al carrito
+        <span class="btn-text">Agregar al carrito</span>
       </button>
       <button class="btn btn-secondary view-details-btn" data-id={productId}>Ver detalles</button>
     </div>
@@ -93,6 +94,15 @@ const productId = name.toLowerCase().replace(/\s+/g, '-');
     width: 100%;
     height: 160px;
     overflow: hidden;
+  }
+
+  .product-image-clickable {
+    cursor: pointer;
+    transition: all var(--transition-base);
+  }
+
+  .product-image-clickable:hover {
+    background: linear-gradient(135deg, #F0F0F0 0%, #E8E8E8 100%);
   }
 
   .product-image::before {
@@ -371,8 +381,35 @@ const productId = name.toLowerCase().replace(/\s+/g, '-');
 </style>
 
 <script>
-  // Handle view details buttons
   document.addEventListener('DOMContentLoaded', () => {
+    // Handle clickable product images
+    const productImages = document.querySelectorAll('.product-image-clickable');
+    productImages.forEach(image => {
+      image.addEventListener('click', (e) => {
+        const imageElement = e.currentTarget as HTMLElement;
+        const productCard = imageElement.closest('.product-card');
+        
+        if (productCard) {
+          const id = imageElement.dataset.productId || '';
+          const name = productCard.querySelector('.product-name')?.textContent || '';
+          const model = productCard.querySelector('.product-model')?.textContent || '';
+          const priceElement = productCard.querySelector('.price-amount')?.textContent || '$0';
+          const price = priceElement.replace('$ ', '').trim();
+          const imgElement = productCard.querySelector('.product-image img') as HTMLImageElement;
+          const image = imgElement?.src || '';
+          const availableBadge = productCard.querySelector('.badge-available');
+          const available = !!availableBadge;
+
+          if (typeof (window as any).openProductDetailModal === 'function') {
+            (window as any).openProductDetailModal({
+              id, name, model, price, image, available
+            });
+          }
+        }
+      });
+    });
+
+    // Handle view details buttons
     const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
     viewDetailsButtons.forEach(button => {
       button.addEventListener('click', (e) => {
@@ -390,17 +427,67 @@ const productId = name.toLowerCase().replace(/\s+/g, '-');
           const availableBadge = productCard.querySelector('.badge-available');
           const available = !!availableBadge;
 
-          // Open modal with product data
           if (typeof (window as any).openProductDetailModal === 'function') {
             (window as any).openProductDetailModal({
-              id,
-              name,
-              model,
-              price,
-              image,
-              available
+              id, name, model, price, image, available
             });
           }
+        }
+      });
+    });
+
+    // Add to cart functionality
+    const addToCartButtons = document.querySelectorAll('.btn-add-cart');
+    console.log('🛒 Found', addToCartButtons.length, 'add to cart buttons');
+    addToCartButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        console.log('🛒 Add to cart button clicked');
+        e.preventDefault();
+        e.stopPropagation();
+
+        const btn = e.currentTarget as HTMLButtonElement;
+        const productCard = btn.closest('.product-card');
+
+        if (productCard) {
+          // Try to add to cart with retry logic
+          const tryAddToCart = (retryCount = 0) => {
+            if (typeof (window as any).cartManager !== 'undefined') {
+            console.log('🛒 Product card and cart manager found');
+            const name = productCard.querySelector('.product-name')?.textContent?.trim() || '';
+            const model = productCard.querySelector('.product-model')?.textContent?.trim() || '';
+            const priceText = productCard.querySelector('.price-amount')?.textContent || '0';
+            const price = (window as any).cartManager.parsePrice(priceText.replace('$ ', ''));
+            const image = btn.dataset.productImage || undefined;
+            const id = btn.dataset.productId || name.toLowerCase().replace(/\s+/g, '-');
+
+            console.log('🛒 Adding product:', { id, name, model, price, image });
+            (window as any).cartManager.addProduct({ id, name, model, price, image });
+
+            const originalText = btn.querySelector('.btn-text')?.textContent;
+            const textElement = btn.querySelector('.btn-text');
+            if (textElement) {
+              textElement.textContent = '¡Agregado!';
+              btn.disabled = true;
+              
+              setTimeout(() => {
+                if (originalText && textElement) {
+                  textElement.textContent = originalText;
+                  btn.disabled = false;
+                }
+              }, 1500);
+            }
+
+              (window as any).cartManager.openCart();
+            } else if (retryCount < 30) { // Max 3 seconds of retries
+              console.log(`🛒 ProductCard: CartManager not ready, retrying ${retryCount + 1}/30`);
+              setTimeout(() => tryAddToCart(retryCount + 1), 100);
+            } else {
+              console.error('⚠️ CartManager not available when trying to add product');
+              alert('El sistema de carrito no está disponible en este momento. Por favor, inténtalo de nuevo.');
+            }
+          };
+          
+          tryAddToCart();
         }
       });
     });

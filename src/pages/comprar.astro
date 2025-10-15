@@ -1,0 +1,790 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeaderMiro from '../components/HeaderMiro.astro';
+import FooterMiro from '../components/FooterMiro.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+---
+
+<Layout
+  title="Finalizar Compra | Team Service Costa S.A.S."
+  description="Completa tu compra de equipos KÄRCHER con envío seguro a toda Colombia. Garantía oficial y soporte técnico especializado."
+>
+  <HeaderMiro />
+  
+  <main class="checkout-main">
+    <!-- Hero Section -->
+    <section class="checkout-hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1 class="hero-title">Finalizar Compra</h1>
+          <p class="hero-subtitle">Revisa tu pedido y completa la información de envío</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Checkout Content -->
+    <section class="checkout-section">
+      <div class="container">
+        <div class="checkout-grid">
+          <!-- Order Summary -->
+          <div class="order-summary">
+            <div class="summary-header">
+              <h2 class="summary-title">Resumen del Pedido</h2>
+              <button id="edit-cart-btn" class="edit-cart-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                Editar
+              </button>
+            </div>
+            
+            <div id="order-items" class="order-items">
+              <!-- Items will be populated here -->
+            </div>
+            
+            <div id="empty-cart" class="empty-cart">
+              <div class="empty-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="9" cy="21" r="1"></circle>
+                  <circle cx="20" cy="21" r="1"></circle>
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+              </div>
+              <p class="empty-text">No tienes productos en tu carrito</p>
+              <a href="/tienda" class="btn-primary">Ver Productos</a>
+            </div>
+
+            <div class="order-totals">
+              <div class="total-row">
+                <span class="total-label">Subtotal</span>
+                <span id="checkout-subtotal" class="total-value">$0</span>
+              </div>
+              <div class="total-row">
+                <span class="total-label">Envío</span>
+                <span id="checkout-shipping" class="total-value">$0</span>
+              </div>
+              <div class="total-row total-final">
+                <span class="total-label">Total</span>
+                <span id="checkout-total" class="total-value">$0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Customer Information Form -->
+          <div class="customer-form">
+            <form id="checkout-form" class="checkout-form">
+              <div class="form-section">
+                <h3 class="form-title">Información de Contacto</h3>
+                
+                <div class="form-group">
+                  <label for="customer-name" class="form-label">Nombre Completo *</label>
+                  <input type="text" id="customer-name" name="name" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                  <label for="customer-email" class="form-label">Correo Electrónico *</label>
+                  <input type="email" id="customer-email" name="email" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                  <label for="customer-phone" class="form-label">Teléfono *</label>
+                  <input type="tel" id="customer-phone" name="phone" class="form-input" required>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h3 class="form-title">Dirección de Envío</h3>
+                
+                <div class="form-group">
+                  <label for="shipping-address" class="form-label">Dirección Completa *</label>
+                  <textarea id="shipping-address" name="address" class="form-textarea" rows="3" required placeholder="Ej: Calle 40 # 2-55, Barrio Nariño"></textarea>
+                </div>
+                
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="shipping-city" class="form-label">Ciudad *</label>
+                    <select id="shipping-city" name="city" class="form-select" required>
+                      <option value="">Seleccionar ciudad</option>
+                      <option value="monteria">Montería</option>
+                      <option value="cartagena">Cartagena</option>
+                      <option value="apartado">Apartadó</option>
+                      <option value="other">Otra ciudad</option>
+                    </select>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="shipping-department" class="form-label">Departamento *</label>
+                    <select id="shipping-department" name="department" class="form-select" required>
+                      <option value="">Seleccionar departamento</option>
+                      <option value="cordoba">Córdoba</option>
+                      <option value="bolivar">Bolívar</option>
+                      <option value="antioquia">Antioquia</option>
+                      <option value="other">Otro</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h3 class="form-title">Comentarios Adicionales</h3>
+                
+                <div class="form-group">
+                  <label for="order-notes" class="form-label">Notas del Pedido (Opcional)</label>
+                  <textarea id="order-notes" name="notes" class="form-textarea" rows="3" placeholder="Instrucciones especiales de entrega, horarios preferenciales, etc."></textarea>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" id="whatsapp-order" class="btn-whatsapp">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                  </svg>
+                  Enviar Pedido por WhatsApp
+                </button>
+                
+                <p class="payment-note">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                  </svg>
+                  Coordinaremos el método de pago y entrega mediante WhatsApp
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <FooterMiro />
+  
+  <WhatsAppButton
+    phone="+573205085531"
+    message="Hola, tengo una consulta sobre mi pedido de productos KÄRCHER"
+  />
+</Layout>
+
+<style>
+  .checkout-main {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  }
+
+  /* Hero Section */
+  .checkout-hero {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    padding: var(--spacing-32) 0 var(--spacing-20);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .checkout-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(255, 208, 47, 0.1) 0%, transparent 50%);
+  }
+
+  .hero-content {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .hero-title {
+    font-size: var(--text-4xl);
+    font-weight: var(--font-extrabold);
+    color: var(--color-white);
+    margin-bottom: var(--spacing-4);
+    letter-spacing: -0.02em;
+  }
+
+  .hero-subtitle {
+    font-size: var(--text-lg);
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* Checkout Section */
+  .checkout-section {
+    padding: var(--spacing-20) 0;
+  }
+
+  .checkout-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: var(--spacing-12);
+    align-items: start;
+  }
+
+  /* Order Summary */
+  .order-summary {
+    background: var(--color-white);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-8);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--color-gray-200);
+    position: sticky;
+    top: calc(60px + var(--spacing-6));
+  }
+
+  .summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-6);
+    padding-bottom: var(--spacing-4);
+    border-bottom: 1px solid var(--color-gray-200);
+  }
+
+  .summary-title {
+    font-size: var(--text-xl);
+    font-weight: var(--font-bold);
+    color: var(--color-black);
+    margin: 0;
+  }
+
+  .edit-cart-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-2) var(--spacing-3);
+    background: var(--color-gray-100);
+    color: var(--color-gray-700);
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .edit-cart-btn:hover {
+    background: var(--color-gray-200);
+    color: var(--color-black);
+  }
+
+  /* Order Items */
+  .order-items {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
+  }
+
+  .order-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+    padding: var(--spacing-4);
+    background: var(--color-gray-50);
+    border-radius: var(--radius-lg);
+  }
+
+  .item-image {
+    width: 60px;
+    height: 60px;
+    background: var(--color-white);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .item-image .placeholder {
+    color: var(--color-gray-400);
+    font-size: 20px;
+  }
+
+  .item-details {
+    flex: 1;
+  }
+
+  .item-name {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--color-black);
+    margin: 0 0 var(--spacing-1) 0;
+    line-height: 1.3;
+  }
+
+  .item-model {
+    font-size: var(--text-xs);
+    color: var(--color-gray-500);
+    margin: 0 0 var(--spacing-2) 0;
+  }
+
+  .item-quantity {
+    font-size: var(--text-xs);
+    color: var(--color-gray-600);
+    margin: 0;
+  }
+
+  .item-price {
+    font-size: var(--text-base);
+    font-weight: var(--font-bold);
+    color: var(--color-black);
+    text-align: right;
+  }
+
+  /* Empty Cart */
+  .empty-cart {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-12);
+    text-align: center;
+  }
+
+  .empty-cart.show {
+    display: flex;
+  }
+
+  .empty-icon {
+    color: var(--color-gray-300);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .empty-text {
+    font-size: var(--text-base);
+    color: var(--color-gray-600);
+    margin: 0 0 var(--spacing-6) 0;
+  }
+
+  /* Order Totals */
+  .order-totals {
+    border-top: 1px solid var(--color-gray-200);
+    padding-top: var(--spacing-4);
+  }
+
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-2);
+  }
+
+  .total-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .total-label {
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+    font-weight: var(--font-medium);
+  }
+
+  .total-value {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--color-black);
+  }
+
+  .total-final .total-label,
+  .total-final .total-value {
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+    color: var(--color-black);
+  }
+
+  .total-final {
+    border-top: 1px solid var(--color-gray-200);
+    padding-top: var(--spacing-3);
+    margin-top: var(--spacing-3);
+  }
+
+  /* Customer Form */
+  .customer-form {
+    background: var(--color-white);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-8);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--color-gray-200);
+  }
+
+  .form-section {
+    margin-bottom: var(--spacing-8);
+  }
+
+  .form-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .form-title {
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+    color: var(--color-black);
+    margin: 0 0 var(--spacing-6) 0;
+    padding-bottom: var(--spacing-3);
+    border-bottom: 1px solid var(--color-gray-200);
+  }
+
+  .form-group {
+    margin-bottom: var(--spacing-5);
+  }
+
+  .form-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-4);
+  }
+
+  .form-label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .form-input,
+  .form-textarea,
+  .form-select {
+    width: 100%;
+    padding: var(--spacing-3);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-family: inherit;
+    transition: all var(--transition-fast);
+    background: var(--color-white);
+  }
+
+  .form-input:focus,
+  .form-textarea:focus,
+  .form-select:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  /* Form Actions */
+  .form-actions {
+    margin-top: var(--spacing-8);
+    text-align: center;
+  }
+
+  .btn-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-3);
+    padding: var(--spacing-4) var(--spacing-8);
+    background: #25d366;
+    color: white;
+    border: none;
+    border-radius: var(--radius-xl);
+    font-size: var(--text-base);
+    font-weight: var(--font-bold);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    font-family: inherit;
+    min-width: 280px;
+  }
+
+  .btn-whatsapp:hover {
+    background: #128c7e;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(37, 211, 102, 0.3);
+  }
+
+  .btn-whatsapp:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-3) var(--spacing-6);
+    background: var(--color-accent);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-lg);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    transition: all var(--transition-base);
+  }
+
+  .btn-primary:hover {
+    background: var(--color-accent-dark);
+    transform: translateY(-1px);
+  }
+
+  .payment-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    margin-top: var(--spacing-4);
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+    text-align: center;
+  }
+
+  /* Responsive */
+  @media (max-width: 968px) {
+    .checkout-grid {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-8);
+    }
+
+    .order-summary {
+      position: relative;
+      top: auto;
+    }
+
+    .hero-title {
+      font-size: var(--text-3xl);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .checkout-hero {
+      padding: var(--spacing-20) 0 var(--spacing-16);
+    }
+
+    .hero-title {
+      font-size: var(--text-2xl);
+    }
+
+    .checkout-section {
+      padding: var(--spacing-12) 0;
+    }
+
+    .order-summary,
+    .customer-form {
+      padding: var(--spacing-6);
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .btn-whatsapp {
+      width: 100%;
+      min-width: auto;
+    }
+  }
+</style>
+
+<script>
+  import { cartManager } from '../scripts/cart.ts';
+
+  class CheckoutPage {
+    private orderItems: HTMLElement | null = null;
+    private emptyCart: HTMLElement | null = null;
+    private subtotalEl: HTMLElement | null = null;
+    private shippingEl: HTMLElement | null = null;
+    private totalEl: HTMLElement | null = null;
+    private whatsappBtn: HTMLElement | null = null;
+    private form: HTMLFormElement | null = null;
+
+    constructor() {
+      this.init();
+    }
+
+    private init(): void {
+      // Get DOM elements
+      this.orderItems = document.getElementById('order-items');
+      this.emptyCart = document.getElementById('empty-cart');
+      this.subtotalEl = document.getElementById('checkout-subtotal');
+      this.shippingEl = document.getElementById('checkout-shipping');
+      this.totalEl = document.getElementById('checkout-total');
+      this.whatsappBtn = document.getElementById('whatsapp-order');
+      this.form = document.getElementById('checkout-form') as HTMLFormElement;
+
+      // Setup event listeners
+      this.setupEventListeners();
+
+      // Subscribe to cart changes
+      cartManager.subscribe((state) => {
+        this.renderOrder(state);
+      });
+    }
+
+    private setupEventListeners(): void {
+      // Edit cart button
+      const editCartBtn = document.getElementById('edit-cart-btn');
+      editCartBtn?.addEventListener('click', () => {
+        cartManager.openCart();
+      });
+
+      // WhatsApp order button
+      this.whatsappBtn?.addEventListener('click', () => {
+        this.sendWhatsAppOrder();
+      });
+
+      // Form validation
+      this.form?.addEventListener('input', () => {
+        this.validateForm();
+      });
+    }
+
+    private renderOrder(state: any): void {
+      if (!this.orderItems || !this.emptyCart) return;
+
+      if (state.items.length === 0) {
+        this.orderItems.style.display = 'none';
+        this.emptyCart?.classList.add('show');
+        if (this.whatsappBtn) (this.whatsappBtn as HTMLButtonElement).disabled = true;
+      } else {
+        this.orderItems.style.display = 'flex';
+        this.emptyCart?.classList.remove('show');
+        if (this.whatsappBtn) (this.whatsappBtn as HTMLButtonElement).disabled = false;
+
+        // Render items
+        this.orderItems.innerHTML = state.items.map((item: any) => `
+          <div class="order-item">
+            <div class="item-image">
+              ${item.image 
+                ? `<img src="${item.image}" alt="${item.name}" />`
+                : '<div class="placeholder">📦</div>'
+              }
+            </div>
+            <div class="item-details">
+              <div class="item-name">${item.name}</div>
+              <div class="item-model">${item.model}</div>
+              <div class="item-quantity">Cantidad: ${item.quantity}</div>
+            </div>
+            <div class="item-price">${cartManager.formatPrice(item.price * item.quantity)}</div>
+          </div>
+        `).join('');
+      }
+
+      // Update totals
+      const subtotal = state.total;
+      const shipping = subtotal >= 500000 ? 0 : 25000; // Free shipping over $500k COP
+      const total = subtotal + shipping;
+
+      if (this.subtotalEl) this.subtotalEl.textContent = cartManager.formatPrice(subtotal);
+      if (this.shippingEl) this.shippingEl.textContent = shipping === 0 ? 'Gratis' : cartManager.formatPrice(shipping);
+      if (this.totalEl) this.totalEl.textContent = cartManager.formatPrice(total);
+    }
+
+    private validateForm(): boolean {
+      if (!this.form) return false;
+
+      const formData = new FormData(this.form);
+      const required = ['name', 'email', 'phone', 'address', 'city', 'department'];
+      
+      for (const field of required) {
+        const value = formData.get(field) as string;
+        if (!value || !value.trim()) {
+          return false;
+        }
+      }
+      
+      return true;
+    }
+
+    private sendWhatsAppOrder(): void {
+      if (!this.validateForm()) {
+        alert('Por favor completa todos los campos requeridos.');
+        return;
+      }
+
+      const state = cartManager.getState();
+      if (state.items.length === 0) {
+        alert('Tu carrito está vacío.');
+        return;
+      }
+
+      // Get form data
+      const formData = new FormData(this.form!);
+      const customerData = {
+        name: formData.get('name') as string,
+        email: formData.get('email') as string,
+        phone: formData.get('phone') as string,
+        address: formData.get('address') as string,
+        city: formData.get('city') as string,
+        department: formData.get('department') as string,
+        notes: formData.get('notes') as string || ''
+      };
+
+      // Build WhatsApp message
+      let message = `🛒 *NUEVO PEDIDO - TEAM SERVICE COSTA*\n\n`;
+      message += `👤 *CLIENTE:*\n`;
+      message += `• Nombre: ${customerData.name}\n`;
+      message += `• Email: ${customerData.email}\n`;
+      message += `• Teléfono: ${customerData.phone}\n\n`;
+      
+      message += `📦 *PRODUCTOS:*\n`;
+      state.items.forEach((item: any) => {
+        message += `• ${item.name} (${item.model})\n`;
+        message += `  Cantidad: ${item.quantity} | Precio: ${cartManager.formatPrice(item.price * item.quantity)}\n\n`;
+      });
+
+      message += `📍 *DIRECCIÓN DE ENVÍO:*\n`;
+      message += `${customerData.address}\n`;
+      message += `${customerData.city}, ${customerData.department}\n\n`;
+
+      if (customerData.notes) {
+        message += `📝 *NOTAS ESPECIALES:*\n${customerData.notes}\n\n`;
+      }
+
+      const subtotal = state.total;
+      const shipping = subtotal >= 500000 ? 0 : 25000;
+      const total = subtotal + shipping;
+
+      message += `💰 *RESUMEN:*\n`;
+      message += `• Subtotal: ${cartManager.formatPrice(subtotal)}\n`;
+      message += `• Envío: ${shipping === 0 ? 'GRATIS' : cartManager.formatPrice(shipping)}\n`;
+      message += `• *TOTAL: ${cartManager.formatPrice(total)}*\n\n`;
+      message += `¡Gracias por confiar en Team Service Costa! 🙌`;
+
+      // Send to WhatsApp
+      const phone = '+573205085531';
+      const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+      
+      window.open(whatsappUrl, '_blank');
+      
+      // Clear cart after sending order
+      setTimeout(() => {
+        cartManager.clearCart();
+      }, 1000);
+    }
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      // Make cart manager available
+      (window as any).cartManager = cartManager;
+      new CheckoutPage();
+    });
+  } else {
+    (window as any).cartManager = cartManager;
+    new CheckoutPage();
+  }
+</script>
