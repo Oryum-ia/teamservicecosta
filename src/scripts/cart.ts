@@ -65,21 +65,25 @@ class CartManager {
   // Cart operations
   addProduct(product: Omit<CartProduct, 'quantity'>): void {
     console.log('🛒 Adding product to cart:', product);
+    console.log('🛒 Product price type:', typeof product.price, 'value:', product.price);
     const existingItem = this.state.items.find(item => item.id === product.id);
-    
+
     if (existingItem) {
       existingItem.quantity += 1;
       console.log('🛒 Updated existing item quantity:', existingItem.quantity);
+      console.log('🛒 Item price after update:', existingItem.price);
     } else {
       this.state.items.push({ ...product, quantity: 1 });
-      console.log('🛒 Added new item to cart');
+      console.log('🛒 Added new item to cart, price:', product.price);
     }
-    
+
     this.notify();
   }
 
   updateQuantity(productId: string, quantity: number): void {
     if (quantity <= 0) {
+      // Si la cantidad llega a 0 o menos, eliminar el producto completamente
+      console.log('🛒 Quantity is 0 or less, removing product:', productId);
       this.removeProduct(productId);
       return;
     }
@@ -87,12 +91,44 @@ class CartManager {
     const item = this.state.items.find(item => item.id === productId);
     if (item) {
       item.quantity = quantity;
+      console.log('🛒 Updated quantity for product:', productId, 'new quantity:', quantity);
       this.notify();
     }
   }
 
   removeProduct(productId: string): void {
-    this.state.items = this.state.items.filter(item => item.id !== productId);
+    console.log('🛒 Removing product completely with ID:', productId);
+    console.log('🛒 Type of productId:', typeof productId);
+    console.log('🛒 Items before removal:', this.state.items.length);
+    console.log('🛒 Items in cart:', this.state.items.map(item => ({ id: item.id, type: typeof item.id, name: item.name })));
+
+    // Normalize the productId - trim whitespace and convert to string
+    const normalizedProductId = String(productId).trim();
+    console.log('🛒 Normalized productId:', normalizedProductId);
+
+    // Find the item index first to debug potential issues
+    const itemIndex = this.state.items.findIndex(item => {
+      const normalizedItemId = String(item.id).trim();
+      const matches = normalizedItemId === normalizedProductId;
+      console.log(`🛒 Comparing normalized item.id="${normalizedItemId}" === productId="${normalizedProductId}" = ${matches}`);
+      return matches;
+    });
+
+    console.log('🛒 Found item at index:', itemIndex);
+
+    if (itemIndex === -1) {
+      console.warn('⚠️ WARNING: No matching item found! Check if productId matches any item.id');
+      console.warn('⚠️ ProductId to remove:', normalizedProductId);
+      console.warn('⚠️ Available IDs:', this.state.items.map(item => String(item.id).trim()));
+      return;
+    }
+
+    // Remove the item at the found index
+    const removedItem = this.state.items.splice(itemIndex, 1)[0];
+    console.log('🛒 Removed item:', removedItem);
+    console.log('🛒 Items after removal:', this.state.items.length);
+
+    console.log('🛒 Product removal completed');
     this.notify();
   }
 
@@ -169,17 +205,23 @@ class CartManager {
 
   // Utility methods
   formatPrice(price: number): string {
-    return new Intl.NumberFormat('es-CO', {
+    const formatted = new Intl.NumberFormat('es-CO', {
       style: 'currency',
       currency: 'COP',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(price);
+    console.log(`🛒 formatPrice: ${price} -> "${formatted}"`);
+    return formatted;
   }
 
   parsePrice(priceString: string): number {
-    // Convert price string like "549.900" to number 549900
-    return parseFloat(priceString.replace(/[^\d.-]/g, ''));
+    // Convert price string like "549.900" or "$ 549.900" to number 549900
+    // Remove all non-numeric characters except dots, then remove dots (Colombian format uses dots as thousands separator)
+    const cleanedPrice = priceString.replace(/[^\d.]/g, '').replace(/\./g, '');
+    const numericPrice = parseInt(cleanedPrice, 10) || 0;
+    console.log(`🛒 parsePrice: "${priceString}" -> cleaned: "${cleanedPrice}" -> number: ${numericPrice}`);
+    return numericPrice;
   }
 }
 

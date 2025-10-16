@@ -15,8 +15,8 @@ const { name, model, price, image, available = true, category = '' } = Astro.pro
 const productId = name.toLowerCase().replace(/\s+/g, '-');
 ---
 
-<div class="product-card" data-product-id={productId} data-product-card data-category={category.toLowerCase()}>
-  <div class="product-image product-image-clickable" data-product-id={productId}>
+<div class="product-card product-card-clickable" data-product-id={productId} data-product-card data-category={category.toLowerCase()}>
+  <div class="product-image" data-product-id={productId}>
     {image ? (
       <img src={image} alt={name} loading="lazy" />
     ) : (
@@ -96,12 +96,15 @@ const productId = name.toLowerCase().replace(/\s+/g, '-');
     overflow: hidden;
   }
 
-  .product-image-clickable {
+  .product-card-clickable {
     cursor: pointer;
+  }
+
+  .product-card-clickable .product-image {
     transition: all var(--transition-base);
   }
 
-  .product-image-clickable:hover {
+  .product-card-clickable:hover .product-image {
     background: linear-gradient(135deg, #F0F0F0 0%, #E8E8E8 100%);
   }
 
@@ -382,37 +385,42 @@ const productId = name.toLowerCase().replace(/\s+/g, '-');
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Handle clickable product images
-    const productImages = document.querySelectorAll('.product-image-clickable');
-    productImages.forEach(image => {
-      image.addEventListener('click', (e) => {
-        const imageElement = e.currentTarget as HTMLElement;
-        const productCard = imageElement.closest('.product-card');
-        
-        if (productCard) {
-          const id = imageElement.dataset.productId || '';
-          const name = productCard.querySelector('.product-name')?.textContent || '';
-          const model = productCard.querySelector('.product-model')?.textContent || '';
-          const priceElement = productCard.querySelector('.price-amount')?.textContent || '$0';
-          const price = priceElement.replace('$ ', '').trim();
-          const imgElement = productCard.querySelector('.product-image img') as HTMLImageElement;
-          const image = imgElement?.src || '';
-          const availableBadge = productCard.querySelector('.badge-available');
-          const available = !!availableBadge;
+    // Handle clickable product cards (entire card is clickable)
+    const productCards = document.querySelectorAll('.product-card-clickable');
+    productCards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        // Prevent opening modal if clicking on a button
+        const target = e.target as HTMLElement;
+        if (target.closest('.btn-add-cart') || target.closest('.view-details-btn')) {
+          return;
+        }
 
-          if (typeof (window as any).openProductDetailModal === 'function') {
-            (window as any).openProductDetailModal({
-              id, name, model, price, image, available
-            });
-          }
+        const productCard = e.currentTarget as HTMLElement;
+        const id = productCard.dataset.productId || '';
+        const name = productCard.querySelector('.product-name')?.textContent || '';
+        const model = productCard.querySelector('.product-model')?.textContent || '';
+        const priceElement = productCard.querySelector('.price-amount')?.textContent || '$0';
+        const price = priceElement.replace('$ ', '').trim();
+        const imgElement = productCard.querySelector('.product-image img') as HTMLImageElement;
+        const image = imgElement?.src || '';
+        const availableBadge = productCard.querySelector('.badge-available');
+        const available = !!availableBadge;
+
+        if (typeof (window as any).openProductDetailModal === 'function') {
+          (window as any).openProductDetailModal({
+            id, name, model, price, image, available
+          });
         }
       });
     });
 
-    // Handle view details buttons
+    // Handle view details buttons (explicitly)
     const viewDetailsButtons = document.querySelectorAll('.view-details-btn');
     viewDetailsButtons.forEach(button => {
       button.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
         const btn = e.currentTarget as HTMLButtonElement;
         const productCard = btn.closest('.product-card');
 
@@ -458,7 +466,12 @@ const productId = name.toLowerCase().replace(/\s+/g, '-');
             const priceText = productCard.querySelector('.price-amount')?.textContent || '0';
             const price = (window as any).cartManager.parsePrice(priceText.replace('$ ', ''));
             const image = btn.dataset.productImage || undefined;
+            // Always use the dataset productId to ensure consistency
             const id = btn.dataset.productId || name.toLowerCase().replace(/\s+/g, '-');
+            
+            console.log('🛒 Button dataset.productId:', btn.dataset.productId);
+            console.log('🛒 Generated fallback ID:', name.toLowerCase().replace(/\s+/g, '-'));
+            console.log('🛒 Final ID being used:', id);
 
             console.log('🛒 Adding product:', { id, name, model, price, image });
             (window as any).cartManager.addProduct({ id, name, model, price, image });
@@ -468,7 +481,7 @@ const productId = name.toLowerCase().replace(/\s+/g, '-');
             if (textElement) {
               textElement.textContent = '¡Agregado!';
               btn.disabled = true;
-              
+
               setTimeout(() => {
                 if (originalText && textElement) {
                   textElement.textContent = originalText;
@@ -477,7 +490,7 @@ const productId = name.toLowerCase().replace(/\s+/g, '-');
               }, 1500);
             }
 
-              (window as any).cartManager.openCart();
+            // No abrir el carrito automáticamente - solo actualizar el badge
             } else if (retryCount < 30) { // Max 3 seconds of retries
               console.log(`🛒 ProductCard: CartManager not ready, retrying ${retryCount + 1}/30`);
               setTimeout(() => tryAddToCart(retryCount + 1), 100);

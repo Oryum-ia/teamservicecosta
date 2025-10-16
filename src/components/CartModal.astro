@@ -480,14 +480,6 @@ Finalizar Compra
     }
   }
   
-  interface CartProduct {
-    id: string;
-    name: string;
-    model: string;
-    price: number;
-    image?: string;
-    quantity: number;
-  }
 
   class CartModalUI {
     private modal: HTMLElement | null = null;
@@ -513,7 +505,7 @@ Finalizar Compra
       this.emptyState = document.getElementById('cart-empty');
       this.totalElement = document.getElementById('cart-total');
       this.checkoutButton = document.getElementById('cart-checkout');
-      
+
       console.log('🛒 CartModal DOM elements:', {
         modal: !!this.modal,
         overlay: !!this.overlay,
@@ -526,9 +518,12 @@ Finalizar Compra
       // Set up event listeners
       this.setupEventListeners();
 
+      // Set up event delegation for cart item buttons (this works for all items, present and future)
+      this.setupCartItemListeners();
+
       // Subscribe to cart changes
       console.log('🛒 CartModal subscribing to cart changes');
-      this.unsubscribe = window.cartManager.subscribe((state) => {
+      this.unsubscribe = window.cartManager.subscribe((state: any) => {
         console.log('🛒 CartModal received state update:', state);
         this.render(state);
       });
@@ -553,8 +548,79 @@ Finalizar Compra
       });
     }
 
+    private setupCartItemListeners(): void {
+      // Use event delegation - attach ONE listener to the container
+      // This listener will work for ALL buttons, even ones added later
+      if (!this.itemsContainer) return;
+
+      console.log('🛒 Setting up event delegation for cart item buttons');
+
+      this.itemsContainer.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+
+        // Check if clicked element or its parent is a button we care about
+        const button = target.closest('button');
+        if (!button) return;
+
+        const productId = button.dataset.id;
+        if (!productId) {
+          console.warn('⚠️ Button clicked but no productId found!', button);
+          return;
+        }
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        console.log('🛒 Button clicked with productId:', productId, 'type:', typeof productId);
+        console.log('🛒 Button dataset:', button.dataset);
+        console.log('🛒 Button element:', button);
+
+        // Handle different button types
+        if (button.classList.contains('remove-btn')) {
+          console.log('🛒 Remove button clicked for product:', productId);
+          const currentItems = window.cartManager.getItems();
+          console.log('🛒 Current cart items before removal:', currentItems);
+          console.log('🛒 Number of items:', currentItems.length);
+          console.log('🛒 Item IDs:', currentItems.map((item: any) => item.id));
+
+          if (currentItems.length === 0) {
+            console.error('❌ ERROR: Cart is already empty before calling removeProduct!');
+            return;
+          }
+
+          // Remove the product immediately without visual feedback
+          window.cartManager.removeProduct(productId);
+        } else if (button.classList.contains('quantity-btn')) {
+          if (button.classList.contains('plus')) {
+            console.log('🛒 Plus button clicked for product:', productId);
+            const currentItem = window.cartManager.getItems().find((item: any) => item.id === productId);
+            if (currentItem) {
+              window.cartManager.updateQuantity(productId, currentItem.quantity + 1);
+            }
+          } else if (button.classList.contains('minus')) {
+            console.log('🛒 Minus button clicked for product:', productId);
+            const currentItem = window.cartManager.getItems().find((item: any) => item.id === productId);
+            if (currentItem) {
+              if (currentItem.quantity <= 1) {
+                console.log('🛒 Removing product (quantity was 1):', productId);
+                window.cartManager.removeProduct(productId);
+              } else {
+                window.cartManager.updateQuantity(productId, currentItem.quantity - 1);
+              }
+            }
+          }
+        }
+      });
+
+      console.log('🛒 Event delegation setup complete');
+    }
+
     private render(state: any): void {
       if (!this.itemsContainer || !this.emptyState || !this.totalElement) return;
+
+      console.log('🛒 CartModal render called with state:', state);
+      console.log('🛒 CartModal items length:', state.items.length);
+      console.log('🛒 CartModal lastItemCount:', this.lastItemCount);
 
       // Update modal visibility
       if (state.isOpen) {
@@ -565,29 +631,38 @@ Finalizar Compra
         document.body.style.overflow = '';
       }
 
-      // Render items or empty state
-      if (state.items.length === 0) {
-        this.itemsContainer.style.display = 'none';
-        this.emptyState.style.display = 'flex';
-        if (this.checkoutButton) this.checkoutButton.disabled = true;
+      // Use the state directly instead of calling getItems again
+      // This ensures we're working with the most recent state
+      const items = state.items;
+      console.log('🛒 CartModal using state items:', items);
+      console.log('🛒 CartModal items length from state:', items.length);
+
+      if (items.length === 0) {
+        console.log('🛒 CartModal: Showing empty state');
+        this.itemsContainer!.style.display = 'none';
+        this.emptyState!.style.display = 'flex';
+        if (this.checkoutButton) (this.checkoutButton as HTMLButtonElement).disabled = true;
         this.renderedItems.clear();
+        this.lastItemCount = 0;
       } else {
-        this.itemsContainer.style.display = 'block';
-        this.emptyState.style.display = 'none';
-        if (this.checkoutButton) this.checkoutButton.disabled = false;
+        console.log('🛒 CartModal: Showing items');
+        this.itemsContainer!.style.display = 'block';
+        this.emptyState!.style.display = 'none';
+        if (this.checkoutButton) (this.checkoutButton as HTMLButtonElement).disabled = false;
 
         // Check if we need to re-render (smart rendering to avoid flickering)
-        const needsFullRender = this.shouldFullRender(state.items);
+        const needsFullRender = this.shouldFullRender(items);
+        console.log('🛒 CartModal needsFullRender:', needsFullRender);
         
         if (needsFullRender) {
-          this.fullRender(state.items);
+          this.fullRender(items);
         } else {
-          this.updateExistingItems(state.items);
+          this.updateExistingItems(items);
         }
       }
 
       // Update total
-      this.totalElement.textContent = window.cartManager.formatPrice(state.total);
+      this.totalElement!.textContent = window.cartManager.formatPrice(state.total);
     }
 
     private shouldFullRender(items: any[]): boolean {
@@ -635,9 +710,8 @@ Finalizar Compra
       // Update rendered items cache
       this.renderedItems.clear();
       items.forEach(item => this.renderedItems.set(item.id, item));
-      
-      // Attach event listeners
-      this.attachQuantityListeners();
+
+      // No need to attach event listeners - we're using event delegation
     }
 
     private updateExistingItems(items: any[]): void {
@@ -669,40 +743,6 @@ Finalizar Compra
         }
         
         this.renderedItems.set(item.id, item);
-      });
-    }
-
-    private attachQuantityListeners(): void {
-      // Plus buttons
-      this.itemsContainer?.querySelectorAll('.quantity-btn.plus').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const productId = (e.target as HTMLElement).dataset.id!;
-          const currentItem = window.cartManager.getItems().find(item => item.id === productId);
-          if (currentItem) {
-            window.cartManager.updateQuantity(productId, currentItem.quantity + 1);
-          }
-        });
-      });
-
-      // Minus buttons
-      this.itemsContainer?.querySelectorAll('.quantity-btn.minus').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const productId = (e.target as HTMLElement).dataset.id!;
-          const currentItem = window.cartManager.getItems().find(item => item.id === productId);
-          if (currentItem) {
-            window.cartManager.updateQuantity(productId, currentItem.quantity - 1);
-          }
-        });
-      });
-
-      // Remove buttons
-      this.itemsContainer?.querySelectorAll('.remove-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const productId = (e.target as HTMLElement).dataset.id!;
-          if (productId) {
-            window.cartManager.removeProduct(productId);
-          }
-        });
       });
     }
 
@@ -746,7 +786,9 @@ Finalizar Compra
   
   // Initialize when DOM is ready
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCartModal);
+    document.addEventListener('DOMContentLoaded', () => {
+      initCartModal();
+    });
   } else {
     initCartModal();
   }

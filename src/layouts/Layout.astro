@@ -137,6 +137,9 @@ const {
 
 		<!-- Initialize cart manager early -->
 		<script src="/cart.js" is:inline></script>
+		
+		<!-- Load test script in development -->
+		{import.meta.env.DEV && <script src="/test-cart.js" is:inline></script>}
 	</head>
 	<body>
 		<slot />
