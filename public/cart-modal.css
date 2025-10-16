@@ -164,14 +164,33 @@
   line-height: 1.2 !important;
 }
 
-/* Controls - CRITICAL STYLES */
+/* Actions Container - NEW STRUCTURE */
+.cart-item-actions {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-end !important;
+  gap: 4px !important;
+  flex-shrink: 0 !important;
+  min-width: 80px !important;
+}
+
+/* Header for Remove Button */
+.cart-item-header {
+  display: flex !important;
+  justify-content: flex-end !important;
+  width: 100% !important;
+  height: 20px !important;
+  padding-right: 0px !important;
+  padding-top: 3px !important;
+}
+
+/* Controls - UPDATED */
 .cart-item-controls {
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-end !important;
   gap: 6px !important;
-  flex-shrink: 0 !important;
-  position: relative !important;
+  width: 100% !important;
 }
 
 .cart-item-price {
@@ -228,11 +247,8 @@
   padding: 0 4px !important;
 }
 
-/* Remove Button */
-.remove-btn {
-  position: absolute !important;
-  top: -6px !important;
-  right: -6px !important;
+/* Remove Button - UPDATED FOR NEW STRUCTURE */
+.cart-item-header .remove-btn {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -241,16 +257,21 @@
   background: #ef4444 !important;
   color: white !important;
   border: none !important;
-  border-radius: 50% !important;
+  border-radius: 4px !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
-  font-size: 10px !important;
-  z-index: 10 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
 }
 
-.remove-btn:hover {
+.cart-item-header .remove-btn:hover {
   background: #dc2626 !important;
-  transform: scale(1.1) !important;
+  transform: scale(1.05) !important;
+}
+
+.cart-item-header .remove-btn:active {
+  transform: scale(0.95) !important;
 }
 
 /* Empty State */
@@ -383,11 +404,16 @@
     min-width: 20px !important;
   }
   
-  .remove-btn {
+  .cart-item-header .remove-btn {
     width: 18px !important;
     height: 18px !important;
-    top: -5px !important;
-    right: -5px !important;
+    font-size: 11px !important;
+  }
+  
+  .cart-item-header {
+    height: 18px !important;
+    padding-right: 0px !important;
+    padding-top: 2px !important;
   }
 }
 
