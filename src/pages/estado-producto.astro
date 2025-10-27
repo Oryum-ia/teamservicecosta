@@ -1335,32 +1335,7 @@ const supabaseKey = import.meta.env.SUPABASE_KEY;
   });
   
   function initializeApp() {
-
-  // Las credenciales vienen del servidor via define:vars
-  const supabaseClient = createClient(supabaseUrl, supabaseKey);
-  const STORAGE_BUCKET = 'imagenes';
-
-  // Función para obtener URL pública de Storage
-  function getPublicUrl(path) {
-    if (!path) return '';
-    if (path.startsWith('http://') || path.startsWith('https://')) {
-      return path;
-    }
-    const { data } = supabaseClient.storage.from(STORAGE_BUCKET).getPublicUrl(path);
-    return data.publicUrl;
-  }
-
-  // Exponer al objeto window para uso global
-  window.supabase = supabaseClient;
-  window.getPublicUrl = getPublicUrl;
-
-  console.log('✅ Supabase cliente inicializado en estado-producto');
-
-  // Type definitions
-
-
-
-
+    console.log('🔍 DEBUG: Initializing app after Supabase loaded');
 
   // Simulación de base de datos de órdenes
   const ordersDatabase = {
@@ -1490,16 +1465,18 @@ const supabaseKey = import.meta.env.SUPABASE_KEY;
   searchForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const orderIdInput = document.getElementById('order-id');
-    const orderId = orderIdInput.value.trim().toUpperCase();
+    const orderIdInput = document.getElementById('order-id') as HTMLInputElement;
+    const orderId = orderIdInput?.value.trim().toUpperCase() || '';
 
     console.log(`🔍 Buscando orden: ${orderId}`);
 
     // Mostrar indicador de carga
-    const submitBtn = searchForm.querySelector('button[type="submit"]');
-    const originalBtnText = submitBtn.innerHTML;
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<svg class="spinner" width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle class="spinner-circle" cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="4"></circle></svg> Buscando...';
+    const submitBtn = searchForm?.querySelector('button[type="submit"]') as HTMLButtonElement;
+    const originalBtnText = submitBtn?.innerHTML || '';
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<svg class="spinner" width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle class="spinner-circle" cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="4"></circle></svg> Buscando...';
+    }
 
     try {
       // Buscar orden en Supabase
@@ -1509,13 +1486,15 @@ const supabaseKey = import.meta.env.SUPABASE_KEY;
         .eq('codigo', orderId)
         .single();
 
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = originalBtnText;
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }
 
       if (error || !ordenData) {
         console.error('❌ Error al buscar orden:', error);
         // Intentar buscar en base de datos local de respaldo
-        const orderData = ordersDatabase[orderId];
+        const orderData = ordersDatabase[orderId as keyof typeof ordersDatabase];
         if (orderData) {
           showResult(orderId, orderData);
         } else {
@@ -1540,7 +1519,7 @@ const supabaseKey = import.meta.env.SUPABASE_KEY;
         status: ordenData.estado_actual || 'Pendiente',
         type: ordenData.tipo_orden === 'reparacion' ? 'reparacion' : 'compra',
         currentStage: calculateStage(ordenData),
-        images: ordenData.fotos_diagnostico ? ordenData.fotos_diagnostico.map((foto, index) => ({
+        images: ordenData.fotos_diagnostico ? ordenData.fotos_diagnostico.map((foto: any, index: number) => ({
           url: window.getPublicUrl(foto),
           label: `Imagen ${index + 1}`
         })) : undefined,
@@ -1551,10 +1530,12 @@ const supabaseKey = import.meta.env.SUPABASE_KEY;
       showResult(orderId, mappedData);
     } catch (err) {
       console.error('❌ Error inesperado:', err);
-      submitBtn.disabled = false;
-      submitBtn.innerHTML = originalBtnText;
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }
       // Fallback a base de datos local
-      const orderData = ordersDatabase[orderId];
+      const orderData = ordersDatabase[orderId as keyof typeof ordersDatabase];
       if (orderData) {
         showResult(orderId, orderData);
       } else {
@@ -1564,7 +1545,7 @@ const supabaseKey = import.meta.env.SUPABASE_KEY;
   });
 
   // Calcular etapa según el estado
-  function calculateStage(orden) {
+  function calculateStage(orden: any) {
     const estado = orden.estado_actual?.toLowerCase();
     if (estado?.includes('recibid') || estado?.includes('recepción')) return 1;
     if (estado?.includes('diagnóstico')) return 2;
@@ -1575,24 +1556,32 @@ const supabaseKey = import.meta.env.SUPABASE_KEY;
   }
 
   // Show result
-  function showResult(orderId, data) {
+  function showResult(orderId: string, data: any) {
     // Hide search and error sections
-    const searchSection = document.querySelector('.search-section');
+    const searchSection = document.querySelector('.search-section') as HTMLElement;
     if (searchSection) searchSection.style.display = 'none';
-    if (errorSection) errorSection.style.display = 'none';
+    if (errorSection) (errorSection as HTMLElement).style.display = 'none';
 
     // Update result data
-    document.getElementById('result-order-id').textContent = orderId;
-    document.getElementById('result-product').textContent = data.product;
-    document.getElementById('result-model').textContent = data.model;
-    document.getElementById('result-date').textContent = data.date;
-    document.getElementById('result-location').textContent = data.location;
-    document.getElementById('result-serial').textContent = data.serial;
-    document.getElementById('status-badge').textContent = data.status;
+    const resultOrderId = document.getElementById('result-order-id');
+    const resultProduct = document.getElementById('result-product');
+    const resultModel = document.getElementById('result-model');
+    const resultDate = document.getElementById('result-date');
+    const resultLocation = document.getElementById('result-location');
+    const resultSerial = document.getElementById('result-serial');
+    const statusBadge = document.getElementById('status-badge');
+    
+    if (resultOrderId) resultOrderId.textContent = orderId;
+    if (resultProduct) resultProduct.textContent = data.product;
+    if (resultModel) resultModel.textContent = data.model;
+    if (resultDate) resultDate.textContent = data.date;
+    if (resultLocation) resultLocation.textContent = data.location;
+    if (resultSerial) resultSerial.textContent = data.serial;
+    if (statusBadge) statusBadge.textContent = data.status;
 
     // Update progress bar
     const progressPercentage = (data.currentStage / 5) * 100;
-    const progressBar = document.getElementById('progress-bar');
+    const progressBar = document.getElementById('progress-bar') as HTMLElement;
     const progressText = document.getElementById('progress-percentage');
     if (progressBar && progressText) {
       progressBar.style.width = `${progressPercentage}%`;
@@ -1603,10 +1592,10 @@ const supabaseKey = import.meta.env.SUPABASE_KEY;
     updateTimeline(data);
 
     // Show images if available
-    const repairGallery = document.getElementById('repair-gallery');
+    const repairGallery = document.getElementById('repair-gallery') as HTMLElement;
     const imagesGrid = document.getElementById('images-grid');
     if (data.images && data.images.length > 0 && repairGallery && imagesGrid) {
-      imagesGrid.innerHTML = data.images.map(img => `
+      imagesGrid.innerHTML = data.images.map((img: any) => `
         <div class="gallery-image">
           <img src="${img.url}" alt="${img.label}" loading="lazy" />
           <div class="image-label">${img.label}</div>
@@ -1616,10 +1605,10 @@ const supabaseKey = import.meta.env.SUPABASE_KEY;
     }
 
     // Show parts if available
-    const partsSection = document.getElementById('parts-section');
+    const partsSection = document.getElementById('parts-section') as HTMLElement;
     const partsGrid = document.getElementById('parts-grid');
     if (data.parts && data.parts.length > 0 && partsSection && partsGrid) {
-      partsGrid.innerHTML = data.parts.map(part => `
+      partsGrid.innerHTML = data.parts.map((part: any) => `
         <div class="part-card">
           <div class="part-header">
             <h4 class="part-name">${part.name}</h4>
@@ -1633,7 +1622,7 @@ const supabaseKey = import.meta.env.SUPABASE_KEY;
     }
 
     // Show notes if available
-    const notesSection = document.getElementById('notes-section');
+    const notesSection = document.getElementById('notes-section') as HTMLElement;
     const notesContent = document.getElementById('notes-content');
     if (data.notes && notesSection && notesContent) {
       notesContent.innerHTML = `<p>${data.notes}</p>`;
@@ -1641,15 +1630,15 @@ const supabaseKey = import.meta.env.SUPABASE_KEY;
     }
 
     // Show result section
-    if (resultSection) resultSection.style.display = 'block';
+    if (resultSection) (resultSection as HTMLElement).style.display = 'block';
 
     // Scroll to result
     resultSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   // Update timeline based on order type
-  function updateTimeline(data) {
-    const timeline = document.querySelector('.timeline');
+  function updateTimeline(data: any) {
+    const timeline = document.querySelector('.timeline') as HTMLElement;
     if (!timeline) return;
 
     // Clear existing timeline
@@ -1665,7 +1654,7 @@ const supabaseKey = import.meta.env.SUPABASE_KEY;
         { title: 'Listo para entrega', desc: 'Tu equipo está listo para ser retirado', icon: 'map-pin' }
       ];
 
-      repairStages.forEach((stage, index) => {
+      repairStages.forEach((stage: any, index: number) => {
         const stageNum = index + 1;
         const status = stageNum < data.currentStage ? 'completed' : stageNum === data.currentStage ? 'active' : 'pending';
         timeline.innerHTML += createTimelineItem(stage.title, stage.desc, stage.icon, status);
@@ -1680,7 +1669,7 @@ const supabaseKey = import.meta.env.SUPABASE_KEY;
         { title: 'Entregado', desc: 'Tu producto ha sido entregado', icon: 'map-pin' }
       ];
 
-      purchaseStages.forEach((stage, index) => {
+      purchaseStages.forEach((stage: any, index: number) => {
         const stageNum = index + 1;
         const status = stageNum < data.currentStage ? 'completed' : stageNum === data.currentStage ? 'active' : 'pending';
         timeline.innerHTML += createTimelineItem(stage.title, stage.desc, stage.icon, status);
@@ -1689,7 +1678,7 @@ const supabaseKey = import.meta.env.SUPABASE_KEY;
   }
 
   // Create timeline item HTML
-  function createTimelineItem(title, desc, icon, status) {
+  function createTimelineItem(title: string, desc: string, icon: string, status: string) {
     const icons: { [key: string]: string } = {
       'check': '<polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>',
       'wrench': '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>',
@@ -1719,17 +1708,18 @@ const supabaseKey = import.meta.env.SUPABASE_KEY;
   }
 
   // Show error
-  function showError(orderId) {
+  function showError(orderId: string) {
     // Hide search and result sections
-    const searchSection = document.querySelector('.search-section');
+    const searchSection = document.querySelector('.search-section') as HTMLElement;
     if (searchSection) searchSection.style.display = 'none';
-    if (resultSection) resultSection.style.display = 'none';
+    if (resultSection) (resultSection as HTMLElement).style.display = 'none';
 
     // Update error message
-    document.getElementById('error-order-id').textContent = orderId;
+    const errorOrderId = document.getElementById('error-order-id');
+    if (errorOrderId) errorOrderId.textContent = orderId;
 
     // Show error section
-    if (errorSection) errorSection.style.display = 'block';
+    if (errorSection) (errorSection as HTMLElement).style.display = 'block';
 
     // Scroll to error
     errorSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1742,11 +1732,11 @@ const supabaseKey = import.meta.env.SUPABASE_KEY;
     if (searchSection) searchSection.style.display = 'block';
 
     // Hide result and error sections
-    if (resultSection) resultSection.style.display = 'none';
-    if (errorSection) errorSection.style.display = 'none';
+    if (resultSection) (resultSection as HTMLElement).style.display = 'none';
+    if (errorSection) (errorSection as HTMLElement).style.display = 'none';
 
     // Clear input
-    const orderIdInput = document.getElementById('order-id');
+    const orderIdInput = document.getElementById('order-id') as HTMLInputElement;
     if (orderIdInput) {
       orderIdInput.value = '';
       orderIdInput.focus();
