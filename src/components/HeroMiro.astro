@@ -1,22 +1,57 @@
 ---
 // Hero Section - Carousel Background
+import { supabase, getPublicUrl, type Carrusel } from '../lib/supabase';
+
+// Obtener imágenes del carrusel desde Supabase
+const { data: carruselFromDB, error } = await supabase
+  .from('carrusel')
+  .select('*')
+  .eq('activo', true)
+  .order('orden', { ascending: true });
+
+// Imágenes por defecto si no hay en Supabase
+const imagenesDefault: Carrusel[] = [
+  {
+    id: '1',
+    titulo: 'Hidrolavadora KÄRCHER',
+    descripcion: 'Team Service Costa',
+    imagen_url: '/images/inicio/image.png',
+    orden: 1,
+    activo: true
+  },
+  {
+    id: '2',
+    titulo: 'Equipos de limpieza profesional KÄRCHER',
+    descripcion: null,
+    imagen_url: '/images/inicio/image2.jpg',
+    orden: 2,
+    activo: true
+  },
+  {
+    id: '3',
+    titulo: 'Servicio técnico autorizado KÄRCHER',
+    descripcion: null,
+    imagen_url: '/images/inicio/image3.jpg',
+    orden: 3,
+    activo: true
+  }
+];
+
+let imagenes: Carrusel[] = imagenesDefault;
+if (!error && carruselFromDB && carruselFromDB.length > 0) {
+  imagenes = carruselFromDB;
+}
 ---
 
 <section class="hero">
   <!-- Background Carousel -->
   <div class="hero-carousel">
-    <div class="carousel-slide active" data-slide="0">
-      <img src="/images/inicio/image.png" alt="Hidrolavadora KÄRCHER - Team Service Costa">
-      <div class="carousel-overlay"></div>
-    </div>
-    <div class="carousel-slide" data-slide="1">
-      <img src="/images/inicio/image2.jpg" alt="Equipos de limpieza profesional KÄRCHER">
-      <div class="carousel-overlay"></div>
-    </div>
-    <div class="carousel-slide" data-slide="2">
-      <img src="/images/inicio/image3.jpg" alt="Servicio técnico autorizado KÄRCHER">
-      <div class="carousel-overlay"></div>
-    </div>
+    {imagenes.map((imagen, index) => (
+      <div class={`carousel-slide ${index === 0 ? 'active' : ''}`} data-slide={index}>
+        <img src={getPublicUrl(imagen.imagen_url)} alt={imagen.titulo + (imagen.descripcion ? ' - ' + imagen.descripcion : '')} loading={index === 0 ? 'eager' : 'lazy'}>
+        <div class="carousel-overlay"></div>
+      </div>
+    ))}
   </div>
 
   <!-- Carousel Controls -->
@@ -33,9 +68,13 @@
 
   <!-- Carousel Indicators -->
   <div class="carousel-indicators">
-    <button class="indicator active" data-slide-to="0" aria-label="Ir a imagen 1"></button>
-    <button class="indicator" data-slide-to="1" aria-label="Ir a imagen 2"></button>
-    <button class="indicator" data-slide-to="2" aria-label="Ir a imagen 3"></button>
+    {imagenes.map((_, index) => (
+      <button
+        class={`indicator ${index === 0 ? 'active' : ''}`}
+        data-slide-to={index}
+        aria-label={`Ir a imagen ${index + 1}`}>
+      </button>
+    ))}
   </div>
 
   <!-- Hero Content -->
@@ -43,11 +82,11 @@
     <div class="hero-content">
       <div class="hero-text">
         <h1 class="hero-title">
-          Hacemos que la limpieza sea <span class="text-highlight">sencilla y eficaz</span>
+          Potencia, limpieza y confianza con <span class="text-highlight">respaldo oficial</span>
         </h1>
         <p class="hero-description">
-          Centro de Servicio Técnico Autorizado KÄRCHER en Montería, Cartagena y Apartadó.
-          Equipos de alta calidad, servicio de reparación experto y asesoramiento profesional.
+          Somos centro autorizado y distribuidor oficial de Karcher y Makita en la región Caribe.
+          Equipos profesionales, mantenimiento especializado y asesoría técnica certificada.
         </p>
         <div class="hero-actions">
           <a href="/tienda" class="btn btn-primary">
@@ -85,7 +124,7 @@
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
               </svg>
-              <span>3 Ubicaciones</span>
+              <span>3 sedes: Montería · Cartagena · Apartadó</span>
             </div>
           </div>
         </div>
@@ -289,7 +328,7 @@
     left: 0;
     right: 0;
     height: 16px;
-    background: var(--color-primary);
+    background: #FFD700;
     z-index: -1;
     border-radius: 4px;
     opacity: 0.9;
@@ -360,15 +399,15 @@
   }
 
   .btn-primary {
-    background: var(--color-accent);
-    color: var(--color-white);
-    box-shadow: 0 4px 20px rgba(66, 98, 255, 0.4);
+    background: #FFD700;
+    color: #1a1a2e;
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
   }
 
   .btn-primary:hover {
-    background: #3451E6;
+    background: #FFC700;
     transform: translateY(-3px);
-    box-shadow: 0 8px 30px rgba(66, 98, 255, 0.5);
+    box-shadow: 0 8px 30px rgba(255, 215, 0, 0.5);
   }
 
   .btn-secondary {
@@ -410,8 +449,8 @@
   }
 
   .trust-badge svg {
-    color: var(--color-primary);
-    filter: drop-shadow(0 0 8px rgba(255, 208, 47, 0.6));
+    color: #FFD700;
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
   }
 
   /* Responsive */
@@ -495,84 +534,178 @@
 </style>
 
 <script>
-  let currentSlide = 0;
-  const slides = document.querySelectorAll('.carousel-slide');
-  const indicators = document.querySelectorAll('.indicator');
-  const totalSlides = slides.length;
-  let autoplayInterval: number;
+  // Carousel functionality
+  interface CarouselState {
+    currentSlide: number;
+    totalSlides: number;
+    autoplayInterval: number | null;
+    isTransitioning: boolean;
+  }
 
-  function showSlide(index: number) {
-    // Remove active class from all slides and indicators
+  const state: CarouselState = {
+    currentSlide: 0,
+    totalSlides: 0,
+    autoplayInterval: null,
+    isTransitioning: false
+  };
+
+  const slides = document.querySelectorAll<HTMLElement>('.carousel-slide');
+  const indicators = document.querySelectorAll<HTMLElement>('.indicator');
+  state.totalSlides = slides.length;
+
+  console.log(`🎠 Carrusel inicializado con ${state.totalSlides} slides`);
+
+  function showSlide(index: number, force = false) {
+    // Prevenir cambios durante transición (a menos que sea forzado)
+    if (state.isTransitioning && !force) {
+      console.log('⏸️ Transición en curso, ignorando cambio');
+      return;
+    }
+
+    // Validar índice
+    if (index < 0 || index >= state.totalSlides) {
+      console.error(`❌ Índice inválido: ${index}`);
+      return;
+    }
+
+    // Si ya estamos en este slide, no hacer nada
+    if (index === state.currentSlide && !force) {
+      console.log(`📍 Ya estamos en slide ${index}`);
+      return;
+    }
+
+    console.log(`🔄 Cambiando de slide ${state.currentSlide} → ${index}`);
+
+    state.isTransitioning = true;
+
+    // Remover clase active de todos
     slides.forEach(slide => slide.classList.remove('active'));
     indicators.forEach(indicator => indicator.classList.remove('active'));
 
-    // Add active class to current slide and indicator
-    slides[index].classList.add('active');
-    indicators[index].classList.add('active');
+    // Agregar clase active al slide e indicador actual
+    if (slides[index] && indicators[index]) {
+      slides[index].classList.add('active');
+      indicators[index].classList.add('active');
+      state.currentSlide = index;
+    } else {
+      console.error(`❌ Slide o indicador no encontrado en índice ${index}`);
+    }
 
-    currentSlide = index;
+    // Liberar bandera de transición después de completar
+    setTimeout(() => {
+      state.isTransitioning = false;
+    }, 1000); // Esperar a que termine la transición CSS
   }
 
   function nextSlide() {
-    const next = (currentSlide + 1) % totalSlides;
+    const next = (state.currentSlide + 1) % state.totalSlides;
+    console.log(`➡️ Siguiente slide: ${next}`);
     showSlide(next);
   }
 
   function prevSlide() {
-    const prev = (currentSlide - 1 + totalSlides) % totalSlides;
+    const prev = (state.currentSlide - 1 + state.totalSlides) % state.totalSlides;
+    console.log(`⬅️ Slide anterior: ${prev}`);
     showSlide(prev);
   }
 
   function startAutoplay() {
-    autoplayInterval = window.setInterval(() => {
+    // Limpiar cualquier intervalo existente
+    stopAutoplay();
+
+    console.log('▶️ Iniciando autoplay (cada 5 segundos)');
+    state.autoplayInterval = window.setInterval(() => {
       nextSlide();
-    }, 5000); // Change slide every 5 seconds
+    }, 5000);
   }
 
   function stopAutoplay() {
-    clearInterval(autoplayInterval);
+    if (state.autoplayInterval !== null) {
+      console.log('⏹️ Deteniendo autoplay');
+      clearInterval(state.autoplayInterval);
+      state.autoplayInterval = null;
+    }
   }
 
   function resetAutoplay() {
+    console.log('🔄 Reiniciando autoplay');
     stopAutoplay();
     startAutoplay();
   }
 
-  // Event listeners for controls
-  document.querySelector('.carousel-control.next')?.addEventListener('click', () => {
-    nextSlide();
-    resetAutoplay();
-  });
+  // Solo inicializar si hay slides
+  if (state.totalSlides > 0) {
+    // Event listeners para controles
+    const nextBtn = document.querySelector<HTMLElement>('.carousel-control.next');
+    const prevBtn = document.querySelector<HTMLElement>('.carousel-control.prev');
 
-  document.querySelector('.carousel-control.prev')?.addEventListener('click', () => {
-    prevSlide();
-    resetAutoplay();
-  });
-
-  // Event listeners for indicators
-  indicators.forEach((indicator, index) => {
-    indicator.addEventListener('click', () => {
-      showSlide(index);
-      resetAutoplay();
-    });
-  });
-
-  // Pause on hover
-  const heroSection = document.querySelector('.hero');
-  heroSection?.addEventListener('mouseenter', stopAutoplay);
-  heroSection?.addEventListener('mouseleave', startAutoplay);
-
-  // Keyboard navigation
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft') {
-      prevSlide();
-      resetAutoplay();
-    } else if (e.key === 'ArrowRight') {
+    nextBtn?.addEventListener('click', () => {
+      console.log('🖱️ Click en botón siguiente');
       nextSlide();
       resetAutoplay();
-    }
-  });
+    });
 
-  // Start autoplay on load
-  startAutoplay();
+    prevBtn?.addEventListener('click', () => {
+      console.log('🖱️ Click en botón anterior');
+      prevSlide();
+      resetAutoplay();
+    });
+
+    // Event listeners para indicadores
+    indicators.forEach((indicator, index) => {
+      indicator.addEventListener('click', () => {
+        console.log(`🖱️ Click en indicador ${index}`);
+        showSlide(index);
+        resetAutoplay();
+      });
+    });
+
+    // Pausar en hover
+    const heroSection = document.querySelector<HTMLElement>('.hero');
+    heroSection?.addEventListener('mouseenter', () => {
+      console.log('🖱️ Mouse sobre hero, pausando');
+      stopAutoplay();
+    });
+    heroSection?.addEventListener('mouseleave', () => {
+      console.log('🖱️ Mouse fuera de hero, reanudando');
+      startAutoplay();
+    });
+
+    // Navegación con teclado
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') {
+        console.log('⌨️ Tecla ← presionada');
+        prevSlide();
+        resetAutoplay();
+      } else if (e.key === 'ArrowRight') {
+        console.log('⌨️ Tecla → presionada');
+        nextSlide();
+        resetAutoplay();
+      }
+    });
+
+    // Pausar cuando la pestaña no está visible
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        console.log('👁️ Pestaña oculta, pausando');
+        stopAutoplay();
+      } else {
+        console.log('👁️ Pestaña visible, reanudando');
+        startAutoplay();
+      }
+    });
+
+    // Iniciar autoplay
+    startAutoplay();
+
+    // Asegurar que el primer slide está activo
+    showSlide(0, true);
+  } else {
+    console.error('❌ No se encontraron slides para el carrusel');
+  }
+
+  // Limpiar al salir
+  window.addEventListener('beforeunload', () => {
+    stopAutoplay();
+  });
 </script>

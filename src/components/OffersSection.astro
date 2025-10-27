@@ -1,0 +1,515 @@
+---
+// Offers Section - Kärcher and Makita
+const karcherOffers = [
+  {
+    id: 1,
+    name: 'Hidrolavadora K2 Basic',
+    image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=500&h=500&fit=crop',
+    originalPrice: 1999900,
+    discountPrice: 1499900,
+    discount: 25,
+    badge: '¡OFERTA!'
+  },
+  {
+    id: 2,
+    name: 'Aspiradora WD 3 Premium',
+    image: 'https://images.unsplash.com/photo-1558317374-067fb5f30001?w=500&h=500&fit=crop',
+    originalPrice: 899900,
+    discountPrice: 699900,
+    discount: 22,
+    badge: '¡OFERTA!'
+  },
+  {
+    id: 3,
+    name: 'Hidrolavadora K5 Premium',
+    image: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=500&h=500&fit=crop',
+    originalPrice: 3499900,
+    discountPrice: 2999900,
+    discount: 14,
+    badge: '¡OFERTA!'
+  },
+  {
+    id: 4,
+    name: 'Kit de Accesorios Premium',
+    image: 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?w=500&h=500&fit=crop',
+    originalPrice: 299900,
+    discountPrice: 199900,
+    discount: 33,
+    badge: '¡OFERTA!'
+  }
+];
+
+const makitaOffers = [
+  {
+    id: 5,
+    name: 'Taladro Percutor DHP484',
+    image: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=500&h=500&fit=crop',
+    originalPrice: 899900,
+    discountPrice: 749900,
+    discount: 17,
+    badge: '¡OFERTA!'
+  },
+  {
+    id: 6,
+    name: 'Amoladora Angular GA5030',
+    image: 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?w=500&h=500&fit=crop',
+    originalPrice: 549900,
+    discountPrice: 449900,
+    discount: 18,
+    badge: '¡OFERTA!'
+  },
+  {
+    id: 7,
+    name: 'Sierra Circular HS7601',
+    image: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=500&h=500&fit=crop',
+    originalPrice: 699900,
+    discountPrice: 599900,
+    discount: 14,
+    badge: '¡OFERTA!'
+  },
+  {
+    id: 8,
+    name: 'Rotomartillo HR2470',
+    image: 'https://images.unsplash.com/photo-1606510907446-c04e2912881e?w=500&h=500&fit=crop',
+    originalPrice: 1299900,
+    discountPrice: 1099900,
+    discount: 15,
+    badge: '¡OFERTA!'
+  }
+];
+
+function formatPrice(price: number): string {
+  return new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    minimumFractionDigits: 0
+  }).format(price);
+}
+---
+
+<section class="offers-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-badge">APROVECHA ESTAS INCREÍBLES OFERTAS</span>
+      <h2 class="section-title">Equipos en Promoción</h2>
+      <p class="section-description">
+        Descubre nuestras ofertas especiales en equipos Kärcher y herramientas Makita.
+        Productos originales con garantía oficial.
+      </p>
+    </div>
+
+    <!-- Kärcher Offers -->
+    <div class="brand-offers-section">
+      <div class="brand-header karcher-brand">
+        <h3 class="brand-title">Equipos KÄRCHER para cada necesidad</h3>
+        <p class="brand-subtitle">Productos originales con garantía oficial y asesoría especializada para elegir el equipo ideal para tus requerimientos</p>
+      </div>
+
+      <div class="offers-grid">
+        {karcherOffers.map(offer => (
+          <div class="offer-card" data-product-id={offer.id} data-product-name={offer.name} data-product-price={offer.discountPrice} data-product-image={offer.image} data-product-brand="Kärcher">
+            <div class="offer-badge">{offer.badge}</div>
+            <div class="offer-discount">-{offer.discount}%</div>
+            <div class="offer-image">
+              <img src={offer.image} alt={offer.name} />
+            </div>
+            <div class="offer-content">
+              <h4 class="offer-name">{offer.name}</h4>
+              <div class="offer-prices">
+                <span class="original-price">{formatPrice(offer.originalPrice)}</span>
+                <span class="discount-price">{formatPrice(offer.discountPrice)}</span>
+              </div>
+              <button class="btn-add-to-cart karcher-btn">
+                Añadir al carrito
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Makita Offers -->
+    <div class="brand-offers-section">
+      <div class="brand-header makita-brand">
+        <h3 class="brand-title">Herramientas MAKITA</h3>
+        <p class="brand-subtitle">Herramientas profesionales de alta calidad con tecnología avanzada para trabajos industriales y profesionales</p>
+      </div>
+
+      <div class="offers-grid">
+        {makitaOffers.map(offer => (
+          <div class="offer-card" data-product-id={offer.id} data-product-name={offer.name} data-product-price={offer.discountPrice} data-product-image={offer.image} data-product-brand="Makita">
+            <div class="offer-badge makita-badge">{offer.badge}</div>
+            <div class="offer-discount makita-discount">-{offer.discount}%</div>
+            <div class="offer-image">
+              <img src={offer.image} alt={offer.name} />
+            </div>
+            <div class="offer-content">
+              <h4 class="offer-name">{offer.name}</h4>
+              <div class="offer-prices">
+                <span class="original-price">{formatPrice(offer.originalPrice)}</span>
+                <span class="discount-price makita-price">{formatPrice(offer.discountPrice)}</span>
+              </div>
+              <button class="btn-add-to-cart makita-btn">
+                Añadir al carrito
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .offers-section {
+    padding: var(--spacing-20) 0;
+    background: var(--color-gray-50);
+  }
+
+  .section-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto var(--spacing-16);
+  }
+
+  .section-badge {
+    display: inline-block;
+    font-size: var(--text-sm);
+    font-weight: var(--font-bold);
+    color: #1a1a2e;
+    background: #FFD700;
+    padding: var(--spacing-2) var(--spacing-6);
+    border-radius: var(--radius-full);
+    margin-bottom: var(--spacing-4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .section-title {
+    font-size: var(--text-4xl);
+    font-weight: var(--font-extrabold);
+    color: #1a1a2e;
+    margin-bottom: var(--spacing-4);
+  }
+
+  .section-description {
+    font-size: var(--text-lg);
+    color: var(--color-gray-600);
+    line-height: 1.6;
+  }
+
+  .brand-offers-section {
+    margin-bottom: var(--spacing-20);
+  }
+
+  .brand-offers-section:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .brand-header {
+    text-align: center;
+    margin-bottom: var(--spacing-12);
+    padding: var(--spacing-8);
+    border-radius: var(--radius-2xl);
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .karcher-brand {
+    border-top: 4px solid #FFD700;
+  }
+
+  .makita-brand {
+    border-top: 4px solid #00BCD4;
+  }
+
+  .brand-title {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-bold);
+    color: #1a1a2e;
+    margin-bottom: var(--spacing-3);
+  }
+
+  .brand-subtitle {
+    font-size: var(--text-base);
+    color: var(--color-gray-600);
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .offers-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-6);
+  }
+
+  .offer-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all var(--transition-base);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .offer-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .offer-badge {
+    position: absolute;
+    top: var(--spacing-3);
+    left: var(--spacing-3);
+    background: #FFD700;
+    color: #1a1a2e;
+    font-size: var(--text-xs);
+    font-weight: var(--font-bold);
+    padding: var(--spacing-1-5) var(--spacing-3);
+    border-radius: var(--radius-full);
+    z-index: 2;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .makita-badge {
+    background: #00BCD4;
+    color: white;
+  }
+
+  .offer-discount {
+    position: absolute;
+    top: var(--spacing-3);
+    right: var(--spacing-3);
+    background: #1a1a2e;
+    color: #FFD700;
+    font-size: var(--text-sm);
+    font-weight: var(--font-bold);
+    padding: var(--spacing-2) var(--spacing-3);
+    border-radius: var(--radius-lg);
+    z-index: 2;
+  }
+
+  .makita-discount {
+    color: #00BCD4;
+  }
+
+  .offer-image {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-gray-50);
+    padding: var(--spacing-4);
+    overflow: hidden;
+  }
+
+  .offer-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform var(--transition-base);
+  }
+
+  .offer-card:hover .offer-image img {
+    transform: scale(1.1);
+  }
+
+  .offer-content {
+    padding: var(--spacing-5);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .offer-name {
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    color: #1a1a2e;
+    margin-bottom: var(--spacing-4);
+    line-height: 1.3;
+  }
+
+  .offer-prices {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .original-price {
+    font-size: var(--text-sm);
+    color: var(--color-gray-500);
+    text-decoration: line-through;
+  }
+
+  .discount-price {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: #FFD700;
+  }
+
+  .makita-price {
+    color: #00BCD4;
+  }
+
+  .btn-add-to-cart {
+    width: 100%;
+    padding: var(--spacing-3) var(--spacing-4);
+    background: #FFD700;
+    color: #1a1a2e;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .btn-add-to-cart:hover {
+    background: #FFC700;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+  }
+
+  .makita-btn {
+    background: #00BCD4;
+    color: white;
+  }
+
+  .makita-btn:hover {
+    background: #00ACC1;
+    box-shadow: 0 4px 12px rgba(0, 188, 212, 0.3);
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .offers-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 968px) {
+    .offers-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .section-title {
+      font-size: var(--text-3xl);
+    }
+
+    .brand-title {
+      font-size: var(--text-2xl);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .offers-section {
+      padding: var(--spacing-16) 0;
+    }
+
+    .offers-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .section-header {
+      margin-bottom: var(--spacing-12);
+    }
+
+    .brand-offers-section {
+      margin-bottom: var(--spacing-16);
+    }
+
+    .section-title {
+      font-size: var(--text-2xl);
+    }
+
+    .brand-title {
+      font-size: var(--text-xl);
+    }
+
+    .offer-image {
+      height: 180px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('🛒 OffersSection: Initializing');
+
+    const addToCartButtons = document.querySelectorAll('.btn-add-to-cart');
+    console.log('🛒 OffersSection: Found', addToCartButtons.length, 'buttons');
+
+    addToCartButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const card = button.closest('.offer-card');
+        if (!card) {
+          console.error('🛒 OffersSection: No card found');
+          return;
+        }
+
+        // Try to add to cart with retry logic
+        const tryAddToCart = (retryCount = 0) => {
+          if (typeof (window as any).cartManager !== 'undefined') {
+            console.log('🛒 OffersSection: CartManager found');
+
+            const productId = card.getAttribute('data-product-id') || '';
+            const productName = card.getAttribute('data-product-name') || '';
+            const productPrice = card.getAttribute('data-product-price') || '0';
+            const productImage = card.getAttribute('data-product-image') || '';
+            const productBrand = card.getAttribute('data-product-brand') || '';
+
+            // Parse price as number (it's already stored as number in data attribute)
+            const price = (window as any).cartManager.parsePrice(productPrice);
+
+            console.log('🛒 OffersSection: Adding product:', {
+              id: productId,
+              name: productName,
+              model: productBrand,
+              price: price,
+              image: productImage
+            });
+
+            // Use addProduct method (not addItem) with model field
+            (window as any).cartManager.addProduct({
+              id: productId,
+              name: productName,
+              model: productBrand,
+              price: price,
+              image: productImage
+            });
+
+            // Visual feedback
+            const originalText = button.textContent;
+            button.textContent = '✓ Agregado';
+            button.disabled = true;
+
+            setTimeout(() => {
+              button.textContent = originalText || 'Añadir al carrito';
+              button.disabled = false;
+            }, 1500);
+
+          } else if (retryCount < 30) {
+            console.log(`🛒 OffersSection: CartManager not ready, retrying ${retryCount + 1}/30`);
+            setTimeout(() => tryAddToCart(retryCount + 1), 100);
+          } else {
+            console.error('⚠️ OffersSection: CartManager not available');
+            alert('El sistema de carrito no está disponible en este momento. Por favor, inténtalo de nuevo.');
+          }
+        };
+
+        tryAddToCart();
+      });
+    });
+  });
+</script>

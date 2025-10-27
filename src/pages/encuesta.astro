@@ -1,0 +1,661 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HeaderMiro from '../components/HeaderMiro.astro';
+import FooterMiro from '../components/FooterMiro.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+---
+
+<Layout
+  title="Encuesta de Satisfacción | Team Service Costa"
+  description="Tu opinión nos ayuda a mejorar. Comparte tu experiencia con nuestros productos y servicios."
+>
+  <HeaderMiro />
+
+  <main class="encuesta-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container">
+        <span class="hero-badge">TU OPINIÓN CUENTA</span>
+        <h1 class="hero-title">Encuesta de Satisfacción</h1>
+        <p class="hero-description">
+          Queremos conocer tu experiencia con Team Service Costa. Tu opinión es fundamental
+          para seguir mejorando nuestros productos y servicios.
+        </p>
+      </div>
+    </section>
+
+    <!-- Form Section -->
+    <section class="form-section">
+      <div class="container">
+        <div class="form-wrapper">
+          <form id="encuesta-form" class="encuesta-form">
+            <!-- Información Personal -->
+            <div class="form-section-header">
+              <h2>Información básica</h2>
+              <p>Ayúdanos con algunos datos para poder contactarte</p>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="nombre" class="form-label">
+                  Nombre completo <span class="required">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="nombre"
+                  name="nombre"
+                  class="form-input"
+                  placeholder="Juan Pérez"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="email" class="form-label">
+                  Correo electrónico <span class="required">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form-input"
+                  placeholder="correo@ejemplo.com"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="telefono" class="form-label">
+                  Teléfono
+                </label>
+                <input
+                  type="tel"
+                  id="telefono"
+                  name="telefono"
+                  class="form-input"
+                  placeholder="+57 300 123 4567"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="sede" class="form-label">
+                  ¿En qué sede fuiste atendido? <span class="required">*</span>
+                </label>
+                <select id="sede" name="sede" class="form-input" required>
+                  <option value="">Selecciona una sede</option>
+                  <option value="monteria">Montería</option>
+                  <option value="cartagena">Cartagena</option>
+                  <option value="apartado">Apartadó</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Experiencia de Servicio -->
+            <div class="form-section-header">
+              <h2>Experiencia de servicio</h2>
+              <p>Califica tu experiencia con nosotros</p>
+            </div>
+
+            <div class="rating-questions">
+              <!-- Atención recibida -->
+              <div class="rating-group">
+                <label class="rating-label">
+                  ¿Cómo calificarías la atención recibida? <span class="required">*</span>
+                </label>
+                <div class="star-rating" data-question="atencion">
+                  <input type="radio" id="atencion-5" name="atencion" value="5" required />
+                  <label for="atencion-5" class="star">★</label>
+                  <input type="radio" id="atencion-4" name="atencion" value="4" />
+                  <label for="atencion-4" class="star">★</label>
+                  <input type="radio" id="atencion-3" name="atencion" value="3" />
+                  <label for="atencion-3" class="star">★</label>
+                  <input type="radio" id="atencion-2" name="atencion" value="2" />
+                  <label for="atencion-2" class="star">★</label>
+                  <input type="radio" id="atencion-1" name="atencion" value="1" />
+                  <label for="atencion-1" class="star">★</label>
+                </div>
+              </div>
+
+              <!-- Calidad del servicio -->
+              <div class="rating-group">
+                <label class="rating-label">
+                  ¿Cómo calificarías la calidad del servicio técnico? <span class="required">*</span>
+                </label>
+                <div class="star-rating" data-question="calidad">
+                  <input type="radio" id="calidad-5" name="calidad" value="5" required />
+                  <label for="calidad-5" class="star">★</label>
+                  <input type="radio" id="calidad-4" name="calidad" value="4" />
+                  <label for="calidad-4" class="star">★</label>
+                  <input type="radio" id="calidad-3" name="calidad" value="3" />
+                  <label for="calidad-3" class="star">★</label>
+                  <input type="radio" id="calidad-2" name="calidad" value="2" />
+                  <label for="calidad-2" class="star">★</label>
+                  <input type="radio" id="calidad-1" name="calidad" value="1" />
+                  <label for="calidad-1" class="star">★</label>
+                </div>
+              </div>
+
+              <!-- Tiempo de respuesta -->
+              <div class="rating-group">
+                <label class="rating-label">
+                  ¿Cómo calificarías el tiempo de respuesta? <span class="required">*</span>
+                </label>
+                <div class="star-rating" data-question="tiempo">
+                  <input type="radio" id="tiempo-5" name="tiempo" value="5" required />
+                  <label for="tiempo-5" class="star">★</label>
+                  <input type="radio" id="tiempo-4" name="tiempo" value="4" />
+                  <label for="tiempo-4" class="star">★</label>
+                  <input type="radio" id="tiempo-3" name="tiempo" value="3" />
+                  <label for="tiempo-3" class="star">★</label>
+                  <input type="radio" id="tiempo-2" name="tiempo" value="2" />
+                  <label for="tiempo-2" class="star">★</label>
+                  <input type="radio" id="tiempo-1" name="tiempo" value="1" />
+                  <label for="tiempo-1" class="star">★</label>
+                </div>
+              </div>
+
+              <!-- Productos/equipos -->
+              <div class="rating-group">
+                <label class="rating-label">
+                  ¿Cómo calificarías los productos/equipos? <span class="required">*</span>
+                </label>
+                <div class="star-rating" data-question="productos">
+                  <input type="radio" id="productos-5" name="productos" value="5" required />
+                  <label for="productos-5" class="star">★</label>
+                  <input type="radio" id="productos-4" name="productos" value="4" />
+                  <label for="productos-4" class="star">★</label>
+                  <input type="radio" id="productos-3" name="productos" value="3" />
+                  <label for="productos-3" class="star">★</label>
+                  <input type="radio" id="productos-2" name="productos" value="2" />
+                  <label for="productos-2" class="star">★</label>
+                  <input type="radio" id="productos-1" name="productos" value="1" />
+                  <label for="productos-1" class="star">★</label>
+                </div>
+              </div>
+
+              <!-- Satisfacción general -->
+              <div class="rating-group">
+                <label class="rating-label">
+                  ¿Qué tan satisfecho estás con tu experiencia general? <span class="required">*</span>
+                </label>
+                <div class="star-rating" data-question="satisfaccion">
+                  <input type="radio" id="satisfaccion-5" name="satisfaccion" value="5" required />
+                  <label for="satisfaccion-5" class="star">★</label>
+                  <input type="radio" id="satisfaccion-4" name="satisfaccion" value="4" />
+                  <label for="satisfaccion-4" class="star">★</label>
+                  <input type="radio" id="satisfaccion-3" name="satisfaccion" value="3" />
+                  <label for="satisfaccion-3" class="star">★</label>
+                  <input type="radio" id="satisfaccion-2" name="satisfaccion" value="2" />
+                  <label for="satisfaccion-2" class="star">★</label>
+                  <input type="radio" id="satisfaccion-1" name="satisfaccion" value="1" />
+                  <label for="satisfaccion-1" class="star">★</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recomendación -->
+            <div class="form-section-header">
+              <h2>Recomendación</h2>
+            </div>
+
+            <div class="form-group full-width">
+              <label class="rating-label">
+                ¿Recomendarías Team Service Costa a un amigo o colega? <span class="required">*</span>
+              </label>
+              <div class="recommendation-scale">
+                {[...Array(11)].map((_, i) => (
+                  <label class="scale-option">
+                    <input type="radio" name="recomendacion" value={i} required />
+                    <span class="scale-number">{i}</span>
+                  </label>
+                ))}
+              </div>
+              <div class="scale-labels">
+                <span>Muy improbable</span>
+                <span>Muy probable</span>
+              </div>
+            </div>
+
+            <!-- Comentarios -->
+            <div class="form-section-header">
+              <h2>Comentarios adicionales</h2>
+              <p>¿Hay algo más que quieras compartirnos?</p>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="comentarios" class="form-label">
+                Comentarios o sugerencias
+              </label>
+              <textarea
+                id="comentarios"
+                name="comentarios"
+                class="form-textarea"
+                rows="5"
+                placeholder="Cuéntanos sobre tu experiencia, lo que te gustó o lo que podríamos mejorar..."
+              ></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-actions">
+              <button type="submit" class="btn-submit">
+                Enviar encuesta
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+              </button>
+            </div>
+          </form>
+
+          <!-- Success Message -->
+          <div id="success-message" class="success-message" style="display: none;">
+            <div class="success-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                <path d="M2 17l10 5 10-5"></path>
+                <path d="M2 12l10 5 10-5"></path>
+              </svg>
+            </div>
+            <h3>¡Gracias por tu tiempo!</h3>
+            <p>Tu opinión es muy valiosa para nosotros y nos ayuda a mejorar cada día. Apreciamos que hayas compartido tu experiencia con Team Service Costa.</p>
+            <a href="/" class="btn-secondary">Volver al inicio</a>
+          </div>
+        </div>
+
+        <!-- Info Banner -->
+        <div class="info-banner">
+          <div class="banner-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          </div>
+          <div class="banner-content">
+            <h3>Tu privacidad es importante</h3>
+            <p>Toda la información que compartas será tratada de forma confidencial y solo será utilizada para mejorar nuestros servicios.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <FooterMiro />
+  <WhatsAppButton
+    phone="+573205085531"
+    message="Hola, tengo una pregunta sobre la encuesta de satisfacción"
+  />
+</Layout>
+
+<style>
+  .encuesta-page {
+    padding-top: 60px;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-4);
+  }
+
+  /* Hero Section */
+  .hero-section {
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+    color: white;
+    padding: var(--spacing-16) 0;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: #FFD700;
+    color: #1a1a2e;
+    padding: var(--spacing-2) var(--spacing-6);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    font-weight: var(--font-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--spacing-4);
+  }
+
+  .hero-title {
+    font-size: var(--text-6xl);
+    font-weight: var(--font-extrabold);
+    margin: var(--spacing-4) 0;
+    line-height: 1.1;
+  }
+
+  .hero-description {
+    font-size: var(--text-lg);
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* Form Section */
+  .form-section {
+    padding: var(--spacing-20) 0;
+    background: var(--color-gray-50);
+  }
+
+  .form-wrapper {
+    background: white;
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-12);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    margin-bottom: var(--spacing-8);
+  }
+
+  .form-section-header {
+    margin-bottom: var(--spacing-8);
+    padding-bottom: var(--spacing-6);
+    border-bottom: 2px solid var(--color-gray-100);
+  }
+
+  .form-section-header h2 {
+    font-size: var(--text-2xl);
+    color: #1a1a2e;
+    margin-bottom: var(--spacing-2);
+  }
+
+  .form-section-header p {
+    font-size: var(--text-base);
+    color: var(--color-gray-600);
+    margin: 0;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-6);
+    margin-bottom: var(--spacing-10);
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+
+  .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .form-label,
+  .rating-label {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: #1a1a2e;
+  }
+
+  .required {
+    color: #ef4444;
+  }
+
+  .form-input,
+  .form-textarea {
+    padding: var(--spacing-3) var(--spacing-4);
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-base);
+    font-family: var(--font-primary);
+    transition: all 0.2s ease;
+    background: var(--color-white);
+  }
+
+  .form-input:focus,
+  .form-textarea:focus {
+    outline: none;
+    border-color: #FFD700;
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  /* Star Rating */
+  .rating-questions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-8);
+    margin-bottom: var(--spacing-10);
+  }
+
+  .rating-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+
+  .star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: var(--spacing-2);
+  }
+
+  .star-rating input {
+    display: none;
+  }
+
+  .star-rating .star {
+    font-size: 2.5rem;
+    color: var(--color-gray-300);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .star-rating input:checked ~ .star,
+  .star-rating .star:hover,
+  .star-rating .star:hover ~ .star {
+    color: #FFD700;
+  }
+
+  /* Recommendation Scale */
+  .recommendation-scale {
+    display: flex;
+    gap: var(--spacing-2);
+    justify-content: space-between;
+    margin: var(--spacing-4) 0 var(--spacing-2);
+  }
+
+  .scale-option {
+    flex: 1;
+    cursor: pointer;
+  }
+
+  .scale-option input {
+    display: none;
+  }
+
+  .scale-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 48px;
+    border: 2px solid var(--color-gray-300);
+    border-radius: var(--radius-lg);
+    font-weight: var(--font-semibold);
+    transition: all 0.2s ease;
+  }
+
+  .scale-option input:checked + .scale-number {
+    background: #FFD700;
+    border-color: #FFD700;
+    color: #1a1a2e;
+  }
+
+  .scale-option:hover .scale-number {
+    border-color: #FFD700;
+  }
+
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--text-xs);
+    color: var(--color-gray-500);
+    font-weight: var(--font-medium);
+  }
+
+  /* Buttons */
+  .form-actions {
+    margin-top: var(--spacing-8);
+    display: flex;
+    justify-content: center;
+  }
+
+  .btn-submit {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    background: #FFD700;
+    color: #1a1a2e;
+    padding: var(--spacing-4) var(--spacing-10);
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+  }
+
+  .btn-submit:hover {
+    background: #E6C200;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+  }
+
+  /* Success Message */
+  .success-message {
+    text-align: center;
+    padding: var(--spacing-16) var(--spacing-8);
+  }
+
+  .success-icon {
+    color: #10b981;
+    margin-bottom: var(--spacing-6);
+  }
+
+  .success-message h3 {
+    font-size: var(--text-3xl);
+    color: #1a1a2e;
+    margin-bottom: var(--spacing-4);
+  }
+
+  .success-message p {
+    font-size: var(--text-lg);
+    color: var(--color-gray-600);
+    max-width: 500px;
+    margin: 0 auto var(--spacing-8);
+  }
+
+  .btn-secondary {
+    display: inline-block;
+    background: #1a1a2e;
+    color: #FFD700;
+    padding: var(--spacing-3) var(--spacing-8);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-secondary:hover {
+    background: #2d2d44;
+  }
+
+  /* Info Banner */
+  .info-banner {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-6);
+    display: flex;
+    gap: var(--spacing-4);
+    align-items: flex-start;
+  }
+
+  .banner-icon {
+    color: #FFD700;
+    flex-shrink: 0;
+  }
+
+  .banner-content h3 {
+    font-size: var(--text-lg);
+    color: #1a1a2e;
+    margin-bottom: var(--spacing-2);
+  }
+
+  .banner-content p {
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+    margin: 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: var(--text-4xl);
+    }
+
+    .form-wrapper {
+      padding: var(--spacing-6);
+    }
+
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .recommendation-scale {
+      flex-wrap: wrap;
+    }
+
+    .scale-option {
+      min-width: calc(20% - var(--spacing-2));
+    }
+
+    .star-rating .star {
+      font-size: 2rem;
+    }
+
+    .btn-submit {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  const form = document.getElementById('encuesta-form') as HTMLFormElement;
+  const successMessage = document.getElementById('success-message');
+
+  if (form && successMessage) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Get form data
+      const formData = new FormData(form);
+
+      // Here you would normally send the data to your backend
+      console.log('Survey data:', Object.fromEntries(formData));
+
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Hide form and show success message
+      form.style.display = 'none';
+      successMessage.style.display = 'block';
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+</script>

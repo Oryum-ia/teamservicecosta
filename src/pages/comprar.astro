@@ -16,8 +16,39 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
     <section class="checkout-hero">
       <div class="container">
         <div class="hero-content">
+          <div class="hero-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            Compra Segura
+          </div>
           <h1 class="hero-title">Finalizar Compra</h1>
-          <p class="hero-subtitle">Revisa tu pedido y completa la información de envío</p>
+          <p class="hero-subtitle">Completa tu pedido de forma rápida y segura con envío a toda Colombia</p>
+
+          <div class="trust-badges">
+            <div class="trust-badge">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+              <span>Pago Seguro</span>
+            </div>
+            <div class="trust-badge">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 3h15v13H1z"></path>
+                <path d="M16 8h5l3 3v5h-8V8z"></path>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+              </svg>
+              <span>Envío Nacional</span>
+            </div>
+            <div class="trust-badge">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+              <span>Soporte 24/7</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -55,10 +86,30 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
               <a href="/tienda" class="btn-primary">Ver Productos</a>
             </div>
 
+            <!-- Código de Descuento -->
+            <div class="discount-section">
+              <div class="discount-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                  <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                </svg>
+                <span>¿Tienes un código de descuento?</span>
+              </div>
+              <div class="discount-input-group">
+                <input type="text" id="discount-code" placeholder="Ingresa tu código" class="discount-input" />
+                <button id="apply-discount-btn" class="apply-discount-btn">Aplicar</button>
+              </div>
+              <div id="discount-message" class="discount-message"></div>
+            </div>
+
             <div class="order-totals">
               <div class="total-row">
                 <span class="total-label">Subtotal</span>
                 <span id="checkout-subtotal" class="total-value">$0</span>
+              </div>
+              <div class="total-row" id="discount-row" style="display: none;">
+                <span class="total-label">Descuento</span>
+                <span id="checkout-discount" class="total-value discount-value">-$0</span>
               </div>
               <div class="total-row">
                 <span class="total-label">Envío</span>
@@ -128,28 +179,99 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
 
               <div class="form-section">
                 <h3 class="form-title">Comentarios Adicionales</h3>
-                
+
                 <div class="form-group">
                   <label for="order-notes" class="form-label">Notas del Pedido (Opcional)</label>
                   <textarea id="order-notes" name="notes" class="form-textarea" rows="3" placeholder="Instrucciones especiales de entrega, horarios preferenciales, etc."></textarea>
                 </div>
               </div>
 
+              <div class="form-section">
+                <h3 class="form-title">Método de Pago</h3>
+
+                <div class="payment-methods">
+                  <label class="payment-option">
+                    <input type="radio" name="payment-method" value="pse" checked />
+                    <div class="payment-card">
+                      <div class="payment-icon pse">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                          <line x1="2" y1="10" x2="22" y2="10"></line>
+                        </svg>
+                      </div>
+                      <div class="payment-info">
+                        <span class="payment-name">PSE</span>
+                        <span class="payment-desc">Pago Seguro en Línea</span>
+                      </div>
+                      <div class="payment-check">✓</div>
+                    </div>
+                  </label>
+
+                  <label class="payment-option">
+                    <input type="radio" name="payment-method" value="credit-card" />
+                    <div class="payment-card">
+                      <div class="payment-icon credit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                          <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
+                      </div>
+                      <div class="payment-info">
+                        <span class="payment-name">Tarjeta de Crédito</span>
+                        <span class="payment-desc">Visa, Mastercard, AmEx</span>
+                      </div>
+                      <div class="payment-check">✓</div>
+                    </div>
+                  </label>
+
+                  <label class="payment-option">
+                    <input type="radio" name="payment-method" value="debit-card" />
+                    <div class="payment-card">
+                      <div class="payment-icon debit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                          <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
+                      </div>
+                      <div class="payment-info">
+                        <span class="payment-name">Tarjeta Débito</span>
+                        <span class="payment-desc">Débito bancario</span>
+                      </div>
+                      <div class="payment-check">✓</div>
+                    </div>
+                  </label>
+
+                  <label class="payment-option">
+                    <input type="radio" name="payment-method" value="whatsapp" />
+                    <div class="payment-card">
+                      <div class="payment-icon whatsapp">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                        </svg>
+                      </div>
+                      <div class="payment-info">
+                        <span class="payment-name">WhatsApp</span>
+                        <span class="payment-desc">Coordinar pago</span>
+                      </div>
+                      <div class="payment-check">✓</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
               <div class="form-actions">
-                <button type="button" id="whatsapp-order" class="btn-whatsapp">
+                <button type="button" id="submit-order" class="btn-checkout">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
                   </svg>
-                  Enviar Pedido por WhatsApp
+                  <span id="submit-text">Proceder al Pago</span>
                 </button>
-                
+
                 <p class="payment-note">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="16" x2="12" y2="12"></line>
-                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                   </svg>
-                  Coordinaremos el método de pago y entrega mediante WhatsApp
+                  Pagos seguros y protegidos
                 </p>
               </div>
             </form>
@@ -173,12 +295,13 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
     background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
   }
 
-  /* Hero Section */
+  /* Hero Section - Compacto */
   .checkout-hero {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    padding: var(--spacing-32) 0 var(--spacing-20);
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 50%, #1a1a2e 100%);
+    padding: var(--spacing-8) 0 var(--spacing-6);
     position: relative;
     overflow: hidden;
+    margin-top: 0;
   }
 
   .checkout-hero::before {
@@ -188,69 +311,131 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 30% 50%, rgba(255, 208, 47, 0.1) 0%, transparent 50%);
+    background:
+      radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.15) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(66, 98, 255, 0.1) 0%, transparent 40%);
+  }
+
+  .checkout-hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 0l.83.828-1.415 1.415L51.8 0h2.827zM5.373 0l-.83.828L5.96 2.243 8.2 0H5.374zM48.97 0l3.657 3.657-1.414 1.414L46.143 0h2.828zM11.03 0L7.372 3.657 8.787 5.07 13.857 0H11.03zm32.284 0L49.8 6.485 48.384 7.9l-7.9-7.9h2.83zM16.686 0L10.2 6.485 11.616 7.9l7.9-7.9h-2.83z' fill='%23ffd700' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    opacity: 0.3;
   }
 
   .hero-content {
     text-align: center;
     position: relative;
     z-index: 1;
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    background: rgba(255, 215, 0, 0.15);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    color: #FFD700;
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--spacing-4);
+    backdrop-filter: blur(10px);
   }
 
   .hero-title {
     font-size: var(--text-4xl);
     font-weight: var(--font-extrabold);
     color: var(--color-white);
-    margin-bottom: var(--spacing-4);
+    margin-bottom: var(--spacing-3);
     letter-spacing: -0.02em;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   }
 
   .hero-subtitle {
-    font-size: var(--text-lg);
-    color: rgba(255, 255, 255, 0.85);
-    margin: 0;
-    line-height: 1.6;
+    font-size: var(--text-base);
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 var(--spacing-4) 0;
+    line-height: 1.5;
   }
 
-  /* Checkout Section */
+  .trust-badges {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-4);
+    flex-wrap: wrap;
+  }
+
+  .trust-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: var(--text-xs);
+    font-weight: var(--font-medium);
+  }
+
+  .trust-badge svg {
+    color: #FFD700;
+  }
+
+  /* Checkout Section - Compacto */
   .checkout-section {
-    padding: var(--spacing-20) 0;
+    padding: var(--spacing-8) 0 var(--spacing-12);
   }
 
   .checkout-grid {
     display: grid;
-    grid-template-columns: 1fr 1.5fr;
-    gap: var(--spacing-12);
+    grid-template-columns: 380px 1fr;
+    gap: var(--spacing-6);
     align-items: start;
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
-  /* Order Summary */
+  /* Order Summary - Compacto */
   .order-summary {
     background: var(--color-white);
-    border-radius: var(--radius-2xl);
-    padding: var(--spacing-8);
-    box-shadow: var(--shadow-lg);
-    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-5);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    border: 2px solid transparent;
+    background-image: linear-gradient(white, white), linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(66, 98, 255, 0.2));
+    background-origin: padding-box, border-box;
+    background-clip: padding-box, border-box;
     position: sticky;
-    top: calc(60px + var(--spacing-6));
+    top: 80px;
   }
 
   .summary-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--spacing-6);
-    padding-bottom: var(--spacing-4);
+    margin-bottom: var(--spacing-4);
+    padding-bottom: var(--spacing-3);
     border-bottom: 1px solid var(--color-gray-200);
   }
 
   .summary-title {
-    font-size: var(--text-xl);
+    font-size: var(--text-lg);
     font-weight: var(--font-bold);
-    color: var(--color-black);
+    color: #1a1a2e;
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+
+  .summary-title::before {
+    content: '🛒';
+    font-size: 20px;
   }
 
   .edit-cart-btn {
@@ -258,54 +443,63 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
     align-items: center;
     gap: var(--spacing-2);
     padding: var(--spacing-2) var(--spacing-3);
-    background: var(--color-gray-100);
-    color: var(--color-gray-700);
-    border: none;
+    background: rgba(255, 215, 0, 0.1);
+    color: #1a1a2e;
+    border: 1px solid rgba(255, 215, 0, 0.3);
     border-radius: var(--radius-md);
     font-size: var(--text-sm);
-    font-weight: var(--font-medium);
+    font-weight: var(--font-semibold);
     cursor: pointer;
     transition: all var(--transition-fast);
   }
 
   .edit-cart-btn:hover {
-    background: var(--color-gray-200);
-    color: var(--color-black);
+    background: rgba(255, 215, 0, 0.2);
+    border-color: rgba(255, 215, 0, 0.5);
+    transform: translateY(-1px);
   }
 
-  /* Order Items */
+  /* Order Items - Compacto */
   .order-items {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-4);
-    margin-bottom: var(--spacing-6);
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-4);
   }
 
   .order-item {
     display: flex;
     align-items: center;
-    gap: var(--spacing-4);
-    padding: var(--spacing-4);
+    gap: var(--spacing-3);
+    padding: var(--spacing-3);
     background: var(--color-gray-50);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
   }
 
   .item-image {
-    width: 60px;
-    height: 60px;
-    background: var(--color-white);
-    border-radius: var(--radius-md);
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #FAFAFA 0%, #F4F4F5 100%);
+    border-radius: var(--radius-lg);
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    border: 2px solid var(--color-gray-200);
+    transition: all 0.3s;
+  }
+
+  .item-image:hover {
+    border-color: #FFD02F;
+    transform: scale(1.05);
   }
 
   .item-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    padding: 4px;
   }
 
   .item-image .placeholder {
@@ -369,6 +563,95 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
     margin: 0 0 var(--spacing-6) 0;
   }
 
+  /* Discount Section */
+  .discount-section {
+    background: linear-gradient(135deg, rgba(255, 208, 47, 0.05) 0%, rgba(255, 208, 47, 0.1) 100%);
+    border: 1px solid rgba(255, 208, 47, 0.3);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-4);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .discount-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    margin-bottom: var(--spacing-3);
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: #1a1a2e;
+  }
+
+  .discount-header svg {
+    color: #FFD02F;
+  }
+
+  .discount-input-group {
+    display: flex;
+    gap: var(--spacing-2);
+  }
+
+  .discount-input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-family: inherit;
+    transition: all 0.3s;
+  }
+
+  .discount-input:focus {
+    outline: none;
+    border-color: #FFD02F;
+    box-shadow: 0 0 0 3px rgba(255, 208, 47, 0.1);
+  }
+
+  .apply-discount-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #FFD02F 0%, #FFC700 100%);
+    color: #1a1a2e;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: var(--font-bold);
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+
+  .apply-discount-btn:hover {
+    background: linear-gradient(135deg, #FFC700 0%, #FFB700 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(255, 208, 47, 0.3);
+  }
+
+  .discount-message {
+    margin-top: var(--spacing-2);
+    font-size: var(--text-xs);
+    padding: var(--spacing-2);
+    border-radius: var(--radius-md);
+    display: none;
+  }
+
+  .discount-message.success {
+    display: block;
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+  }
+
+  .discount-message.error {
+    display: block;
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .discount-value {
+    color: #16a34a !important;
+  }
+
   /* Order Totals */
   .order-totals {
     border-top: 1px solid var(--color-gray-200);
@@ -411,17 +694,17 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
     margin-top: var(--spacing-3);
   }
 
-  /* Customer Form */
+  /* Customer Form - Compacto */
   .customer-form {
     background: var(--color-white);
-    border-radius: var(--radius-2xl);
-    padding: var(--spacing-8);
-    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-5);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     border: 1px solid var(--color-gray-200);
   }
 
   .form-section {
-    margin-bottom: var(--spacing-8);
+    margin-bottom: var(--spacing-5);
   }
 
   .form-section:last-child {
@@ -429,16 +712,16 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
   }
 
   .form-title {
-    font-size: var(--text-lg);
+    font-size: var(--text-base);
     font-weight: var(--font-bold);
     color: var(--color-black);
-    margin: 0 0 var(--spacing-6) 0;
-    padding-bottom: var(--spacing-3);
+    margin: 0 0 var(--spacing-4) 0;
+    padding-bottom: var(--spacing-2);
     border-bottom: 1px solid var(--color-gray-200);
   }
 
   .form-group {
-    margin-bottom: var(--spacing-5);
+    margin-bottom: var(--spacing-4);
   }
 
   .form-group:last-child {
@@ -463,10 +746,10 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
   .form-textarea,
   .form-select {
     width: 100%;
-    padding: var(--spacing-3);
+    padding: 10px 12px;
     border: 1px solid var(--color-gray-300);
     border-radius: var(--radius-md);
-    font-size: var(--text-sm);
+    font-size: 14px;
     font-family: inherit;
     transition: all var(--transition-fast);
     background: var(--color-white);
@@ -482,13 +765,157 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
 
   .form-textarea {
     resize: vertical;
-    min-height: 80px;
+    min-height: 70px;
   }
 
-  /* Form Actions */
+  /* Payment Methods - Compacto */
+  .payment-methods {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-3);
+  }
+
+  .payment-option {
+    cursor: pointer;
+  }
+
+  .payment-option input[type="radio"] {
+    display: none;
+  }
+
+  .payment-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    padding: var(--spacing-3);
+    background: var(--color-gray-50);
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-fast);
+    position: relative;
+  }
+
+  .payment-option input[type="radio"]:checked ~ .payment-card {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+    border-color: #FFD700;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+  }
+
+  .payment-card:hover {
+    border-color: #FFD700;
+    background: var(--color-gray-100);
+  }
+
+  .payment-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .payment-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .payment-icon.pse {
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+    color: #FFD700;
+  }
+
+  .payment-icon.credit {
+    background: linear-gradient(135deg, #4262FF 0%, #3651D9 100%);
+    color: var(--color-white);
+  }
+
+  .payment-icon.debit {
+    background: linear-gradient(135deg, #1a1a2e 0%, #3d3d5c 100%);
+    color: #FFD700;
+  }
+
+  .payment-icon.whatsapp {
+    background: linear-gradient(135deg, #25d366 0%, #20BA5A 100%);
+    color: var(--color-white);
+  }
+
+  .payment-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+  }
+
+  .payment-name {
+    font-size: var(--text-sm);
+    font-weight: var(--font-bold);
+    color: var(--color-black);
+  }
+
+  .payment-desc {
+    font-size: var(--text-xs);
+    color: var(--color-gray-600);
+  }
+
+  .payment-check {
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-full);
+    background: var(--color-gray-300);
+    color: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    opacity: 0;
+    transition: all var(--transition-fast);
+  }
+
+  .payment-option input[type="radio"]:checked ~ .payment-card .payment-check {
+    opacity: 1;
+    background: #FFD700;
+    color: #1a1a2e;
+  }
+
+  /* Form Actions - Compacto */
   .form-actions {
-    margin-top: var(--spacing-8);
+    margin-top: var(--spacing-6);
     text-align: center;
+  }
+
+  .btn-checkout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    padding: 12px 32px;
+    background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+    color: #1a1a2e;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: 15px;
+    font-weight: var(--font-bold);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    font-family: inherit;
+    width: 100%;
+    max-width: 100%;
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+  }
+
+  .btn-checkout:hover {
+    background: linear-gradient(135deg, #FFC700 0%, #FFB700 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 215, 0, 0.4);
+  }
+
+  .btn-checkout:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
   }
 
   .btn-whatsapp {
@@ -567,39 +994,72 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
     .hero-title {
       font-size: var(--text-3xl);
     }
+
+    .payment-methods {
+      grid-template-columns: 1fr;
+    }
   }
 
   @media (max-width: 640px) {
     .checkout-hero {
-      padding: var(--spacing-20) 0 var(--spacing-16);
+      padding: var(--spacing-6) 0 var(--spacing-4);
     }
 
     .hero-title {
-      font-size: var(--text-2xl);
+      font-size: var(--text-xl);
+    }
+
+    .hero-subtitle {
+      font-size: var(--text-sm);
+      margin-bottom: var(--spacing-2);
+    }
+
+    .trust-badges {
+      display: none;
     }
 
     .checkout-section {
-      padding: var(--spacing-12) 0;
+      padding: var(--spacing-6) 0;
     }
 
     .order-summary,
     .customer-form {
-      padding: var(--spacing-6);
+      padding: var(--spacing-4);
     }
 
     .form-row {
       grid-template-columns: 1fr;
     }
 
-    .btn-whatsapp {
+    .btn-whatsapp,
+    .btn-checkout {
       width: 100%;
       min-width: auto;
+    }
+
+    .payment-card {
+      padding: var(--spacing-3);
+    }
+
+    .payment-icon {
+      width: 40px;
+      height: 40px;
+    }
+
+    .payment-icon svg {
+      width: 24px;
+      height: 24px;
     }
   }
 </style>
 
 <script>
-  import { cartManager } from '../scripts/cart.ts';
+  // Use the global cartManager from window (loaded via cart.js in Layout)
+  declare global {
+    interface Window {
+      cartManager: any;
+    }
+  }
 
   class CheckoutPage {
     private orderItems: HTMLElement | null = null;
@@ -607,8 +1067,10 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
     private subtotalEl: HTMLElement | null = null;
     private shippingEl: HTMLElement | null = null;
     private totalEl: HTMLElement | null = null;
-    private whatsappBtn: HTMLElement | null = null;
+    private submitBtn: HTMLElement | null = null;
+    private submitText: HTMLElement | null = null;
     private form: HTMLFormElement | null = null;
+    private selectedPaymentMethod: string = 'pse';
 
     constructor() {
       this.init();
@@ -621,14 +1083,15 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
       this.subtotalEl = document.getElementById('checkout-subtotal');
       this.shippingEl = document.getElementById('checkout-shipping');
       this.totalEl = document.getElementById('checkout-total');
-      this.whatsappBtn = document.getElementById('whatsapp-order');
+      this.submitBtn = document.getElementById('submit-order');
+      this.submitText = document.getElementById('submit-text');
       this.form = document.getElementById('checkout-form') as HTMLFormElement;
 
       // Setup event listeners
       this.setupEventListeners();
 
       // Subscribe to cart changes
-      cartManager.subscribe((state) => {
+      window.cartManager.subscribe((state: any) => {
         this.renderOrder(state);
       });
     }
@@ -637,12 +1100,21 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
       // Edit cart button
       const editCartBtn = document.getElementById('edit-cart-btn');
       editCartBtn?.addEventListener('click', () => {
-        cartManager.openCart();
+        window.cartManager.openCart();
       });
 
-      // WhatsApp order button
-      this.whatsappBtn?.addEventListener('click', () => {
-        this.sendWhatsAppOrder();
+      // Submit order button
+      this.submitBtn?.addEventListener('click', () => {
+        this.handleSubmit();
+      });
+
+      // Payment method selection
+      const paymentRadios = document.querySelectorAll<HTMLInputElement>('input[name="payment-method"]');
+      paymentRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+          this.selectedPaymentMethod = radio.value;
+          this.updateSubmitButton();
+        });
       });
 
       // Form validation
@@ -651,23 +1123,36 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
       });
     }
 
+    private updateSubmitButton(): void {
+      if (!this.submitText) return;
+
+      const texts: { [key: string]: string } = {
+        'pse': 'Proceder con PSE',
+        'credit-card': 'Pagar con Tarjeta de Crédito',
+        'debit-card': 'Pagar con Tarjeta Débito',
+        'whatsapp': 'Enviar Pedido por WhatsApp'
+      };
+
+      this.submitText.textContent = texts[this.selectedPaymentMethod] || 'Proceder al Pago';
+    }
+
     private renderOrder(state: any): void {
       if (!this.orderItems || !this.emptyCart) return;
 
       if (state.items.length === 0) {
         this.orderItems.style.display = 'none';
         this.emptyCart?.classList.add('show');
-        if (this.whatsappBtn) (this.whatsappBtn as HTMLButtonElement).disabled = true;
+        if (this.submitBtn) (this.submitBtn as HTMLButtonElement).disabled = true;
       } else {
         this.orderItems.style.display = 'flex';
         this.emptyCart?.classList.remove('show');
-        if (this.whatsappBtn) (this.whatsappBtn as HTMLButtonElement).disabled = false;
+        if (this.submitBtn) (this.submitBtn as HTMLButtonElement).disabled = false;
 
         // Render items
         this.orderItems.innerHTML = state.items.map((item: any) => `
           <div class="order-item">
             <div class="item-image">
-              ${item.image 
+              ${item.image
                 ? `<img src="${item.image}" alt="${item.name}" />`
                 : '<div class="placeholder">📦</div>'
               }
@@ -677,7 +1162,7 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
               <div class="item-model">${item.model}</div>
               <div class="item-quantity">Cantidad: ${item.quantity}</div>
             </div>
-            <div class="item-price">${cartManager.formatPrice(item.price * item.quantity)}</div>
+            <div class="item-price">${window.cartManager.formatPrice(item.price * item.quantity)}</div>
           </div>
         `).join('');
       }
@@ -687,9 +1172,9 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
       const shipping = subtotal >= 500000 ? 0 : 25000; // Free shipping over $500k COP
       const total = subtotal + shipping;
 
-      if (this.subtotalEl) this.subtotalEl.textContent = cartManager.formatPrice(subtotal);
-      if (this.shippingEl) this.shippingEl.textContent = shipping === 0 ? 'Gratis' : cartManager.formatPrice(shipping);
-      if (this.totalEl) this.totalEl.textContent = cartManager.formatPrice(total);
+      if (this.subtotalEl) this.subtotalEl.textContent = window.cartManager.formatPrice(subtotal);
+      if (this.shippingEl) this.shippingEl.textContent = shipping === 0 ? 'Gratis' : window.cartManager.formatPrice(shipping);
+      if (this.totalEl) this.totalEl.textContent = window.cartManager.formatPrice(total);
     }
 
     private validateForm(): boolean {
@@ -708,13 +1193,67 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
       return true;
     }
 
+    private handleSubmit(): void {
+      if (this.selectedPaymentMethod === 'whatsapp') {
+        this.sendWhatsAppOrder();
+      } else {
+        this.processPayment();
+      }
+    }
+
+    private processPayment(): void {
+      if (!this.validateForm()) {
+        alert('Por favor completa todos los campos requeridos.');
+        return;
+      }
+
+      const state = window.cartManager.getState();
+      if (state.items.length === 0) {
+        alert('Tu carrito está vacío.');
+        return;
+      }
+
+      const subtotal = state.total;
+      const shipping = subtotal >= 500000 ? 0 : 25000;
+      const total = subtotal + shipping;
+
+      // Get form data
+      const formData = new FormData(this.form!);
+      const customerData = {
+        name: formData.get('name') as string,
+        email: formData.get('email') as string,
+        phone: formData.get('phone') as string,
+        address: formData.get('address') as string,
+        city: formData.get('city') as string,
+        department: formData.get('department') as string,
+        notes: formData.get('notes') as string || ''
+      };
+
+      // Simulate payment processing
+      const paymentMessages: { [key: string]: string } = {
+        'pse': '🏦 Redirigiendo a PSE para completar el pago...',
+        'credit-card': '💳 Procesando pago con tarjeta de crédito...',
+        'debit-card': '💳 Procesando pago con tarjeta débito...'
+      };
+
+      alert(paymentMessages[this.selectedPaymentMethod]);
+
+      // In a real implementation, you would integrate with a payment gateway here
+      // For now, we'll simulate a successful payment
+      setTimeout(() => {
+        alert(`✅ ¡Pago procesado exitosamente!\n\nTotal: ${window.cartManager.formatPrice(total)}\n\nRecibirás un correo de confirmación en: ${customerData.email}`);
+        window.cartManager.clearCart();
+        window.location.href = '/';
+      }, 2000);
+    }
+
     private sendWhatsAppOrder(): void {
       if (!this.validateForm()) {
         alert('Por favor completa todos los campos requeridos.');
         return;
       }
 
-      const state = cartManager.getState();
+      const state = window.cartManager.getState();
       if (state.items.length === 0) {
         alert('Tu carrito está vacío.');
         return;
@@ -738,11 +1277,11 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
       message += `• Nombre: ${customerData.name}\n`;
       message += `• Email: ${customerData.email}\n`;
       message += `• Teléfono: ${customerData.phone}\n\n`;
-      
+
       message += `📦 *PRODUCTOS:*\n`;
       state.items.forEach((item: any) => {
         message += `• ${item.name} (${item.model})\n`;
-        message += `  Cantidad: ${item.quantity} | Precio: ${cartManager.formatPrice(item.price * item.quantity)}\n\n`;
+        message += `  Cantidad: ${item.quantity} | Precio: ${window.cartManager.formatPrice(item.price * item.quantity)}\n\n`;
       });
 
       message += `📍 *DIRECCIÓN DE ENVÍO:*\n`;
@@ -758,20 +1297,20 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
       const total = subtotal + shipping;
 
       message += `💰 *RESUMEN:*\n`;
-      message += `• Subtotal: ${cartManager.formatPrice(subtotal)}\n`;
-      message += `• Envío: ${shipping === 0 ? 'GRATIS' : cartManager.formatPrice(shipping)}\n`;
-      message += `• *TOTAL: ${cartManager.formatPrice(total)}*\n\n`;
+      message += `• Subtotal: ${window.cartManager.formatPrice(subtotal)}\n`;
+      message += `• Envío: ${shipping === 0 ? 'GRATIS' : window.cartManager.formatPrice(shipping)}\n`;
+      message += `• *TOTAL: ${window.cartManager.formatPrice(total)}*\n\n`;
       message += `¡Gracias por confiar en Team Service Costa! 🙌`;
 
       // Send to WhatsApp
       const phone = '+573205085531';
       const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-      
+
       window.open(whatsappUrl, '_blank');
-      
+
       // Clear cart after sending order
       setTimeout(() => {
-        cartManager.clearCart();
+        window.cartManager.clearCart();
       }, 1000);
     }
   }
@@ -779,12 +1318,9 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
   // Initialize when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-      // Make cart manager available
-      (window as any).cartManager = cartManager;
       new CheckoutPage();
     });
   } else {
-    (window as any).cartManager = cartManager;
     new CheckoutPage();
   }
 </script>

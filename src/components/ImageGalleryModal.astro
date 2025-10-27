@@ -1,0 +1,418 @@
+<!-- Image Gallery Modal Component -->
+<div id="image-gallery-modal" class="gallery-modal" style="display: none;">
+  <div class="gallery-overlay"></div>
+
+  <div class="gallery-container">
+    <button class="gallery-close" id="close-gallery">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    <button class="gallery-nav gallery-prev" id="gallery-prev">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+
+    <button class="gallery-nav gallery-next" id="gallery-next">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
+
+    <div class="gallery-main">
+      <img id="gallery-main-image" src="" alt="Producto" />
+      <div class="gallery-counter">
+        <span id="gallery-current">1</span> / <span id="gallery-total">1</span>
+      </div>
+    </div>
+
+    <div class="gallery-thumbnails" id="gallery-thumbnails">
+      <!-- Thumbnails will be dynamically inserted here -->
+    </div>
+  </div>
+</div>
+
+<style>
+  .gallery-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+  }
+
+  .gallery-container {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    z-index: 1;
+  }
+
+  .gallery-close {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-full);
+    color: white;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    z-index: 3;
+  }
+
+  .gallery-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+  }
+
+  .gallery-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-full);
+    color: white;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    z-index: 2;
+  }
+
+  .gallery-nav:hover {
+    background: rgba(255, 208, 47, 0.9);
+    color: #1a1a2e;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .gallery-nav:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .gallery-nav:disabled:hover {
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .gallery-prev {
+    left: -70px;
+  }
+
+  .gallery-next {
+    right: -70px;
+  }
+
+  .gallery-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .gallery-main img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    animation: imageZoom 0.3s ease;
+  }
+
+  @keyframes imageZoom {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .gallery-counter {
+    position: absolute;
+    bottom: var(--spacing-4);
+    right: var(--spacing-4);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--radius-full);
+    color: white;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+  }
+
+  .gallery-thumbnails {
+    display: flex;
+    gap: var(--spacing-3);
+    padding: var(--spacing-4);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-xl);
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 208, 47, 0.5) rgba(255, 255, 255, 0.1);
+  }
+
+  .gallery-thumbnails::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .gallery-thumbnails::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-full);
+  }
+
+  .gallery-thumbnails::-webkit-scrollbar-thumb {
+    background: rgba(255, 208, 47, 0.5);
+    border-radius: var(--radius-full);
+  }
+
+  .gallery-thumbnail {
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all var(--transition-fast);
+  }
+
+  .gallery-thumbnail:hover {
+    border-color: rgba(255, 208, 47, 0.5);
+    transform: scale(1.05);
+  }
+
+  .gallery-thumbnail.active {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(255, 208, 47, 0.3);
+  }
+
+  .gallery-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .gallery-container {
+      width: 95%;
+      height: 95vh;
+    }
+
+    .gallery-nav {
+      width: 40px;
+      height: 40px;
+    }
+
+    .gallery-prev {
+      left: 10px;
+    }
+
+    .gallery-next {
+      right: 10px;
+    }
+
+    .gallery-close {
+      top: 10px;
+      right: 10px;
+    }
+
+    .gallery-thumbnail {
+      width: 60px;
+      height: 60px;
+    }
+  }
+</style>
+
+<script>
+  interface GalleryState {
+    images: string[];
+    currentIndex: number;
+    isOpen: boolean;
+  }
+
+  const galleryState: GalleryState = {
+    images: [],
+    currentIndex: 0,
+    isOpen: false
+  };
+
+  function openImageGallery(images: string[], startIndex: number = 0) {
+    if (!images || images.length === 0) return;
+
+    galleryState.images = images;
+    galleryState.currentIndex = startIndex;
+    galleryState.isOpen = true;
+
+    const modal = document.getElementById('image-gallery-modal');
+    if (modal) {
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      renderGallery();
+    }
+  }
+
+  function closeImageGallery() {
+    galleryState.isOpen = false;
+    const modal = document.getElementById('image-gallery-modal');
+    if (modal) {
+      modal.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  }
+
+  function renderGallery() {
+    const { images, currentIndex } = galleryState;
+
+    // Update main image
+    const mainImage = document.getElementById('gallery-main-image') as HTMLImageElement;
+    if (mainImage) {
+      mainImage.src = images[currentIndex];
+    }
+
+    // Update counter
+    const currentEl = document.getElementById('gallery-current');
+    const totalEl = document.getElementById('gallery-total');
+    if (currentEl && totalEl) {
+      currentEl.textContent = (currentIndex + 1).toString();
+      totalEl.textContent = images.length.toString();
+    }
+
+    // Update nav buttons
+    const prevBtn = document.getElementById('gallery-prev') as HTMLButtonElement;
+    const nextBtn = document.getElementById('gallery-next') as HTMLButtonElement;
+    if (prevBtn) prevBtn.disabled = currentIndex === 0;
+    if (nextBtn) nextBtn.disabled = currentIndex === images.length - 1;
+
+    // Render thumbnails
+    const thumbnailsContainer = document.getElementById('gallery-thumbnails');
+    if (thumbnailsContainer) {
+      thumbnailsContainer.innerHTML = images.map((img, idx) => `
+        <div class="gallery-thumbnail ${idx === currentIndex ? 'active' : ''}" data-index="${idx}">
+          <img src="${img}" alt="Thumbnail ${idx + 1}" />
+        </div>
+      `).join('');
+
+      // Add click listeners to thumbnails
+      thumbnailsContainer.querySelectorAll('.gallery-thumbnail').forEach((thumb) => {
+        thumb.addEventListener('click', () => {
+          const index = parseInt((thumb as HTMLElement).dataset.index || '0');
+          galleryState.currentIndex = index;
+          renderGallery();
+        });
+      });
+    }
+  }
+
+  function navigateGallery(direction: 'prev' | 'next') {
+    const { images, currentIndex } = galleryState;
+
+    if (direction === 'prev' && currentIndex > 0) {
+      galleryState.currentIndex--;
+      renderGallery();
+    } else if (direction === 'next' && currentIndex < images.length - 1) {
+      galleryState.currentIndex++;
+      renderGallery();
+    }
+  }
+
+  // Event listeners
+  document.addEventListener('DOMContentLoaded', () => {
+    const closeBtn = document.getElementById('close-gallery');
+    const prevBtn = document.getElementById('gallery-prev');
+    const nextBtn = document.getElementById('gallery-next');
+    const overlay = document.querySelector('.gallery-overlay');
+
+    if (closeBtn) closeBtn.addEventListener('click', closeImageGallery);
+    if (overlay) overlay.addEventListener('click', closeImageGallery);
+    if (prevBtn) prevBtn.addEventListener('click', () => navigateGallery('prev'));
+    if (nextBtn) nextBtn.addEventListener('click', () => navigateGallery('next'));
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (!galleryState.isOpen) return;
+
+      if (e.key === 'Escape') {
+        closeImageGallery();
+      } else if (e.key === 'ArrowLeft') {
+        navigateGallery('prev');
+      } else if (e.key === 'ArrowRight') {
+        navigateGallery('next');
+      }
+    });
+
+    // Listen for image clicks on product cards
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      const productImage = target.closest('.product-image');
+
+      if (productImage) {
+        const hasGallery = productImage.getAttribute('data-has-gallery') === 'true';
+        if (hasGallery) {
+          e.stopPropagation();
+          const productCard = productImage.closest('.product-card');
+          if (productCard) {
+            const imagesData = (productCard as HTMLElement).dataset.productImages;
+            if (imagesData) {
+              try {
+                const images = JSON.parse(imagesData);
+                if (images && images.length > 0) {
+                  openImageGallery(images, 0);
+                }
+              } catch (err) {
+                console.error('Error parsing product images:', err);
+              }
+            }
+          }
+        }
+      }
+    });
+  });
+
+  // Expose to window for external access
+  (window as any).openImageGallery = openImageGallery;
+  (window as any).closeImageGallery = closeImageGallery;
+</script>

@@ -3,6 +3,11 @@ import Layout from '../layouts/Layout.astro';
 import HeaderMiro from '../components/HeaderMiro.astro';
 import FooterMiro from '../components/FooterMiro.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
+import { supabase, getPublicUrl } from '../lib/supabase';
+
+// Obtener credenciales de Supabase del servidor para pasarlas al cliente
+const supabaseUrl = import.meta.env.SUPABASE_URL;
+const supabaseKey = import.meta.env.SUPABASE_KEY;
 ---
 
 <Layout
@@ -48,7 +53,7 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
                   type="text"
                   id="order-id"
                   name="order-id"
-                  placeholder="Ej: ORD-2024-0001"
+                  placeholder="Ej: ORD-2024-0001 o COM-2024-0001"
                   required
                   autocomplete="off"
                 />
@@ -130,12 +135,28 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
                 <span class="detail-label">Ubicación:</span>
                 <span class="detail-value" id="result-location">Montería - Córdoba</span>
               </div>
+              <div class="detail-item">
+                <span class="detail-label">Serial del Producto:</span>
+                <span class="detail-value" id="result-serial">KAR-K5-2023-45678</span>
+              </div>
             </div>
           </div>
 
+          <!-- Progress Bar -->
+          <div class="progress-section">
+            <div class="progress-header">
+              <h3>Progreso del Servicio</h3>
+              <span class="progress-percentage" id="progress-percentage">60%</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="progress-bar" style="width: 60%"></div>
+            </div>
+          </div>
+
+          <!-- Interactive Timeline -->
           <div class="status-timeline">
             <h3>Estado del Servicio</h3>
-            <div class="timeline">
+            <div class="timeline" id="timeline-container">
               <div class="timeline-item completed">
                 <div class="timeline-icon">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -206,6 +227,43 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
             </div>
           </div>
 
+          <!-- Repair Images Gallery -->
+          <div class="repair-gallery" id="repair-gallery" style="display: none;">
+            <h3>Registro Fotográfico del Servicio</h3>
+            <p class="gallery-subtitle">Documentación visual del proceso de reparación</p>
+            <div class="images-grid" id="images-grid">
+              <!-- Images will be populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Parts Information -->
+          <div class="parts-section" id="parts-section" style="display: none;">
+            <h3>Repuestos y Componentes</h3>
+            <p class="parts-subtitle">Piezas utilizadas en la reparación</p>
+            <div class="parts-grid" id="parts-grid">
+              <!-- Parts will be populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Technician Notes -->
+          <div class="notes-section" id="notes-section" style="display: none;">
+            <h3>Notas del Técnico</h3>
+            <div class="notes-card">
+              <div class="notes-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+              </div>
+              <div class="notes-content" id="notes-content">
+                <p>Equipo en buen estado general. Se detectó desgaste en bomba de presión. Se procederá con reemplazo de componente original KÄRCHER.</p>
+              </div>
+            </div>
+          </div>
+
           <div class="contact-section">
             <div class="contact-card">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -237,7 +295,7 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
           <p>No pudimos encontrar una orden con el ID <strong id="error-order-id"></strong></p>
           <ul class="error-suggestions">
             <li>Verifica que el ID esté escrito correctamente</li>
-            <li>Asegúrate de incluir el prefijo (ORD-)</li>
+            <li>Asegúrate de incluir el prefijo (ORD- para reparaciones, COM- para compras)</li>
             <li>Si el problema persiste, contáctanos por WhatsApp</li>
           </ul>
           <button class="btn-try-again" id="try-again-btn">
@@ -501,8 +559,8 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
   .status-badge {
     display: inline-block;
     padding: var(--spacing-1-5) var(--spacing-4);
-    background: linear-gradient(135deg, #F59E0B 0%, #F97316 100%);
-    color: var(--color-white);
+    background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+    color: #1a1a2e;
     font-size: var(--text-sm);
     font-weight: var(--font-semibold);
     border-radius: var(--radius-full);
@@ -672,13 +730,332 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
     font-weight: var(--font-semibold);
   }
 
+  /* Progress Bar */
+  .progress-section {
+    margin-bottom: var(--spacing-10);
+    animation: slideInUp 0.6s ease-out;
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-4);
+  }
+
+  .progress-header h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+    color: var(--color-black);
+    margin: 0;
+  }
+
+  .progress-percentage {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-extrabold);
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .progress-bar-container {
+    height: 12px;
+    background: var(--color-gray-200);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
+    background-size: 200% 100%;
+    border-radius: var(--radius-full);
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: shimmer 2s linear infinite;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  }
+
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5)); }
+    50% { filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)); }
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Repair Gallery */
+  .repair-gallery {
+    margin-bottom: var(--spacing-10);
+    animation: fadeIn 0.8s ease-out 0.2s both;
+  }
+
+  .repair-gallery h3 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: #1a1a2e;
+    margin-bottom: var(--spacing-2);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+  }
+
+  .repair-gallery h3::before {
+    content: '📸';
+    font-size: 28px;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  .gallery-subtitle {
+    color: var(--color-gray-600);
+    font-size: var(--text-sm);
+    margin-bottom: var(--spacing-6);
+  }
+
+  .images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--spacing-4);
+  }
+
+  .gallery-image {
+    position: relative;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--color-gray-100);
+    aspect-ratio: 4/3;
+  }
+
+  .gallery-image:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .gallery-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .gallery-image:hover img {
+    transform: scale(1.1);
+  }
+
+  .image-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    padding: var(--spacing-4) var(--spacing-3);
+    color: white;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+  }
+
+  /* Parts Section */
+  .parts-section {
+    margin-bottom: var(--spacing-10);
+    animation: fadeIn 0.8s ease-out 0.4s both;
+  }
+
+  .parts-section h3 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: #1a1a2e;
+    margin-bottom: var(--spacing-2);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+  }
+
+  .parts-section h3::before {
+    content: '🔧';
+    font-size: 28px;
+    animation: rotate 3s linear infinite;
+  }
+
+  .parts-subtitle {
+    color: var(--color-gray-600);
+    font-size: var(--text-sm);
+    margin-bottom: var(--spacing-6);
+  }
+
+  .parts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-4);
+  }
+
+  .part-card {
+    background: white;
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-5);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .part-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #FFD700, #FFA500);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  .part-card:hover {
+    border-color: #FFD700;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(255, 215, 0, 0.2);
+  }
+
+  .part-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .part-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: var(--spacing-3);
+  }
+
+  .part-name {
+    font-size: var(--text-base);
+    font-weight: var(--font-bold);
+    color: #1a1a2e;
+    margin: 0;
+  }
+
+  .part-status {
+    display: inline-block;
+    padding: var(--spacing-1) var(--spacing-2);
+    background: linear-gradient(135deg, #10B981, #059669);
+    color: white;
+    font-size: var(--text-xs);
+    font-weight: var(--font-semibold);
+    border-radius: var(--radius-md);
+  }
+
+  .part-code {
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .part-price {
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+    color: #FFD700;
+    margin: 0;
+  }
+
+  /* Notes Section */
+  .notes-section {
+    margin-bottom: var(--spacing-10);
+    animation: fadeIn 0.8s ease-out 0.6s both;
+  }
+
+  .notes-section h3 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: #1a1a2e;
+    margin-bottom: var(--spacing-4);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+  }
+
+  .notes-section h3::before {
+    content: '📝';
+    font-size: 28px;
+  }
+
+  .notes-card {
+    background: linear-gradient(135deg, #FFF9E6 0%, #FFFBF0 100%);
+    border: 2px solid #FFD700;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-6);
+    display: flex;
+    gap: var(--spacing-4);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.1);
+  }
+
+  .notes-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  .notes-content {
+    flex: 1;
+  }
+
+  .notes-content p {
+    color: #1a1a2e;
+    font-size: var(--text-base);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
   /* Contact Section */
   .contact-card {
     padding: var(--spacing-8);
-    background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
     border-radius: var(--radius-xl);
     text-align: center;
-    border: 1px solid #BFDBFE;
+    border: 1px solid #00BCD4;
   }
 
   .contact-card svg {
@@ -740,13 +1117,13 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
     justify-content: center;
     width: 80px;
     height: 80px;
-    background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+    background: linear-gradient(135deg, #ffe8cc 0%, #ffd699 100%);
     border-radius: var(--radius-2xl);
     margin-bottom: var(--spacing-6);
   }
 
   .error-icon svg {
-    color: #DC2626;
+    color: #FFD700;
   }
 
   .error-card h3 {
@@ -861,31 +1238,245 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
       padding: var(--spacing-5);
     }
   }
+
+  /* Spinner de carga */
+  .spinner {
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .spinner-circle {
+    stroke-dasharray: 50;
+    stroke-dashoffset: 25;
+    animation: spinner-dash 1.5s ease-in-out infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  @keyframes spinner-dash {
+    0% { stroke-dashoffset: 50; }
+    50% { stroke-dashoffset: 12.5; }
+    100% { stroke-dashoffset: 50; }
+  }
 </style>
 
 <script>
+  // Load Supabase from CDN for better compatibility
+  console.log('🔍 DEBUG: Loading Supabase from CDN');
+  
+  // Wait for Supabase to be available
+  function waitForSupabase(callback) {
+    if (window.supabase) {
+      callback();
+    } else {
+      setTimeout(() => waitForSupabase(callback), 100);
+    }
+  }
+  
+  // Initialize when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('🔍 DEBUG: DOM loaded, checking for Supabase');
+    
+    if (window.supabase) {
+      console.log('✅ Supabase already loaded');
+      return;
+    }
+    
+    // Las credenciales vienen del servidor via define:vars
+    const supabaseUrl = '/* @supabaseUrl */';
+    const supabaseKey = '/* @supabaseKey */';
+    
+    console.log('🔍 DEBUG: supabaseUrl:', supabaseUrl ? 'defined' : 'undefined');
+    console.log('🔍 DEBUG: supabaseKey:', supabaseKey ? 'defined' : 'undefined');
+    
+    // Try to load Supabase from CDN
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+    script.onload = () => {
+      console.log('🔍 DEBUG: Supabase CDN loaded');
+      
+      // Initialize Supabase with credentials from server
+      if (window.supabase && supabaseUrl && supabaseKey) {
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const STORAGE_BUCKET = 'imagenes';
+        
+        // Función para obtener URL pública de Storage
+        function getPublicUrl(path) {
+          if (!path) return '';
+          if (path.startsWith('http://') || path.startsWith('https://')) {
+            return path;
+          }
+          const { data } = supabaseClient.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+          return data.publicUrl;
+        }
+        
+        // Exponer al objeto window para uso global
+        window.supabase = supabaseClient;
+        window.getPublicUrl = getPublicUrl;
+        
+        console.log('✅ Supabase cliente inicializado en estado-producto');
+        
+        // Initialize the rest of the script
+        initializeApp();
+      } else {
+        console.error('❌ ERROR: Supabase credentials not available');
+      }
+    };
+    
+    script.onerror = () => {
+      console.error('❌ ERROR: Failed to load Supabase CDN');
+    };
+    
+    document.head.appendChild(script);
+  });
+  
+  function initializeApp() {
+
+  // Las credenciales vienen del servidor via define:vars
+  const supabaseClient = createClient(supabaseUrl, supabaseKey);
+  const STORAGE_BUCKET = 'imagenes';
+
+  // Función para obtener URL pública de Storage
+  function getPublicUrl(path) {
+    if (!path) return '';
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    const { data } = supabaseClient.storage.from(STORAGE_BUCKET).getPublicUrl(path);
+    return data.publicUrl;
+  }
+
+  // Exponer al objeto window para uso global
+  window.supabase = supabaseClient;
+  window.getPublicUrl = getPublicUrl;
+
+  console.log('✅ Supabase cliente inicializado en estado-producto');
+
+  // Type definitions
+
+
+
+
+
   // Simulación de base de datos de órdenes
   const ordersDatabase = {
     'ORD-2024-0001': {
       product: 'Hidrolavadora KÄRCHER K5',
       model: 'K5 Premium Full Control',
+      serial: 'KAR-K5-2023-45678',
       date: '15 de Enero, 2024',
       location: 'Montería - Córdoba',
-      status: 'En reparación'
+      status: 'En reparación',
+      type: 'reparacion',
+      currentStage: 3,
+      images: [
+        { url: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=500&h=400&fit=crop', label: 'Estado inicial del equipo' },
+        { url: 'https://images.unsplash.com/photo-1556656793-08538906a9f8?w=500&h=400&fit=crop', label: 'Diagnóstico - Bomba de presión' },
+        { url: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=500&h=400&fit=crop', label: 'Reemplazo de componentes' }
+      ],
+      parts: [
+        { name: 'Bomba de Presión', code: 'K5-PUMP-2024', price: 285000, status: 'Instalado' },
+        { name: 'Sello de Pistón', code: 'K5-SEAL-001', price: 45000, status: 'Instalado' },
+        { name: 'Filtro de Agua', code: 'K5-FILTER-01', price: 28000, status: 'Instalado' }
+      ],
+      notes: 'Equipo presentaba fuga en bomba de presión principal. Se reemplazó bomba completa con repuesto original KÄRCHER. Se verificó presión de salida (120 bar) y funcionamiento correcto. Equipo listo para pruebas finales.'
     },
     'ORD-2024-0002': {
       product: 'Aspiradora KÄRCHER WD3',
       model: 'WD3 Premium',
+      serial: 'KAR-WD3-2023-12345',
       date: '18 de Enero, 2024',
       location: 'Cartagena - Bolívar',
-      status: 'Listo para entrega'
+      status: 'Listo para entrega',
+      type: 'reparacion',
+      currentStage: 5,
+      images: [
+        { url: 'https://images.unsplash.com/photo-1558317374-067fb5f30001?w=500&h=400&fit=crop', label: 'Recepción del equipo' },
+        { url: 'https://images.unsplash.com/photo-1563453392212-326f5e854473?w=500&h=400&fit=crop', label: 'Motor limpio y revisado' },
+        { url: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=500&h=400&fit=crop', label: 'Sistema de filtración nuevo' },
+        { url: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=500&h=400&fit=crop', label: 'Pruebas finales completadas' }
+      ],
+      parts: [
+        { name: 'Filtro HEPA', code: 'WD3-HEPA-2024', price: 95000, status: 'Instalado' },
+        { name: 'Manguera de Succión', code: 'WD3-HOSE-02', price: 68000, status: 'Instalado' },
+        { name: 'Cepillo Universal', code: 'WD3-BRUSH-01', price: 42000, status: 'Instalado' }
+      ],
+      notes: 'Servicio de mantenimiento completo realizado. Se reemplazó filtro HEPA y manguera deteriorada. Motor limpiado y lubricado. Equipo funcionando al 100% de capacidad. Listo para recoger.'
     },
     'ORD-2024-0003': {
       product: 'Hidrolavadora KÄRCHER K7',
       model: 'K7 Premium Full Control Plus',
+      serial: 'KAR-K7-2024-98765',
       date: '20 de Enero, 2024',
       location: 'Apartadó - Antioquia',
-      status: 'En diagnóstico'
+      status: 'En diagnóstico',
+      type: 'reparacion',
+      currentStage: 2
+    },
+    'COM-2024-0001': {
+      product: 'Taladro Makita HP1640',
+      model: 'HP1640 680W',
+      serial: 'MAK-HP1640-2024-55501',
+      date: '22 de Enero, 2024',
+      location: 'Montería - Córdoba',
+      status: 'En tránsito',
+      type: 'compra',
+      currentStage: 3
+    },
+    'COM-2024-0002': {
+      product: 'Hidrolavadora KÄRCHER K2',
+      model: 'K2 Basic',
+      serial: 'KAR-K2-2024-33445',
+      date: '23 de Enero, 2024',
+      location: 'Cartagena - Bolívar',
+      status: 'Procesando pago',
+      type: 'compra',
+      currentStage: 1
+    },
+    'COM-2024-0003': {
+      product: 'Sierra Circular Makita 5007F',
+      model: '5007F 1800W',
+      serial: 'MAK-5007F-2024-77789',
+      date: '24 de Enero, 2024',
+      location: 'Apartadó - Antioquia',
+      status: 'Entregado',
+      type: 'compra',
+      currentStage: 5
+    },
+    'ORD-2024-0004': {
+      product: 'Lavadora de Pisos KÄRCHER BR 30/4',
+      model: 'BR 30/4 C Bp',
+      serial: 'KAR-BR30-2023-66123',
+      date: '16 de Enero, 2024',
+      location: 'Montería - Córdoba',
+      status: 'Recibido',
+      type: 'reparacion',
+      currentStage: 1
+    },
+    'ORD-2024-0005': {
+      product: 'Aspiradora KÄRCHER NT 22/1',
+      model: 'NT 22/1 Ap Bp',
+      serial: 'KAR-NT22-2024-88990',
+      date: '25 de Enero, 2024',
+      location: 'Cartagena - Bolívar',
+      status: 'En pruebas',
+      type: 'reparacion',
+      currentStage: 4,
+      images: [
+        { url: 'https://images.unsplash.com/photo-1585664811087-47f65abbad64?w=500&h=400&fit=crop', label: 'Inspección inicial' },
+        { url: 'https://images.unsplash.com/photo-1581092162384-8987c1d64926?w=500&h=400&fit=crop', label: 'Componentes eléctricos' },
+        { url: 'https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?w=500&h=400&fit=crop', label: 'Prueba de succión' }
+      ],
+      parts: [
+        { name: 'Motor Principal', code: 'NT22-MOTOR-24', price: 420000, status: 'Instalado' },
+        { name: 'Cable de Alimentación', code: 'NT22-CABLE-03', price: 55000, status: 'Instalado' },
+        { name: 'Interruptor de Seguridad', code: 'NT22-SWITCH-01', price: 38000, status: 'Instalado' }
+      ],
+      notes: 'Equipo presentaba falla eléctrica. Se identificó motor quemado y cable dañado. Se reemplazaron ambos componentes más interruptor de seguridad. Actualmente en fase de pruebas de funcionamiento continuo (24h).'
     }
   };
 
@@ -896,56 +1487,249 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
   const tryAgainBtn = document.getElementById('try-again-btn');
 
   // Handle form submission
-  searchForm?.addEventListener('submit', (e) => {
+  searchForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const orderIdInput = document.getElementById('order-id') as HTMLInputElement;
+    const orderIdInput = document.getElementById('order-id');
     const orderId = orderIdInput.value.trim().toUpperCase();
 
-    // Search in database
-    const orderData = ordersDatabase[orderId];
+    console.log(`🔍 Buscando orden: ${orderId}`);
 
-    if (orderData) {
-      // Show result
-      showResult(orderId, orderData);
-    } else {
-      // Show error
-      showError(orderId);
+    // Mostrar indicador de carga
+    const submitBtn = searchForm.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<svg class="spinner" width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle class="spinner-circle" cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="4"></circle></svg> Buscando...';
+
+    try {
+      // Buscar orden en Supabase
+      const { data: ordenData, error } = await window.supabase
+        .from('ordenes')
+        .select('*, equipos (tipo, marca, modelo, serial), clientes (nombre), sedes (nombre, ciudad)')
+        .eq('codigo', orderId)
+        .single();
+
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnText;
+
+      if (error || !ordenData) {
+        console.error('❌ Error al buscar orden:', error);
+        // Intentar buscar en base de datos local de respaldo
+        const orderData = ordersDatabase[orderId];
+        if (orderData) {
+          showResult(orderId, orderData);
+        } else {
+          showError(orderId);
+        }
+        return;
+      }
+
+      console.log('✅ Orden encontrada:', ordenData);
+
+      // Mapear datos de Supabase al formato esperado
+      const mappedData = {
+        product: ordenData.equipos?.tipo || 'Equipo no especificado',
+        model: ordenData.equipos?.modelo || '',
+        serial: ordenData.equipos?.serial || '',
+        date: ordenData.fecha_creacion ? new Date(ordenData.fecha_creacion).toLocaleDateString('es-ES', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        }) : '',
+        location: ordenData.sedes ? `${ordenData.sedes.nombre} - ${ordenData.sedes.ciudad}` : '',
+        status: ordenData.estado_actual || 'Pendiente',
+        type: ordenData.tipo_orden === 'reparacion' ? 'reparacion' : 'compra',
+        currentStage: calculateStage(ordenData),
+        images: ordenData.fotos_diagnostico ? ordenData.fotos_diagnostico.map((foto, index) => ({
+          url: window.getPublicUrl(foto),
+          label: `Imagen ${index + 1}`
+        })) : undefined,
+        parts: ordenData.repuestos_diagnostico || ordenData.repuestos_cotizacion,
+        notes: ordenData.comentarios_diagnostico || ordenData.comentarios_reparacion || undefined
+      };
+
+      showResult(orderId, mappedData);
+    } catch (err) {
+      console.error('❌ Error inesperado:', err);
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalBtnText;
+      // Fallback a base de datos local
+      const orderData = ordersDatabase[orderId];
+      if (orderData) {
+        showResult(orderId, orderData);
+      } else {
+        showError(orderId);
+      }
     }
   });
 
+  // Calcular etapa según el estado
+  function calculateStage(orden) {
+    const estado = orden.estado_actual?.toLowerCase();
+    if (estado?.includes('recibid') || estado?.includes('recepción')) return 1;
+    if (estado?.includes('diagnóstico')) return 2;
+    if (estado?.includes('reparación') || estado?.includes('reparando')) return 3;
+    if (estado?.includes('prueba')) return 4;
+    if (estado?.includes('listo') || estado?.includes('entrega')) return 5;
+    return 1;
+  }
+
   // Show result
-  function showResult(orderId: string, data: any) {
+  function showResult(orderId, data) {
     // Hide search and error sections
-    document.querySelector('.search-section')!.style.display = 'none';
-    errorSection!.style.display = 'none';
+    const searchSection = document.querySelector('.search-section');
+    if (searchSection) searchSection.style.display = 'none';
+    if (errorSection) errorSection.style.display = 'none';
 
     // Update result data
-    document.getElementById('result-order-id')!.textContent = orderId;
-    document.getElementById('result-product')!.textContent = data.product;
-    document.getElementById('result-model')!.textContent = data.model;
-    document.getElementById('result-date')!.textContent = data.date;
-    document.getElementById('result-location')!.textContent = data.location;
-    document.getElementById('status-badge')!.textContent = data.status;
+    document.getElementById('result-order-id').textContent = orderId;
+    document.getElementById('result-product').textContent = data.product;
+    document.getElementById('result-model').textContent = data.model;
+    document.getElementById('result-date').textContent = data.date;
+    document.getElementById('result-location').textContent = data.location;
+    document.getElementById('result-serial').textContent = data.serial;
+    document.getElementById('status-badge').textContent = data.status;
+
+    // Update progress bar
+    const progressPercentage = (data.currentStage / 5) * 100;
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-percentage');
+    if (progressBar && progressText) {
+      progressBar.style.width = `${progressPercentage}%`;
+      progressText.textContent = `${Math.round(progressPercentage)}%`;
+    }
+
+    // Update timeline based on order type
+    updateTimeline(data);
+
+    // Show images if available
+    const repairGallery = document.getElementById('repair-gallery');
+    const imagesGrid = document.getElementById('images-grid');
+    if (data.images && data.images.length > 0 && repairGallery && imagesGrid) {
+      imagesGrid.innerHTML = data.images.map(img => `
+        <div class="gallery-image">
+          <img src="${img.url}" alt="${img.label}" loading="lazy" />
+          <div class="image-label">${img.label}</div>
+        </div>
+      `).join('');
+      repairGallery.style.display = 'block';
+    }
+
+    // Show parts if available
+    const partsSection = document.getElementById('parts-section');
+    const partsGrid = document.getElementById('parts-grid');
+    if (data.parts && data.parts.length > 0 && partsSection && partsGrid) {
+      partsGrid.innerHTML = data.parts.map(part => `
+        <div class="part-card">
+          <div class="part-header">
+            <h4 class="part-name">${part.name}</h4>
+            <span class="part-status">${part.status}</span>
+          </div>
+          <p class="part-code">Código: ${part.code}</p>
+          <p class="part-price">$${part.price.toLocaleString('es-CO')}</p>
+        </div>
+      `).join('');
+      partsSection.style.display = 'block';
+    }
+
+    // Show notes if available
+    const notesSection = document.getElementById('notes-section');
+    const notesContent = document.getElementById('notes-content');
+    if (data.notes && notesSection && notesContent) {
+      notesContent.innerHTML = `<p>${data.notes}</p>`;
+      notesSection.style.display = 'block';
+    }
 
     // Show result section
-    resultSection!.style.display = 'block';
+    if (resultSection) resultSection.style.display = 'block';
 
     // Scroll to result
     resultSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  // Update timeline based on order type
+  function updateTimeline(data) {
+    const timeline = document.querySelector('.timeline');
+    if (!timeline) return;
+
+    // Clear existing timeline
+    timeline.innerHTML = '';
+
+    if (data.type === 'reparacion') {
+      // Timeline for repairs
+      const repairStages = [
+        { title: 'Recibido', desc: 'Tu equipo ha sido recibido en nuestras instalaciones', icon: 'check' },
+        { title: 'Diagnóstico', desc: 'Nuestros técnicos han evaluado el equipo', icon: 'check' },
+        { title: 'En reparación', desc: 'El equipo está siendo reparado por nuestros especialistas', icon: 'wrench' },
+        { title: 'Pruebas', desc: 'Verificación de calidad y funcionamiento', icon: 'activity' },
+        { title: 'Listo para entrega', desc: 'Tu equipo está listo para ser retirado', icon: 'map-pin' }
+      ];
+
+      repairStages.forEach((stage, index) => {
+        const stageNum = index + 1;
+        const status = stageNum < data.currentStage ? 'completed' : stageNum === data.currentStage ? 'active' : 'pending';
+        timeline.innerHTML += createTimelineItem(stage.title, stage.desc, stage.icon, status);
+      });
+    } else {
+      // Timeline for purchases
+      const purchaseStages = [
+        { title: 'Procesando pago', desc: 'Verificando información de pago', icon: 'check' },
+        { title: 'Pago confirmado', desc: 'Tu pago ha sido confirmado exitosamente', icon: 'check' },
+        { title: 'En tránsito', desc: 'Tu producto está en camino', icon: 'truck' },
+        { title: 'En reparto', desc: 'El transportador está cerca de tu ubicación', icon: 'navigation' },
+        { title: 'Entregado', desc: 'Tu producto ha sido entregado', icon: 'map-pin' }
+      ];
+
+      purchaseStages.forEach((stage, index) => {
+        const stageNum = index + 1;
+        const status = stageNum < data.currentStage ? 'completed' : stageNum === data.currentStage ? 'active' : 'pending';
+        timeline.innerHTML += createTimelineItem(stage.title, stage.desc, stage.icon, status);
+      });
+    }
+  }
+
+  // Create timeline item HTML
+  function createTimelineItem(title, desc, icon, status) {
+    const icons: { [key: string]: string } = {
+      'check': '<polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>',
+      'wrench': '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>',
+      'activity': '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>',
+      'map-pin': '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle>',
+      'truck': '<rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle>',
+      'navigation': '<polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>'
+    };
+
+    const iconSvg = icons[icon] || icons['check'];
+    const dateText = status === 'completed' ? '15 Ene, 10:30 AM' : status === 'active' ? 'En proceso' : 'Pendiente';
+
+    return `
+      <div class="timeline-item ${status}">
+        <div class="timeline-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            ${iconSvg}
+          </svg>
+        </div>
+        <div class="timeline-content">
+          <h4>${title}</h4>
+          <p>${desc}</p>
+          <span class="timeline-date">${dateText}</span>
+        </div>
+      </div>
+    `;
+  }
+
   // Show error
-  function showError(orderId: string) {
+  function showError(orderId) {
     // Hide search and result sections
-    document.querySelector('.search-section')!.style.display = 'none';
-    resultSection!.style.display = 'none';
+    const searchSection = document.querySelector('.search-section');
+    if (searchSection) searchSection.style.display = 'none';
+    if (resultSection) resultSection.style.display = 'none';
 
     // Update error message
-    document.getElementById('error-order-id')!.textContent = orderId;
+    document.getElementById('error-order-id').textContent = orderId;
 
     // Show error section
-    errorSection!.style.display = 'block';
+    if (errorSection) errorSection.style.display = 'block';
 
     // Scroll to error
     errorSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -954,19 +1738,22 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
   // Reset to search
   function resetToSearch() {
     // Show search section
-    document.querySelector('.search-section')!.style.display = 'block';
+    const searchSection = document.querySelector('.search-section') as HTMLElement;
+    if (searchSection) searchSection.style.display = 'block';
 
     // Hide result and error sections
-    resultSection!.style.display = 'none';
-    errorSection!.style.display = 'none';
+    if (resultSection) resultSection.style.display = 'none';
+    if (errorSection) errorSection.style.display = 'none';
 
     // Clear input
-    const orderIdInput = document.getElementById('order-id') as HTMLInputElement;
-    orderIdInput.value = '';
-    orderIdInput.focus();
+    const orderIdInput = document.getElementById('order-id');
+    if (orderIdInput) {
+      orderIdInput.value = '';
+      orderIdInput.focus();
+    }
 
     // Scroll to search
-    document.querySelector('.search-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    searchSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   // Event listeners for reset buttons

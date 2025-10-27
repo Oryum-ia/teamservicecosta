@@ -6,7 +6,53 @@ import FooterMiro from '../components/FooterMiro.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import ProductDetailModal from '../components/ProductDetailModal.astro';
 import CartModal from '../components/CartModal.astro';
-import { products } from '../data/products.ts';
+import ImageGalleryModal from '../components/ImageGalleryModal.astro';
+import { supabase, getPublicUrl, type ProductoTienda } from '../lib/supabase';
+
+// Obtener productos desde Supabase
+const { data: productsFromDB, error } = await supabase
+  .from('producto_tienda')
+  .select('*')
+  .eq('activo', true)
+  .order('nombre', { ascending: true });
+
+// Mapear productos de Supabase al formato esperado por ProductCardMiro
+interface ProductCard {
+  name: string;
+  model: string;
+  price: string;
+  image?: string;
+  images?: string[];  // Todas las imágenes del producto
+  available?: boolean;
+  category?: string;
+}
+
+let products: ProductCard[] = [];
+if (error) {
+  console.error('Error al cargar productos de Supabase:', error);
+} else if (productsFromDB && productsFromDB.length > 0) {
+  products = productsFromDB.map((p: ProductoTienda) => {
+    // Obtener todas las imágenes con URLs públicas
+    const allImages = p.imagenes && p.imagenes.length > 0
+      ? p.imagenes.map(img => getPublicUrl(img))
+      : [];
+
+    // Primera imagen para mostrar
+    const imageUrl = allImages.length > 0 ? allImages[0] : '';
+
+    return {
+      name: p.nombre,
+      model: p.modelo || p.descripcion || '',
+      price: p.precio ? `$${p.precio.toLocaleString('es-CO')}` : '$0',
+      image: imageUrl,
+      images: allImages,  // Todas las imágenes
+      available: (p.stock ?? 0) > 0,
+      category: p.categoria || (p.promocion ? 'promocion' : 'regular')
+    };
+  });
+}
+
+console.log(`🛍️ Cargados ${products.length} productos desde Supabase`);
 ---
 
 <Layout
@@ -144,6 +190,7 @@ import { products } from '../data/products.ts';
               model={product.model}
               price={product.price}
               image={product.image}
+              images={product.images}
               available={product.available}
               category={product.category}
             />
@@ -210,6 +257,7 @@ import { products } from '../data/products.ts';
   />
   <ProductDetailModal />
   <CartModal />
+  <ImageGalleryModal />
 </Layout>
 
 <style>
@@ -218,7 +266,7 @@ import { products } from '../data/products.ts';
     position: relative;
     background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
     padding: var(--spacing-32) 0 var(--spacing-24);
-    margin-top: 60px;
+    margin-top: 0;
     overflow: hidden;
   }
 
@@ -534,7 +582,7 @@ import { products } from '../data/products.ts';
 
   /* Benefits Section */
   .shop-benefits {
-    background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 100%);
+    background: linear-gradient(135deg, #FFFFFF 0%, #f0f9ff 100%);
     padding: var(--spacing-24) 0;
     position: relative;
     overflow: hidden;
@@ -772,7 +820,7 @@ import { products } from '../data/products.ts';
       viewButtons.forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
 
-      const view = button.dataset.view;
+      const view = (button as HTMLElement).dataset.view;
       if (view === 'list') {
         productsGrid?.classList.add('list-view');
       } else {
