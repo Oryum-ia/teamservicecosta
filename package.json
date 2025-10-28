@@ -9,7 +9,10 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/react": "^4.4.1",
     "@supabase/supabase-js": "^2.76.1",
-    "astro": "^5.14.3"
+    "astro": "^5.14.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   }
 }

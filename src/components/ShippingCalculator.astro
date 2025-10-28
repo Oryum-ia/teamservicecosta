@@ -1,0 +1,410 @@
+---
+// Componente de Calculadora de Envío
+---
+
+<div class="shipping-calculator">
+  <div class="calculator-header">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1 3h15v13H1z"></path>
+      <path d="M16 8h5l3 3v5h-8V8z"></path>
+      <circle cx="5.5" cy="18.5" r="2.5"></circle>
+      <circle cx="18.5" cy="18.5" r="2.5"></circle>
+    </svg>
+    <h3>Calcular Costo de Envío</h3>
+  </div>
+
+  <div class="calculator-body">
+    <div class="form-group">
+      <label for="shipping-city" class="form-label">
+        Ciudad de destino <span class="required">*</span>
+      </label>
+      <select id="shipping-city" class="form-input">
+        <option value="">Selecciona tu ciudad</option>
+        <optgroup label="Ciudades Principales">
+          <option value="monteria" data-cost="0">Montería (Sede principal)</option>
+          <option value="cartagena" data-cost="0">Cartagena (Sede)</option>
+          <option value="apartado" data-cost="0">Apartadó (Sede)</option>
+        </optgroup>
+        <optgroup label="Córdoba">
+          <option value="cerete" data-cost="15000">Cereté</option>
+          <option value="lorica" data-cost="20000">Lorica</option>
+          <option value="sahagun" data-cost="18000">Sahagún</option>
+          <option value="tierralta" data-cost="25000">Tierralta</option>
+          <option value="ayapel" data-cost="30000">Ayapel</option>
+        </optgroup>
+        <optgroup label="Sucre">
+          <option value="sincelejo" data-cost="20000">Sincelejo</option>
+          <option value="corozal" data-cost="25000">Corozal</option>
+          <option value="san-marcos" data-cost="28000">San Marcos</option>
+          <option value="sampues" data-cost="27000">Sampués</option>
+        </optgroup>
+        <optgroup label="Bolívar">
+          <option value="turbaco" data-cost="15000">Turbaco</option>
+          <option value="magangue" data-cost="35000">Magangué</option>
+          <option value="carmen" data-cost="40000">Carmen de Bolívar</option>
+        </optgroup>
+        <optgroup label="Antioquia">
+          <option value="medellin" data-cost="35000">Medellín</option>
+          <option value="turbo" data-cost="25000">Turbo</option>
+          <option value="necocli" data-cost="30000">Necoclí</option>
+          <option value="chigorodo" data-cost="20000">Chigorodó</option>
+        </optgroup>
+        <optgroup label="Atlántico">
+          <option value="barranquilla" data-cost="30000">Barranquilla</option>
+          <option value="soledad" data-cost="32000">Soledad</option>
+          <option value="sabanalarga" data-cost="35000">Sabanalarga</option>
+        </optgroup>
+        <optgroup label="Otras Ciudades">
+          <option value="bogota" data-cost="45000">Bogotá</option>
+          <option value="cali" data-cost="50000">Cali</option>
+          <option value="bucaramanga" data-cost="48000">Bucaramanga</option>
+          <option value="otras" data-cost="40000">Otra ciudad</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="shipping-weight" class="form-label">
+        Peso estimado (kg)
+      </label>
+      <input
+        type="number"
+        id="shipping-weight"
+        class="form-input"
+        placeholder="Ej: 15"
+        min="0"
+        step="0.1"
+        value="10"
+      />
+      <small class="form-hint">El peso se calculará automáticamente según tus productos</small>
+    </div>
+
+    <div class="shipping-result" id="shipping-result" style="display: none;">
+      <div class="result-row">
+        <span class="result-label">Ciudad seleccionada:</span>
+        <span class="result-value" id="result-city">-</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Peso total:</span>
+        <span class="result-value" id="result-weight">-</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Tiempo de entrega:</span>
+        <span class="result-value" id="result-time">-</span>
+      </div>
+      <div class="result-divider"></div>
+      <div class="result-row result-total">
+        <span class="result-label">Costo de envío:</span>
+        <span class="result-value result-price" id="result-cost">$0</span>
+      </div>
+      <div class="result-note" id="result-note"></div>
+    </div>
+
+    <div class="shipping-info">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+      <p><strong>Envío gratis</strong> en compras superiores a <strong>$500,000</strong></p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .shipping-calculator {
+    background: white;
+    border-radius: var(--radius-xl);
+    border: 2px solid var(--color-gray-200);
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .shipping-calculator:hover {
+    border-color: rgba(255, 215, 0, 0.3);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .calculator-header {
+    background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+    color: #1a1a2e;
+    padding: var(--spacing-4);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+  }
+
+  .calculator-header h3 {
+    margin: 0;
+    font-size: var(--text-lg);
+    font-weight: var(--font-bold);
+  }
+
+  .calculator-body {
+    padding: var(--spacing-6);
+  }
+
+  .form-group {
+    margin-bottom: var(--spacing-4);
+  }
+
+  .form-label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: #1a1a2e;
+    margin-bottom: var(--spacing-2);
+  }
+
+  .required {
+    color: #ef4444;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: var(--spacing-3) var(--spacing-4);
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-base);
+    font-family: var(--font-primary);
+    transition: all 0.2s ease;
+    background: var(--color-white);
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: #FFD700;
+    box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.15);
+  }
+
+  .form-hint {
+    display: block;
+    margin-top: var(--spacing-2);
+    font-size: var(--text-xs);
+    color: var(--color-gray-500);
+  }
+
+  /* Shipping Result */
+  .shipping-result {
+    margin-top: var(--spacing-6);
+    padding: var(--spacing-4);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, rgba(255, 215, 0, 0.02) 100%);
+    border: 2px solid rgba(255, 215, 0, 0.2);
+    border-radius: var(--radius-lg);
+  }
+
+  .result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-3);
+  }
+
+  .result-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .result-label {
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+  }
+
+  .result-value {
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: #1a1a2e;
+  }
+
+  .result-divider {
+    height: 1px;
+    background: var(--color-gray-200);
+    margin: var(--spacing-4) 0;
+  }
+
+  .result-total {
+    margin-bottom: var(--spacing-2);
+  }
+
+  .result-total .result-label {
+    font-size: var(--text-base);
+    font-weight: var(--font-bold);
+    color: #1a1a2e;
+  }
+
+  .result-price {
+    font-size: var(--text-xl);
+    font-weight: var(--font-extrabold);
+    color: #FFD700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .result-note {
+    margin-top: var(--spacing-3);
+    padding: var(--spacing-3);
+    background: rgba(16, 185, 129, 0.1);
+    border-left: 4px solid #10b981;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    color: #059669;
+    font-weight: var(--font-medium);
+  }
+
+  .result-note:empty {
+    display: none;
+  }
+
+  /* Shipping Info */
+  .shipping-info {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-3);
+    margin-top: var(--spacing-6);
+    padding: var(--spacing-4);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.03) 100%);
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+
+  .shipping-info svg {
+    flex-shrink: 0;
+    color: #10b981;
+    margin-top: 2px;
+  }
+
+  .shipping-info p {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-gray-700);
+    line-height: 1.5;
+  }
+
+  .shipping-info strong {
+    color: #059669;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .calculator-body {
+      padding: var(--spacing-4);
+    }
+
+    .result-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--spacing-1);
+    }
+  }
+</style>
+
+<script>
+  const citySelect = document.getElementById('shipping-city') as HTMLSelectElement;
+  const weightInput = document.getElementById('shipping-weight') as HTMLInputElement;
+  const resultContainer = document.getElementById('shipping-result') as HTMLDivElement;
+  const resultCity = document.getElementById('result-city') as HTMLSpanElement;
+  const resultWeight = document.getElementById('result-weight') as HTMLSpanElement;
+  const resultTime = document.getElementById('result-time') as HTMLSpanElement;
+  const resultCost = document.getElementById('result-cost') as HTMLSpanElement;
+  const resultNote = document.getElementById('result-note') as HTMLDivElement;
+
+  // Delivery time mapping based on city type
+  const deliveryTimes: Record<string, string> = {
+    monteria: 'Mismo día / 24 horas',
+    cartagena: 'Mismo día / 24 horas',
+    apartado: 'Mismo día / 24 horas',
+    cerete: '1-2 días hábiles',
+    lorica: '1-2 días hábiles',
+    sahagun: '1-2 días hábiles',
+    tierralta: '2-3 días hábiles',
+    ayapel: '2-3 días hábiles',
+    sincelejo: '1-2 días hábiles',
+    corozal: '2-3 días hábiles',
+    'san-marcos': '2-3 días hábiles',
+    sampues: '2-3 días hábiles',
+    turbaco: '1-2 días hábiles',
+    magangue: '2-3 días hábiles',
+    carmen: '3-4 días hábiles',
+    medellin: '2-3 días hábiles',
+    turbo: '2-3 días hábiles',
+    necocli: '2-3 días hábiles',
+    chigorodo: '1-2 días hábiles',
+    barranquilla: '2-3 días hábiles',
+    soledad: '2-3 días hábiles',
+    sabanalarga: '2-3 días hábiles',
+    bogota: '3-5 días hábiles',
+    cali: '4-6 días hábiles',
+    bucaramanga: '3-5 días hábiles',
+    otras: '4-7 días hábiles'
+  };
+
+  function calculateShipping() {
+    const selectedOption = citySelect.options[citySelect.selectedIndex];
+
+    if (!selectedOption || !selectedOption.value) {
+      resultContainer.style.display = 'none';
+      return;
+    }
+
+    const baseCost = parseInt(selectedOption.dataset.cost || '0');
+    const weight = parseFloat(weightInput.value) || 0;
+    const cityValue = selectedOption.value;
+    const cityName = selectedOption.text;
+
+    // Calculate additional cost based on weight (for weights over 20kg)
+    let weightSurcharge = 0;
+    if (weight > 20) {
+      weightSurcharge = Math.ceil((weight - 20) / 5) * 5000; // $5,000 por cada 5kg adicionales
+    }
+
+    const totalShippingCost = baseCost + weightSurcharge;
+
+    // Get delivery time
+    const deliveryTime = deliveryTimes[cityValue] || '3-5 días hábiles';
+
+    // Update result display
+    resultCity.textContent = cityName;
+    resultWeight.textContent = `${weight.toFixed(1)} kg`;
+    resultTime.textContent = deliveryTime;
+    resultCost.textContent = totalShippingCost === 0
+      ? 'GRATIS'
+      : `$${totalShippingCost.toLocaleString('es-CO')}`;
+
+    // Show note if it's a headquarters city
+    if (baseCost === 0 && ['monteria', 'cartagena', 'apartado'].includes(cityValue)) {
+      resultNote.textContent = '✓ Recogida en sede disponible - Sin costo de envío';
+      resultNote.style.display = 'block';
+    } else if (weightSurcharge > 0) {
+      resultNote.textContent = `Incluye cargo adicional de $${weightSurcharge.toLocaleString('es-CO')} por peso superior a 20kg`;
+      resultNote.style.display = 'block';
+      resultNote.style.background = 'rgba(255, 215, 0, 0.1)';
+      resultNote.style.borderLeftColor = '#FFD700';
+      resultNote.style.color = '#854d0e';
+    } else {
+      resultNote.textContent = '';
+      resultNote.style.display = 'none';
+    }
+
+    resultContainer.style.display = 'block';
+
+    // Emit custom event with shipping cost for checkout page
+    window.dispatchEvent(new CustomEvent('shippingCalculated', {
+      detail: {
+        city: cityName,
+        cityValue: cityValue,
+        cost: totalShippingCost,
+        weight: weight,
+        deliveryTime: deliveryTime
+      }
+    }));
+  }
+
+  // Event listeners
+  if (citySelect && weightInput) {
+    citySelect.addEventListener('change', calculateShipping);
+    weightInput.addEventListener('input', calculateShipping);
+  }
+
+  // Auto-calculate on page load if values are set
+  if (citySelect.value) {
+    calculateShipping();
+  }
+</script>

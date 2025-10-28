@@ -334,20 +334,22 @@
   justify-content: center !important;
   gap: 8px !important;
   padding: 14px 16px !important;
-  background: #ff8c00 !important;
-  color: white !important;
+  background: linear-gradient(135deg, #FFD02F 0%, #FFC700 100%) !important;
+  color: #1a1a2e !important;
   border: none !important;
   border-radius: 10px !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
   cursor: pointer !important;
-  transition: all 0.2s ease !important;
+  transition: all 0.3s ease !important;
   font-family: inherit !important;
+  box-shadow: 0 4px 12px rgba(255, 208, 47, 0.3) !important;
 }
 
 .checkout-button:hover {
-  background: #e67c00 !important;
-  transform: translateY(-1px) !important;
+  background: linear-gradient(135deg, #FFC700 0%, #FFB700 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(255, 208, 47, 0.4) !important;
 }
 
 .checkout-button:active {

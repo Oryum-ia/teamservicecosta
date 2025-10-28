@@ -445,9 +445,23 @@ const productId = name.toLowerCase().replace(/\s+/g, '-');
         const availableBadge = productCard.querySelector('.badge-available');
         const available = !!availableBadge;
 
+        // Get images array from data attribute
+        const imagesData = (productCard as HTMLElement).dataset.productImages;
+        let images: string[] = [];
+        if (imagesData) {
+          try {
+            images = JSON.parse(imagesData);
+          } catch (e) {
+            console.error('Error parsing images:', e);
+            images = image ? [image] : [];
+          }
+        } else {
+          images = image ? [image] : [];
+        }
+
         if (typeof (window as any).openProductDetailModal === 'function') {
           (window as any).openProductDetailModal({
-            id, name, model, price, image, available
+            id, name, model, price, image, images, available
           });
         }
       });
@@ -474,9 +488,23 @@ const productId = name.toLowerCase().replace(/\s+/g, '-');
           const availableBadge = productCard.querySelector('.badge-available');
           const available = !!availableBadge;
 
+          // Get images array from data attribute
+          const imagesData = (productCard as HTMLElement).dataset.productImages;
+          let images: string[] = [];
+          if (imagesData) {
+            try {
+              images = JSON.parse(imagesData);
+            } catch (e) {
+              console.error('Error parsing images:', e);
+              images = image ? [image] : [];
+            }
+          } else {
+            images = image ? [image] : [];
+          }
+
           if (typeof (window as any).openProductDetailModal === 'function') {
             (window as any).openProductDetailModal({
-              id, name, model, price, image, available
+              id, name, model, price, image, images, available
             });
           }
         }

@@ -1,10 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.SUPABASE_URL;
-const supabaseKey = import.meta.env.SUPABASE_KEY;
+// En Astro, las variables para el cliente deben tener el prefijo PUBLIC_
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL || import.meta.env.SUPABASE_URL;
+const supabaseKey = import.meta.env.PUBLIC_SUPABASE_KEY || import.meta.env.SUPABASE_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase environment variables');
+  console.error('Supabase URL:', supabaseUrl ? 'Configurada' : 'Faltante');
+  console.error('Supabase Key:', supabaseKey ? 'Configurada' : 'Faltante');
+  throw new Error('Missing Supabase environment variables. Asegúrate de tener PUBLIC_SUPABASE_URL y PUBLIC_SUPABASE_KEY en tu archivo .env');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
@@ -85,4 +88,45 @@ export interface Orden {
   repuestos_cotizacion: any;
   equipo_id: string | null;
   responsable: string | null;
+}
+
+export interface PQR {
+  id?: number;
+  tipo_solicitud: string;
+  nombre_completo: string;
+  email: string;
+  telefono: string;
+  ciudad: string;
+  asunto: string;
+  mensaje: string;
+  archivo_adjunto?: string | null;
+  estado?: string;
+  prioridad?: string;
+  fecha_creacion?: string;
+  fecha_actualizacion?: string;
+  fecha_respuesta?: string | null;
+  respuesta?: string | null;
+  radicado: string;
+  ip_address?: string | null;
+  user_agent?: string | null;
+  id_usuario_asignado?: string | null;
+}
+
+export interface Encuesta {
+  id?: number;
+  nombre_completo: string;
+  email: string;
+  telefono?: string | null;
+  sede: string;
+  atencion_calificacion: number;
+  calidad_calificacion: number;
+  tiempo_calificacion: number;
+  productos_calificacion: number;
+  satisfaccion_general: number;
+  recomendacion_puntuacion: number;
+  comentarios?: string | null;
+  fecha_creacion?: string;
+  ip_address?: string | null;
+  user_agent?: string | null;
+  user_id?: string | null;
 }

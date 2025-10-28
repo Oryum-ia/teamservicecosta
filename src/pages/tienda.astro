@@ -6,15 +6,34 @@ import FooterMiro from '../components/FooterMiro.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import ProductDetailModal from '../components/ProductDetailModal.astro';
 import CartModal from '../components/CartModal.astro';
-import ImageGalleryModal from '../components/ImageGalleryModal.astro';
 import { supabase, getPublicUrl, type ProductoTienda } from '../lib/supabase';
 
-// Obtener productos desde Supabase
-const { data: productsFromDB, error } = await supabase
+// Obtener parámetros de URL
+const url = new URL(Astro.request.url);
+const brandParam = url.searchParams.get('brand')?.toLowerCase();
+const categoryParam = url.searchParams.get('category')?.toLowerCase();
+
+// Construir consulta de Supabase con filtros
+let query = supabase
   .from('producto_tienda')
   .select('*')
-  .eq('activo', true)
-  .order('nombre', { ascending: true });
+  .eq('activo', true);
+
+// Aplicar filtro de marca si existe
+if (brandParam) {
+  query = query.ilike('marca', `%${brandParam}%`);
+}
+
+// Aplicar filtro de categoría si existe
+if (categoryParam) {
+  query = query.ilike('categoria', `%${categoryParam}%`);
+}
+
+// Ordenar resultados
+query = query.order('nombre', { ascending: true });
+
+// Ejecutar consulta
+const { data: productsFromDB, error } = await query;
 
 // Mapear productos de Supabase al formato esperado por ProductCardMiro
 interface ProductCard {
@@ -53,11 +72,36 @@ if (error) {
 }
 
 console.log(`🛍️ Cargados ${products.length} productos desde Supabase`);
+
+// Determinar título y descripción según los filtros
+let pageTitle = "Tienda Online | Team Service Costa S.A.S.";
+let pageDescription = "Compra equipos profesionales con garantía oficial. Envíos a todo Colombia.";
+let heroTitle = "Tienda Online";
+let heroBadge = "Equipos Profesionales";
+let heroDescription = "Encuentra equipos de limpieza profesional con garantía oficial. Entrega inmediata y envíos seguros a todo Colombia.";
+
+if (brandParam === 'karcher') {
+  pageTitle = "Equipos KÄRCHER | Team Service Costa S.A.S.";
+  pageDescription = "Compra equipos KÄRCHER originales con garantía oficial. Hidrolavadoras profesionales y domésticas, aspiradoras, accesorios y repuestos.";
+  heroTitle = "Equipos KÄRCHER";
+  heroBadge = "Distribuidor Oficial KÄRCHER";
+  heroDescription = categoryParam
+    ? `Equipos KÄRCHER para ${categoryParam}. Garantía oficial de 2 años y entrega inmediata.`
+    : "Encuentra toda la línea de equipos KÄRCHER con garantía oficial. Entrega inmediata y envíos seguros a todo Colombia.";
+} else if (brandParam === 'makita') {
+  pageTitle = "Herramientas MAKITA | Team Service Costa S.A.S.";
+  pageDescription = "Herramientas eléctricas MAKITA profesionales. Calidad japonesa con garantía oficial.";
+  heroTitle = "Herramientas MAKITA";
+  heroBadge = "Distribuidor Oficial MAKITA";
+  heroDescription = categoryParam
+    ? `Herramientas MAKITA ${categoryParam}. Tecnología japonesa de alta calidad.`
+    : "Herramientas eléctricas profesionales MAKITA. Tecnología japonesa con garantía oficial.";
+}
 ---
 
 <Layout
-  title="Tienda Online | Team Service Costa S.A.S. - Equipos KÄRCHER"
-  description="Compra equipos KÄRCHER originales con garantía oficial. Hidrolavadoras profesionales y domésticas, aspiradoras, accesorios y repuestos. Envíos a todo Colombia."
+  title={pageTitle}
+  description={pageDescription}
 >
   <HeaderMiro />
   <main>
@@ -70,12 +114,11 @@ console.log(`🛍️ Cargados ${products.length} productos desde Supabase`);
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             </svg>
-            Distribuidor Oficial KÄRCHER
+            {heroBadge}
           </span>
-          <h1 class="hero-title">Tienda Online</h1>
+          <h1 class="hero-title">{heroTitle}</h1>
           <p class="hero-description">
-            Encuentra equipos de limpieza profesional con garantía oficial.
-            Entrega inmediata y envíos seguros a todo Colombia.
+            {heroDescription}
           </p>
           <div class="hero-stats">
             <div class="stat">
@@ -108,6 +151,20 @@ console.log(`🛍️ Cargados ${products.length} productos desde Supabase`);
             </button>
 
             <div class="filter-group">
+              <label for="brand-filter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                Marca
+              </label>
+              <select id="brand-filter" class="filter-select">
+                <option value="all">Todas</option>
+                <option value="karcher" {brandParam === 'karcher' ? 'selected' : ''}>KÄRCHER</option>
+                <option value="makita" {brandParam === 'makita' ? 'selected' : ''}>MAKITA</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
               <label for="category-filter">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
@@ -117,12 +174,11 @@ console.log(`🛍️ Cargados ${products.length} productos desde Supabase`);
               </label>
               <select id="category-filter" class="filter-select">
                 <option value="all">Todos</option>
-                <option value="hidrolavadoras">Hidrolavadoras</option>
-                <option value="hogar">Hogar</option>
-                <option value="semi-profesional">Semi-profesional</option>
-                <option value="profesional">Profesional</option>
-                <option value="aspiradoras">Aspiradoras</option>
-                <option value="limpieza">Limpieza</option>
+                <option value="hogar" {categoryParam === 'hogar' ? 'selected' : ''}>Hogar</option>
+                <option value="profesional" {categoryParam === 'profesional' ? 'selected' : ''}>Profesional</option>
+                <option value="industrial" {categoryParam === 'industrial' ? 'selected' : ''}>Industrial</option>
+                <option value="repuestos" {categoryParam === 'repuestos' ? 'selected' : ''}>Repuestos</option>
+                <option value="accesorios" {categoryParam === 'accesorios' ? 'selected' : ''}>Accesorios</option>
               </select>
             </div>
 
@@ -257,7 +313,6 @@ console.log(`🛍️ Cargados ${products.length} productos desde Supabase`);
   />
   <ProductDetailModal />
   <CartModal />
-  <ImageGalleryModal />
 </Layout>
 
 <style>
@@ -787,26 +842,29 @@ console.log(`🛍️ Cargados ${products.length} productos desde Supabase`);
   // Auto-apply filters from URL parameters
   function applyUrlFilters() {
     const urlParams = new URLSearchParams(window.location.search);
+    const brandParam = urlParams.get('brand');
     const categoryParam = urlParams.get('category');
-    
+
+    // Apply brand filter if present
+    if (brandParam) {
+      const brandFilter = document.getElementById('brand-filter') as HTMLSelectElement;
+      if (brandFilter) {
+        const brand = brandParam.toLowerCase();
+        if (brand === 'karcher' || brand === 'makita') {
+          brandFilter.value = brand;
+        }
+      }
+    }
+
+    // Apply category filter if present
     if (categoryParam) {
       const categoryFilter = document.getElementById('category-filter') as HTMLSelectElement;
       if (categoryFilter) {
-        // Map URL categories to filter values
-        const categoryMap: { [key: string]: string } = {
-          'hidrolavadoras': 'hogar',  // Most hidrolavadoras are in hogar category
-          'hogar': 'hogar',
-          'semi-profesional': 'semi-profesional', 
-          'profesional': 'profesional',
-          'aspiradoras': 'aspiradoras',
-          'limpieza': 'limpieza',
-          'accesorios': 'limpieza'  // Map accesorios to limpieza category
-        };
-        
-        const mappedCategory = categoryMap[categoryParam.toLowerCase()] || categoryParam.toLowerCase();
-        categoryFilter.value = mappedCategory;
-        // Trigger change event to apply the filter
-        categoryFilter.dispatchEvent(new Event('change'));
+        const category = categoryParam.toLowerCase();
+        // Set value directly without mapping since we're now using consistent values
+        if (['hogar', 'profesional', 'industrial', 'repuestos', 'accesorios'].includes(category)) {
+          categoryFilter.value = category;
+        }
       }
     }
   }
@@ -911,7 +969,53 @@ console.log(`🛍️ Cargados ${products.length} productos desde Supabase`);
     sortProducts();
   }
 
-  categoryFilter?.addEventListener('change', filterAndSort);
+  // Event listeners for filters
+  const brandFilter = document.getElementById('brand-filter') as HTMLSelectElement;
+
+  // Update URL when brand changes
+  brandFilter?.addEventListener('change', () => {
+    const brand = brandFilter.value;
+    const category = categoryFilter?.value;
+    const url = new URL(window.location.href);
+
+    // Clear previous params
+    url.searchParams.delete('brand');
+    url.searchParams.delete('category');
+
+    // Add new params if not 'all'
+    if (brand && brand !== 'all') {
+      url.searchParams.set('brand', brand);
+    }
+    if (category && category !== 'all') {
+      url.searchParams.set('category', category);
+    }
+
+    // Navigate to new URL (this will reload the page with filters)
+    window.location.href = url.toString();
+  });
+
+  // Update URL when category changes
+  categoryFilter?.addEventListener('change', () => {
+    const brand = brandFilter?.value;
+    const category = categoryFilter.value;
+    const url = new URL(window.location.href);
+
+    // Clear previous params
+    url.searchParams.delete('brand');
+    url.searchParams.delete('category');
+
+    // Add new params if not 'all'
+    if (brand && brand !== 'all') {
+      url.searchParams.set('brand', brand);
+    }
+    if (category && category !== 'all') {
+      url.searchParams.set('category', category);
+    }
+
+    // Navigate to new URL (this will reload the page with filters)
+    window.location.href = url.toString();
+  });
+
   sortFilter?.addEventListener('change', sortProducts);
 
   // Apply URL filters on page load

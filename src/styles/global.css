@@ -114,7 +114,7 @@ body {
   background-color: var(--color-white);
   overflow-x: hidden;
   letter-spacing: -0.01em;
-  padding-top: 60px; /* Compensate for fixed header */
+  padding-top: 64px; /* Compensate for fixed header */
 }
 
 @media (max-width: 968px) {

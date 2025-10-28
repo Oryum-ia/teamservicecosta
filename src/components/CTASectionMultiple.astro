@@ -1,0 +1,384 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  description: string;
+  variant?: 'default' | 'gradient' | 'dark';
+}
+
+const {
+  title,
+  subtitle,
+  description,
+  variant = 'gradient'
+} = Astro.props;
+---
+
+<section id="servicio-tecnico" class={`cta-section-multiple cta-${variant}`}>
+  <div class="container">
+    <div class="cta-content">
+      <div class="cta-text-content">
+        {subtitle && <span class="cta-subtitle">{subtitle}</span>}
+        <h2 class="cta-title">{title}</h2>
+        <p class="cta-description">{description}</p>
+
+        <div class="cta-buttons-group">
+          <button class="cta-button cta-primary cta-large" data-modal="agendar-cita-modal">
+            <span class="cta-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </span>
+            <span class="cta-text">Agenda tu Cita</span>
+            <span class="cta-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </button>
+
+          <button class="cta-button cta-secondary cta-large" data-modal="diagnostico-modal">
+            <span class="cta-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            </span>
+            <span class="cta-text">Solicita tu Diagnóstico</span>
+            <span class="cta-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </button>
+
+          <button class="cta-button cta-outline cta-large" data-modal="mantenimiento-modal">
+            <span class="cta-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+              </svg>
+            </span>
+            <span class="cta-text">Cotiza tu Mantenimiento</span>
+            <span class="cta-arrow">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-section-multiple {
+    padding: var(--spacing-20) 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-4);
+  }
+
+  .cta-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .cta-text-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+    align-items: center;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* Default Variant */
+  .cta-default {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  }
+
+  .cta-default .cta-title {
+    color: #1a1a2e;
+  }
+
+  .cta-default .cta-description {
+    color: var(--color-gray-700);
+  }
+
+  /* Gradient Variant */
+  .cta-gradient {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
+    position: relative;
+  }
+
+  .cta-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(255, 208, 47, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(66, 98, 255, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .cta-gradient .cta-title,
+  .cta-gradient .cta-description,
+  .cta-gradient .cta-subtitle {
+    color: white;
+  }
+
+  .cta-gradient .cta-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Dark Variant */
+  .cta-dark {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  }
+
+  .cta-dark .cta-title,
+  .cta-dark .cta-description,
+  .cta-dark .cta-subtitle {
+    color: white;
+  }
+
+  /* Typography */
+  .cta-subtitle {
+    display: inline-block;
+    font-size: var(--text-sm);
+    font-weight: var(--font-bold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #FFD700;
+    padding: var(--spacing-2) var(--spacing-4);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 215, 0, 0.05) 100%);
+    border-radius: var(--radius-full);
+    width: fit-content;
+  }
+
+  .cta-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: var(--font-extrabold);
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .cta-description {
+    font-size: var(--text-lg);
+    line-height: 1.7;
+    margin: 0;
+    max-width: 700px;
+  }
+
+  /* Buttons Group */
+  .cta-buttons-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+    justify-content: center;
+    margin-top: var(--spacing-6);
+  }
+
+  /* CTA Button Styles */
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+    font-family: var(--font-primary);
+    font-weight: var(--font-bold);
+    border: none;
+    border-radius: var(--radius-lg);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  /* Sizes */
+  .cta-large {
+    padding: var(--spacing-4) var(--spacing-8);
+    font-size: var(--text-lg);
+  }
+
+  /* Primary Variant */
+  .cta-primary {
+    background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+    color: #1a1a2e;
+    box-shadow: 0 4px 16px rgba(255, 215, 0, 0.3);
+  }
+
+  .cta-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .cta-primary:hover::before {
+    left: 100%;
+  }
+
+  .cta-primary:hover {
+    background: linear-gradient(135deg, #FFC700 0%, #FFB700 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(255, 215, 0, 0.45);
+  }
+
+  /* Secondary Variant */
+  .cta-secondary {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #FFD700;
+    box-shadow: 0 4px 16px rgba(26, 26, 46, 0.2);
+  }
+
+  .cta-secondary:hover {
+    background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(26, 26, 46, 0.35);
+  }
+
+  /* Outline Variant */
+  .cta-outline {
+    background: transparent;
+    color: #1a1a2e;
+    border: 2px solid #FFD700;
+    box-shadow: none;
+  }
+
+  /* Override for gradient backgrounds */
+  .cta-gradient .cta-outline {
+    color: white;
+    border-color: #FFD700;
+  }
+
+  .cta-outline:hover {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+    border-color: #FFC700;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(255, 215, 0, 0.2);
+  }
+
+  /* Icons and Text */
+  .cta-icon,
+  .cta-arrow {
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-text {
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-arrow {
+    transition: transform 0.3s ease;
+  }
+
+  .cta-button:hover .cta-arrow {
+    transform: translateX(4px);
+  }
+
+  .cta-button:active {
+    transform: translateY(0);
+  }
+
+  /* Responsive */
+  @media (max-width: 968px) {
+    .cta-section-multiple {
+      padding: var(--spacing-16) 0;
+    }
+
+    .cta-buttons-group {
+      flex-direction: column;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .cta-button {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .cta-title {
+      font-size: var(--text-3xl);
+    }
+
+    .cta-description {
+      font-size: var(--text-base);
+    }
+
+    .cta-buttons-group {
+      gap: var(--spacing-3);
+    }
+
+    .cta-large {
+      padding: var(--spacing-3) var(--spacing-6);
+      font-size: var(--text-base);
+    }
+  }
+</style>
+
+<script is:inline>
+  // Abrir modales cuando se hace clic en los botones
+  (function() {
+    function initModalButtons() {
+      console.log('Inicializando botones de modal...');
+      const buttons = document.querySelectorAll('[data-modal]');
+      console.log('Botones encontrados:', buttons.length);
+
+      buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          const modalId = this.getAttribute('data-modal');
+          console.log('Click en botón, modal ID:', modalId);
+
+          if (modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+              modal.style.display = 'flex';
+              console.log('Modal abierto:', modalId);
+            } else {
+              console.error('Modal no encontrado:', modalId);
+            }
+          }
+        });
+      });
+    }
+
+    // Ejecutar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initModalButtons);
+    } else {
+      initModalButtons();
+    }
+  })();
+</script>

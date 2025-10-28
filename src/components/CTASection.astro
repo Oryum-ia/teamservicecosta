@@ -1,0 +1,211 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  description: string;
+  ctaText: string;
+  ctaHref: string;
+  ctaIcon?: 'calendar' | 'diagnostic' | 'maintenance' | 'phone' | 'whatsapp' | 'shop';
+  variant?: 'default' | 'gradient' | 'dark';
+  imageUrl?: string;
+}
+
+const {
+  title,
+  subtitle,
+  description,
+  ctaText,
+  ctaHref,
+  ctaIcon,
+  variant = 'default',
+  imageUrl
+} = Astro.props;
+
+import CTAButton from './CTAButton.astro';
+---
+
+<section class={`cta-section cta-${variant}`}>
+  <div class="container">
+    <div class="cta-content">
+      <div class="cta-text-content">
+        {subtitle && <span class="cta-subtitle">{subtitle}</span>}
+        <h2 class="cta-title">{title}</h2>
+        <p class="cta-description">{description}</p>
+        <div class="cta-button-wrapper">
+          <CTAButton
+            text={ctaText}
+            href={ctaHref}
+            icon={ctaIcon}
+            variant={variant === 'dark' ? 'primary' : 'primary'}
+            size="large"
+          />
+        </div>
+      </div>
+      {imageUrl && (
+        <div class="cta-image-wrapper">
+          <img src={imageUrl} alt={title} class="cta-image" />
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-section {
+    padding: var(--spacing-20) 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-4);
+  }
+
+  .cta-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-12);
+    align-items: center;
+  }
+
+  .cta-text-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+
+  /* Default Variant */
+  .cta-default {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  }
+
+  .cta-default .cta-title {
+    color: #1a1a2e;
+  }
+
+  .cta-default .cta-description {
+    color: var(--color-gray-700);
+  }
+
+  /* Gradient Variant */
+  .cta-gradient {
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
+    position: relative;
+  }
+
+  .cta-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(255, 208, 47, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(66, 98, 255, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .cta-gradient .cta-title,
+  .cta-gradient .cta-description,
+  .cta-gradient .cta-subtitle {
+    color: white;
+  }
+
+  /* Dark Variant */
+  .cta-dark {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  }
+
+  .cta-dark .cta-title,
+  .cta-dark .cta-description,
+  .cta-dark .cta-subtitle {
+    color: white;
+  }
+
+  /* Typography */
+  .cta-subtitle {
+    display: inline-block;
+    font-size: var(--text-sm);
+    font-weight: var(--font-bold);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #FFD700;
+    padding: var(--spacing-2) var(--spacing-4);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 215, 0, 0.05) 100%);
+    border-radius: var(--radius-full);
+    width: fit-content;
+  }
+
+  .cta-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: var(--font-extrabold);
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .cta-description {
+    font-size: var(--text-lg);
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .cta-button-wrapper {
+    margin-top: var(--spacing-4);
+  }
+
+  /* Image */
+  .cta-image-wrapper {
+    position: relative;
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  }
+
+  .cta-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Single Column Layout (no image) */
+  .cta-content:has(:only-child) {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .cta-content:has(:only-child) .cta-text-content {
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 968px) {
+    .cta-content {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-8);
+      text-align: center;
+    }
+
+    .cta-text-content {
+      align-items: center;
+    }
+
+    .cta-section {
+      padding: var(--spacing-16) 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .cta-title {
+      font-size: var(--text-3xl);
+    }
+
+    .cta-description {
+      font-size: var(--text-base);
+    }
+  }
+</style>

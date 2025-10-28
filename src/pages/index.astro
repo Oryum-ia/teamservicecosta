@@ -11,6 +11,10 @@ import FooterMiro from '../components/FooterMiro.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import ProductDetailModal from '../components/ProductDetailModal.astro';
 import CartModal from '../components/CartModal.astro';
+import CTASectionMultiple from '../components/CTASectionMultiple.astro';
+import AgendarCitaModal from '../components/AgendarCitaModal.astro';
+import DiagnosticoModal from '../components/DiagnosticoModal.astro';
+import MantenimientoModal from '../components/MantenimientoModal.astro';
 ---
 
 <Layout
@@ -22,6 +26,15 @@ import CartModal from '../components/CartModal.astro';
     <HeroMiro />
     <OffersSection />
     <StatsSection />
+
+    <!-- CTA: Servicios Técnicos con múltiples opciones -->
+    <CTASectionMultiple
+      subtitle="SERVICIO TÉCNICO"
+      title="¿Tu equipo necesita mantenimiento?"
+      description="Agenda una cita con nuestros técnicos certificados KÄRCHER. Diagnóstico profesional gratuito y atención personalizada en nuestras sedes de Montería, Cartagena y Apartadó. Ofrecemos planes de mantenimiento preventivo con repuestos originales y garantía oficial."
+      variant="gradient"
+    />
+
     <ServicesSection />
     <ContactForm />
     <MapSection />
@@ -33,5 +46,8 @@ import CartModal from '../components/CartModal.astro';
   />
   <ProductDetailModal />
   <CartModal />
-  
+  <AgendarCitaModal />
+  <DiagnosticoModal />
+  <MantenimientoModal />
+
 </Layout>

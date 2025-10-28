@@ -37,7 +37,7 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
                 <label for="tipo-solicitud" class="form-label">
                   Tipo de solicitud <span class="required">*</span>
                 </label>
-                <select id="tipo-solicitud" name="tipo" class="form-input" required>
+                <select id="tipo-solicitud" name="tipo_solicitud" class="form-input" required>
                   <option value="">Selecciona una opción</option>
                   <option value="peticion">Petición</option>
                   <option value="queja">Queja</option>
@@ -55,7 +55,7 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
                 <input
                   type="text"
                   id="nombre"
-                  name="nombre"
+                  name="nombre_completo"
                   class="form-input"
                   placeholder="Juan Pérez"
                   required
@@ -183,9 +183,23 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
               </svg>
             </div>
             <h3>¡Solicitud enviada correctamente!</h3>
+            <div class="radicado-info">
+              <p class="radicado-label">Número de radicado:</p>
+              <p class="radicado-numero">-</p>
+            </div>
             <p>Hemos recibido tu mensaje. Te contactaremos a la brevedad posible a través del correo electrónico proporcionado.</p>
             <button id="send-another" class="btn-secondary">Enviar otra solicitud</button>
           </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast-notification" class="toast-notification">
+          <div class="toast-icon"></div>
+          <div class="toast-content">
+            <p class="toast-title"></p>
+            <p class="toast-message"></p>
+          </div>
+          <button class="toast-close">&times;</button>
         </div>
 
         <!-- Info Cards -->
@@ -239,8 +253,9 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
 
 <style>
   .pqr-page {
-    padding-top: 60px;
     min-height: 100vh;
+    padding-top: 0;
+    margin-top: 0;
   }
 
   .container {
@@ -251,15 +266,36 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
 
   /* Hero Section */
   .hero-section {
-    background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #334155 100%);
     color: white;
-    padding: var(--spacing-16) 0;
+    padding: var(--spacing-8) 0 var(--spacing-8);
     text-align: center;
+    position: relative;
+    overflow: hidden;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(255, 208, 47, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(66, 98, 255, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .hero-section .container {
+    position: relative;
+    z-index: 1;
   }
 
   .hero-badge {
     display: inline-block;
-    background: #FFD700;
+    background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
     color: #1a1a2e;
     padding: var(--spacing-2) var(--spacing-6);
     border-radius: var(--radius-full);
@@ -268,19 +304,28 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin-bottom: var(--spacing-4);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
   }
 
   .hero-title {
-    font-size: var(--text-6xl);
+    font-size: 3.5rem;
     font-weight: var(--font-extrabold);
     margin: var(--spacing-4) 0 var(--spacing-2);
-    line-height: 1;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .hero-subtitle {
     font-size: var(--text-xl);
-    color: #FFD700;
-    font-weight: var(--font-semibold);
+    background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: var(--font-bold);
     margin-bottom: var(--spacing-4);
   }
 
@@ -295,15 +340,16 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
   /* Form Section */
   .form-section {
     padding: var(--spacing-20) 0;
-    background: var(--color-gray-50);
+    background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
   }
 
   .form-wrapper {
     background: white;
     border-radius: var(--radius-2xl);
     padding: var(--spacing-12);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 0 1px rgba(0, 0, 0, 0.1);
     margin-bottom: var(--spacing-12);
+    border: 1px solid rgba(255, 215, 0, 0.1);
   }
 
   .pqr-form {
@@ -352,7 +398,7 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
   .form-textarea:focus {
     outline: none;
     border-color: #FFD700;
-    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+    box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.15);
   }
 
   .form-textarea {
@@ -386,7 +432,11 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
 
   .file-label:hover {
     border-color: #FFD700;
-    background: rgba(255, 215, 0, 0.05);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, rgba(255, 215, 0, 0.08) 100%);
+  }
+
+  .file-label svg {
+    color: #FFD700;
   }
 
   .file-text {
@@ -411,7 +461,7 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
     display: flex;
     align-items: center;
     gap: var(--spacing-2);
-    background: #FFD700;
+    background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
     color: #1a1a2e;
     padding: var(--spacing-4) var(--spacing-10);
     border: none;
@@ -420,17 +470,39 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
     font-weight: var(--font-bold);
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 8px 24px rgba(255, 215, 0, 0.35);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-submit::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .btn-submit:hover::before {
+    left: 100%;
   }
 
   .btn-submit:hover {
-    background: #E6C200;
+    background: linear-gradient(135deg, #FFC700 0%, #FFB700 100%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+    box-shadow: 0 12px 32px rgba(255, 215, 0, 0.45);
   }
 
   .btn-submit:active {
     transform: translateY(0);
+  }
+
+  .btn-submit svg {
+    position: relative;
+    z-index: 1;
   }
 
   /* Success Message */
@@ -447,7 +519,30 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
   .success-message h3 {
     font-size: var(--text-3xl);
     color: #1a1a2e;
-    margin-bottom: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
+  }
+
+  .radicado-info {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: var(--spacing-4) var(--spacing-6);
+    border-radius: 12px;
+    margin: var(--spacing-6) auto;
+    max-width: 400px;
+  }
+
+  .radicado-label {
+    font-size: var(--text-sm);
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 var(--spacing-1);
+    font-weight: 500;
+  }
+
+  .radicado-numero {
+    font-size: var(--text-2xl);
+    color: white;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.5px;
   }
 
   .success-message p {
@@ -484,20 +579,29 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
     background: white;
     padding: var(--spacing-8);
     border-radius: var(--radius-xl);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
     text-align: center;
+    border: 1px solid rgba(255, 215, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .info-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+    border-color: rgba(255, 215, 0, 0.3);
   }
 
   .card-icon {
-    width: 60px;
-    height: 60px;
-    background: rgba(255, 215, 0, 0.1);
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 215, 0, 0.08) 100%);
     color: #FFD700;
     border-radius: var(--radius-full);
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0 auto var(--spacing-4);
+    border: 2px solid rgba(255, 215, 0, 0.2);
   }
 
   .info-card h4 {
@@ -522,6 +626,140 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
     text-decoration: underline;
   }
 
+  /* Toast Notification */
+  .toast-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    padding: var(--spacing-4);
+    display: none;
+    align-items: center;
+    gap: var(--spacing-3);
+    min-width: 320px;
+    max-width: 420px;
+    z-index: 9999;
+    animation: slideInRight 0.3s ease-out;
+  }
+
+  .toast-notification.show {
+    display: flex;
+  }
+
+  .toast-notification.success {
+    border-left: 4px solid #10b981;
+  }
+
+  .toast-notification.error {
+    border-left: 4px solid #ef4444;
+  }
+
+  .toast-notification.warning {
+    border-left: 4px solid #f59e0b;
+  }
+
+  @keyframes slideInRight {
+    from {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOutRight {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(400px);
+      opacity: 0;
+    }
+  }
+
+  .toast-notification.hide {
+    animation: slideOutRight 0.3s ease-in forwards;
+  }
+
+  .toast-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .toast-notification.success .toast-icon {
+    background: #10b981;
+  }
+
+  .toast-notification.error .toast-icon {
+    background: #ef4444;
+  }
+
+  .toast-notification.warning .toast-icon {
+    background: #f59e0b;
+  }
+
+  .toast-icon::before {
+    content: '✓';
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .toast-notification.error .toast-icon::before {
+    content: '✕';
+  }
+
+  .toast-notification.warning .toast-icon::before {
+    content: '⚠';
+  }
+
+  .toast-content {
+    flex: 1;
+  }
+
+  .toast-title {
+    font-weight: var(--font-semibold);
+    color: #1a1a2e;
+    margin: 0 0 var(--spacing-1);
+    font-size: var(--text-base);
+  }
+
+  .toast-message {
+    color: var(--color-gray-600);
+    margin: 0;
+    font-size: var(--text-sm);
+  }
+
+  .toast-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--color-gray-400);
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: color 0.2s;
+  }
+
+  .toast-close:hover {
+    color: var(--color-gray-600);
+  }
+
   /* Responsive */
   @media (max-width: 768px) {
     .hero-title {
@@ -540,15 +778,77 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
       width: 100%;
       justify-content: center;
     }
+
+    .toast-notification {
+      left: 10px;
+      right: 10px;
+      min-width: auto;
+    }
   }
 </style>
 
 <script>
+  import { supabase } from '../lib/supabase';
+
   const form = document.getElementById('pqr-form') as HTMLFormElement;
   const successMessage = document.getElementById('success-message');
   const sendAnotherBtn = document.getElementById('send-another');
   const fileInput = document.getElementById('archivo') as HTMLInputElement;
   const fileLabel = document.querySelector('.file-label');
+
+  // Función para mostrar notificaciones toast
+  function showToast(type: 'success' | 'error' | 'warning', title: string, message: string) {
+    const toast = document.getElementById('toast-notification');
+    const toastTitle = toast?.querySelector('.toast-title');
+    const toastMessage = toast?.querySelector('.toast-message');
+    const toastClose = toast?.querySelector('.toast-close');
+
+    if (!toast || !toastTitle || !toastMessage) return;
+
+    // Limpiar clases previas
+    toast.classList.remove('success', 'error', 'warning', 'show', 'hide');
+
+    // Agregar clase de tipo
+    toast.classList.add(type);
+
+    // Establecer contenido
+    toastTitle.textContent = title;
+    toastMessage.textContent = message;
+
+    // Mostrar toast
+    toast.classList.add('show');
+
+    // Auto-ocultar después de 5 segundos
+    const hideTimeout = setTimeout(() => {
+      hideToast();
+    }, 5000);
+
+    // Manejar cierre manual
+    const closeHandler = () => {
+      clearTimeout(hideTimeout);
+      hideToast();
+      toastClose?.removeEventListener('click', closeHandler);
+    };
+
+    toastClose?.addEventListener('click', closeHandler);
+
+    function hideToast() {
+      toast.classList.add('hide');
+      setTimeout(() => {
+        toast.classList.remove('show', 'hide');
+      }, 300);
+    }
+  }
+
+  // Función para generar un radicado único
+  function generarRadicado(): string {
+    const fecha = new Date();
+    const año = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+    const dia = String(fecha.getDate()).padStart(2, '0');
+    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    return `PQR-${año}${mes}${dia}-${random}`;
+  }
 
   // Handle file input change
   if (fileInput && fileLabel) {
@@ -576,19 +876,110 @@ import WhatsAppButton from '../components/WhatsAppButton.astro';
       // Get form data
       const formData = new FormData(form);
 
-      // Here you would normally send the data to your backend
-      // For now, we'll just simulate a successful submission
-      console.log('Form data:', Object.fromEntries(formData));
+      // Deshabilitar el botón de envío
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn?.textContent;
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
+      }
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      try {
+        // Generar radicado único
+        const radicado = generarRadicado();
 
-      // Hide form and show success message
-      form.style.display = 'none';
-      successMessage!.style.display = 'block';
+        // Subir archivo si existe
+        let archivo_adjunto: string | null = null;
+        const archivo = formData.get('archivo') as File | null;
 
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (archivo && archivo.size > 0) {
+          const timestamp = Date.now();
+          const extension = archivo.name.split('.').pop();
+          const fileName = `${timestamp}-${Math.random().toString(36).substring(7)}.${extension}`;
+          const filePath = `pqr/${fileName}`;
+
+          const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('documentos')
+            .upload(filePath, archivo, {
+              contentType: archivo.type,
+              upsert: false
+            });
+
+          if (uploadError) {
+            console.error('Error al subir archivo:', uploadError);
+            showToast('error', 'Error al subir archivo', 'No se pudo subir el archivo adjunto. Por favor intente nuevamente.');
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.textContent = originalBtnText || 'Enviar Solicitud';
+            }
+            return;
+          }
+
+          archivo_adjunto = filePath;
+        }
+
+        // Preparar datos para insertar
+        const pqrData = {
+          tipo_solicitud: formData.get('tipo_solicitud') as string,
+          nombre_completo: formData.get('nombre_completo') as string,
+          email: formData.get('email') as string,
+          telefono: formData.get('telefono') as string,
+          ciudad: formData.get('ciudad') as string,
+          asunto: formData.get('asunto') as string,
+          mensaje: formData.get('mensaje') as string,
+          archivo_adjunto,
+          radicado,
+          estado: 'recibido',
+          prioridad: 'media',
+          ip_address: null, // El navegador no puede obtener la IP real
+          user_agent: navigator.userAgent
+        };
+
+        // Insertar en Supabase
+        const { data, error } = await supabase
+          .from('pqr')
+          .insert([pqrData])
+          .select()
+          .single();
+
+        if (error) {
+          console.error('Error al insertar PQR:', error);
+          showToast('error', 'Error al enviar solicitud', 'No se pudo guardar tu solicitud. Por favor intenta nuevamente.');
+
+          // Rehabilitar botón
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText || 'Enviar Solicitud';
+          }
+          return;
+        }
+
+        // Mostrar notificación de éxito
+        showToast('success', '¡Solicitud enviada!', `Tu PQR ha sido registrada con el radicado: ${radicado}`);
+
+        // Actualizar mensaje de éxito con el radicado
+        const radicadoElement = successMessage!.querySelector('.radicado-numero');
+        if (radicadoElement) {
+          radicadoElement.textContent = radicado;
+        }
+
+        // Hide form and show success message
+        form.style.display = 'none';
+        successMessage!.style.display = 'block';
+
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      } catch (error) {
+        console.error('Error al enviar formulario:', error);
+        showToast('error', 'Error de conexión', 'No se pudo conectar con el servidor. Por favor verifica tu conexión a internet.');
+
+        // Rehabilitar botón
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalBtnText || 'Enviar Solicitud';
+        }
+      }
     });
   }
 

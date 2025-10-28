@@ -1,0 +1,411 @@
+---
+// Modal para Cotizar Mantenimiento
+---
+
+<div id="mantenimiento-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+        </svg>
+        Cotiza tu Mantenimiento
+      </h2>
+      <button class="modal-close" data-modal="mantenimiento-modal" aria-label="Cerrar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <form id="mantenimiento-form" class="modal-form">
+      <div class="form-group">
+        <label for="mant-nombre" class="form-label">Nombre completo <span class="required">*</span></label>
+        <input type="text" id="mant-nombre" name="nombre" class="form-input" required placeholder="Tu nombre completo">
+      </div>
+
+      <div class="form-group">
+        <label for="mant-telefono" class="form-label">Teléfono <span class="required">*</span></label>
+        <input type="tel" id="mant-telefono" name="telefono" class="form-input" required placeholder="+57 300 123 4567">
+      </div>
+
+      <div class="form-group">
+        <label for="mant-email" class="form-label">Email</label>
+        <input type="email" id="mant-email" name="email" class="form-input" placeholder="tu@email.com">
+      </div>
+
+      <div class="form-group">
+        <label for="mant-sede" class="form-label">Sede <span class="required">*</span></label>
+        <select id="mant-sede" name="sede" class="form-input" required>
+          <option value="">Selecciona una sede</option>
+          <option value="monteria" data-phone="+573205085531">Montería</option>
+          <option value="cartagena" data-phone="+573023262268">Cartagena</option>
+          <option value="apartado" data-phone="+573023262239">Apartadó</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="mant-tipo" class="form-label">Tipo de mantenimiento <span class="required">*</span></label>
+        <select id="mant-tipo" name="tipo" class="form-input" required>
+          <option value="">Selecciona el tipo</option>
+          <option value="preventivo">Mantenimiento Preventivo</option>
+          <option value="correctivo">Mantenimiento Correctivo</option>
+          <option value="plan_anual">Plan de Mantenimiento Anual</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="mant-marca" class="form-label">Marca del equipo <span class="required">*</span></label>
+        <select id="mant-marca" name="marca" class="form-input" required>
+          <option value="">Selecciona la marca</option>
+          <option value="Kärcher">Kärcher</option>
+          <option value="Makita">Makita</option>
+          <option value="Otra">Otra marca</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="mant-modelo" class="form-label">Modelo del equipo</label>
+        <input type="text" id="mant-modelo" name="modelo" class="form-input" placeholder="Ej: K5, K7, WD3, etc.">
+      </div>
+
+      <div class="form-group">
+        <label for="mant-cantidad" class="form-label">Cantidad de equipos</label>
+        <input type="number" id="mant-cantidad" name="cantidad" class="form-input" min="1" value="1" placeholder="1">
+      </div>
+
+      <div class="form-group">
+        <label for="mant-detalles" class="form-label">Detalles adicionales</label>
+        <textarea id="mant-detalles" name="detalles" class="form-textarea" rows="3" placeholder="Describe el estado de tu equipo, frecuencia de uso, o cualquier detalle relevante..."></textarea>
+      </div>
+
+      <div class="info-box">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <div>
+          <p><strong>Incluye:</strong> Revisión completa, limpieza, lubricación, ajustes y pruebas de funcionamiento.</p>
+          <p><strong>Garantía:</strong> Repuestos originales y 90 días de garantía en el servicio.</p>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-secondary" data-modal="mantenimiento-modal">Cancelar</button>
+        <button type="submit" class="btn-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+          </svg>
+          Solicitar Cotización
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-4);
+    animation: fadeIn 0.2s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .modal-container {
+    background: white;
+    border-radius: var(--radius-2xl);
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-6);
+    border-bottom: 2px solid var(--color-gray-100);
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+  }
+
+  .modal-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-bold);
+    color: #1a1a2e;
+    margin: 0;
+  }
+
+  .modal-title svg {
+    color: #FFD700;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-2);
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+    color: var(--color-gray-500);
+  }
+
+  .modal-close:hover {
+    background: var(--color-gray-100);
+    color: var(--color-gray-700);
+  }
+
+  .modal-form {
+    padding: var(--spacing-6);
+  }
+
+  .form-group {
+    margin-bottom: var(--spacing-4);
+  }
+
+  .form-label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: var(--font-semibold);
+    color: #1a1a2e;
+    margin-bottom: var(--spacing-2);
+  }
+
+  .required {
+    color: #ef4444;
+  }
+
+  .form-input,
+  .form-textarea {
+    width: 100%;
+    padding: var(--spacing-3) var(--spacing-4);
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-base);
+    font-family: var(--font-primary);
+    transition: all 0.2s ease;
+    background: white;
+  }
+
+  .form-input:focus,
+  .form-textarea:focus {
+    outline: none;
+    border-color: #FFD700;
+    box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.15);
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .info-box {
+    display: flex;
+    gap: var(--spacing-3);
+    padding: var(--spacing-4);
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.08) 0%, rgba(255, 215, 0, 0.03) 100%);
+    border-left: 4px solid #FFD700;
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .info-box svg {
+    flex-shrink: 0;
+    color: #FFD700;
+    margin-top: 2px;
+  }
+
+  .info-box div {
+    flex: 1;
+  }
+
+  .info-box p {
+    margin: 0 0 var(--spacing-2) 0;
+    font-size: var(--text-sm);
+    color: var(--color-gray-700);
+    line-height: 1.5;
+  }
+
+  .info-box p:last-child {
+    margin-bottom: 0;
+  }
+
+  .form-actions {
+    display: flex;
+    gap: var(--spacing-3);
+    justify-content: flex-end;
+    margin-top: var(--spacing-6);
+    padding-top: var(--spacing-6);
+    border-top: 2px solid var(--color-gray-100);
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: var(--spacing-3) var(--spacing-6);
+    border-radius: var(--radius-lg);
+    font-size: var(--text-base);
+    font-weight: var(--font-semibold);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+    color: #1a1a2e;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #FFC700 0%, #FFB700 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 215, 0, 0.4);
+  }
+
+  .btn-secondary {
+    background: white;
+    color: var(--color-gray-700);
+    border: 2px solid var(--color-gray-300);
+  }
+
+  .btn-secondary:hover {
+    background: var(--color-gray-50);
+    border-color: var(--color-gray-400);
+  }
+
+  @media (max-width: 640px) {
+    .modal-container {
+      max-height: 100vh;
+      border-radius: 0;
+    }
+
+    .form-actions {
+      flex-direction: column-reverse;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function() {
+    function initMantenimientoModal() {
+      const mantenimientoForm = document.getElementById('mantenimiento-form');
+      const mantenimientoModal = document.getElementById('mantenimiento-modal');
+
+      if (!mantenimientoForm || !mantenimientoModal) {
+        console.error('Modal o formulario de mantenimiento no encontrado');
+        return;
+      }
+
+      console.log('Modal de mantenimiento inicializado');
+
+      mantenimientoForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(mantenimientoForm);
+        const nombre = formData.get('nombre');
+        const telefono = formData.get('telefono');
+        const email = formData.get('email') || 'No proporcionado';
+        const sedeSelect = document.getElementById('mant-sede');
+        const sede = sedeSelect.options[sedeSelect.selectedIndex].text;
+        const phoneNumber = sedeSelect.options[sedeSelect.selectedIndex].dataset.phone;
+        const tipoSelect = document.getElementById('mant-tipo');
+        const tipo = tipoSelect.options[tipoSelect.selectedIndex].text;
+        const marca = formData.get('marca');
+        const modelo = formData.get('modelo') || 'No especificado';
+        const cantidad = formData.get('cantidad') || '1';
+        const detalles = formData.get('detalles') || 'Ninguno';
+
+        const mensaje = 'Hola, quiero solicitar una cotización para mantenimiento de equipos:\n\n' +
+          '*Datos de contacto:*\n' +
+          '- Nombre: ' + nombre + '\n' +
+          '- Teléfono: ' + telefono + '\n' +
+          '- Email: ' + email + '\n\n' +
+          '*Detalles del servicio:*\n' +
+          '- Sede: ' + sede + '\n' +
+          '- Tipo de mantenimiento: ' + tipo + '\n' +
+          '- Marca: ' + marca + '\n' +
+          '- Modelo: ' + modelo + '\n' +
+          '- Cantidad de equipos: ' + cantidad + '\n\n' +
+          '*Detalles adicionales:*\n' +
+          detalles + '\n\n' +
+          'Por favor, envíenme una cotización detallada. ¡Gracias!';
+
+        const mensajeCodificado = encodeURIComponent(mensaje);
+        const whatsappUrl = 'https://wa.me/' + phoneNumber + '?text=' + mensajeCodificado;
+
+        // Abrir WhatsApp
+        window.open(whatsappUrl, '_blank');
+
+        // Cerrar modal y resetear formulario
+        mantenimientoModal.style.display = 'none';
+        mantenimientoForm.reset();
+      });
+
+      // Cerrar modal al hacer clic en el overlay
+      mantenimientoModal.addEventListener('click', function(e) {
+        if (e.target === mantenimientoModal) {
+          mantenimientoModal.style.display = 'none';
+        }
+      });
+
+      // Cerrar modal con botón de cerrar
+      const closeBtn = mantenimientoModal.querySelector('.modal-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+          mantenimientoModal.style.display = 'none';
+        });
+      }
+    }
+
+    // Ejecutar cuando el DOM esté listo
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initMantenimientoModal);
+    } else {
+      initMantenimientoModal();
+    }
+  })();
+</script>
